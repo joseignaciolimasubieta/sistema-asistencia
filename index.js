@@ -11,23 +11,6 @@ const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 const PORT = process.env.PORT || 3000;
 const SECRET_KEY = "ignacio_clave_super_secreta_2026";
-// --- MEMORIA DE TURNOS ---
-let limitesHorarios = {
-    manana: 9.0,   // 09:00
-    tarde: 15.0,   // 03:00 PM
-    noche: 18.0,   // 06:00 PM
-    tolerancia: 15 // Minutos
-};
-// --- NUEVO: REGLAS DE LA EMPRESA ---
-let ajustesEmpresa = {
-    diasLaborables: [false, true, true, true, true, true, true], 
-    feriados: [],
-    branding: {
-        nombreEmpresa: 'Centro de Control',
-        logoUrl: '',
-        temaPorDefecto: 'dark'
-    }
-};
 app.use(cors());
 app.use(express.json());
 
@@ -61,23 +44,22 @@ const Registro = mongoose.model('Registro', registroSchema);
 
 // Esquema para persistir los ajustes
 const ajustesSchema = new mongoose.Schema({
-    configId: { type: String, default: 'global_config' }, // ID único para encontrarlo siempre
+    empresa_id: { type: String, required: true }, // <--- EL SELLO MÁGICO
     limitesHorarios: {
-        manana: Number,
-        tarde: Number,
-        noche: Number,
-        tolerancia: Number
+        manana: { type: Number, default: 9.0 },
+        tarde: { type: Number, default: 15.0 },
+        noche: { type: Number, default: 18.0 },
+        tolerancia: { type: Number, default: 15 }
     },
     ajustesEmpresa: {
-        diasLaborables: [Boolean],
+        diasLaborables: { type: [Boolean], default: [false, true, true, true, true, true, true] },
         feriados: [String],
-        // --- NUEVOS CAMPOS DE BRANDING ---
         branding: {
             nombreEmpresa: { type: String, default: 'Centro de Control' },
             logoUrl: { type: String, default: '' },
             temaPorDefecto: { type: String, default: 'dark' }
         },
-        tiempoBloqueo: { type: Number, default: 5 } // <--- NUEVO: Minutos a ignorar
+        tiempoBloqueo: { type: Number, default: 5 }
     }
 });
 const Ajustes = mongoose.model('Ajustes', ajustesSchema);
@@ -100,15 +82,6 @@ async function crearAdminPorDefecto() {
 mongoose.connect('mongodb+srv://ignacio:12062002@cluster0.kpzeiq3.mongodb.net/control_asistencia?appName=Cluster0')
     .then(async () => {
         console.log('✅ Conectado a MongoDB Atlas');
-        
-        // Buscamos los ajustes guardados en la base de datos
-        const configGuardada = await Ajustes.findOne({ configId: 'global_config' });
-        if (configGuardada) {
-            if (configGuardada.limitesHorarios) limitesHorarios = configGuardada.limitesHorarios;
-            if (configGuardada.ajustesEmpresa) ajustesEmpresa = configGuardada.ajustesEmpresa;
-            console.log('📂 Configuración recuperada de la base de datos exitosamente');
-        }
-        
         crearAdminPorDefecto();
     })
     .catch(err => console.error('Error al conectar a MongoDB', err));
@@ -147,23 +120,25 @@ app.post('/api/asistencia', async (req, res) => {
         const empleado = await Empleado.findOne({ uid: uid });
         if (!empleado) return res.status(404).json({ error: 'Empleado no encontrado' });
 
-        // --- NUEVO: FILTRO ANTI-DOBLE MARCADO ---
+        // 🛑 NUEVO: CARGAR AJUSTES DE LA EMPRESA DEL EMPLEADO
+        let config = await Ajustes.findOne({ empresa_id: empleado.empresa_id });
+        if (!config) config = new Ajustes({ empresa_id: empleado.empresa_id }); // Carga defaults
+        
+        const lim = config.limitesHorarios;
+        const reglas = config.ajustesEmpresa;
+
+        // --- FILTRO ANTI-DOBLE MARCADO ---
         const ultimoRegistroBloqueo = await Registro.findOne({ uid: uid }).sort({ fechaHora: -1 });
         
         if (ultimoRegistroBloqueo) {
             const ahora = new Date();
             const diferenciaMinutos = (ahora - new Date(ultimoRegistroBloqueo.fechaHora)) / (1000 * 60);
 
-            // Si el tiempo pasado es menor al configurado, ignoramos el envío
-            if (diferenciaMinutos < ajustesEmpresa.tiempoBloqueo) {
-                console.log(`🚫 Marcado duplicado ignorado para UID: ${uid} (hace ${Math.round(diferenciaMinutos)} min)`);
-                return res.json({ 
-                    mensaje: 'Registro ignorado (Bloqueo anti-duplicado activo)',
-                    bloqueado: true 
-                });
+            if (diferenciaMinutos < reglas.tiempoBloqueo) {
+                console.log(`🚫 Marcado duplicado ignorado para UID: ${uid}`);
+                return res.json({ mensaje: 'Bloqueo anti-duplicado', bloqueado: true });
             }
         }
-        // ----------------------------------------
 
         const inicioDia = new Date();
         inicioDia.setUTCHours(4, 0, 0, 0); 
@@ -173,42 +148,32 @@ app.post('/api/asistencia', async (req, res) => {
         }).sort({ fechaHora: -1 });
 
         let tipoMarcado = (ultimoRegistro && ultimoRegistro.tipo === 'INGRESO') ? 'SALIDA' : 'INGRESO'; 
-        // 3.5. Lógica de Turnos con Tolerancia Configurable
+        
         let estadoAsistencia = 'PUNTUAL';
         let horaLimiteBase = 0;
 
         if (tipoMarcado === 'INGRESO') {
             const horaActual = new Date();
-            horaActual.setUTCHours(horaActual.getUTCHours() - 4); // Ajuste Bolivia (-4)
-            
+            horaActual.setUTCHours(horaActual.getUTCHours() - 4); 
             const horaDecimal = horaActual.getUTCHours() + (horaActual.getUTCMinutes() / 60);
             
-            // Identificamos el turno según la hora del día
-            if (horaDecimal >= 4 && horaDecimal < 12) {
-                horaLimiteBase = limitesHorarios.manana;
-            } else if (horaDecimal >= 12 && horaDecimal < 18) {
-                horaLimiteBase = limitesHorarios.tarde;
-            } else {
-                horaLimiteBase = limitesHorarios.noche;
-            }
+            if (horaDecimal >= 4 && horaDecimal < 12) horaLimiteBase = lim.manana;
+            else if (horaDecimal >= 12 && horaDecimal < 18) horaLimiteBase = lim.tarde;
+            else horaLimiteBase = lim.noche;
 
-            // MATEMÁTICA: Sumamos la tolerancia a la hora base
-            const limiteFinalConTolerancia = horaLimiteBase + (limitesHorarios.tolerancia / 60);
-
-            if (horaDecimal > limiteFinalConTolerancia) {
-                estadoAsistencia = 'RETRASO';
-            }
+            const limiteFinalConTolerancia = horaLimiteBase + (lim.tolerancia / 60);
+            if (horaDecimal > limiteFinalConTolerancia) estadoAsistencia = 'RETRASO';
         }
 
-        // 4. Guardamos el registro con el sello de la empresa
         const nuevoRegistro = new Registro({ 
-            empresa_id: empleado.empresa_id, // <--- HEREDA LA EMPRESA DEL EMPLEADO
+            empresa_id: empleado.empresa_id,
             uid: empleado.uid, 
             nombre: empleado.nombre, 
             foto: empleado.foto,
             tipo: tipoMarcado,
             estado: estadoAsistencia
         });
+        
         await nuevoRegistro.save();
         io.emit('nueva_asistencia', { nombre: nuevoRegistro.nombre, estado: nuevoRegistro.estado });
         res.status(200).json({ mensaje: 'Asistencia registrada', tipo: tipoMarcado });
@@ -278,7 +243,7 @@ app.delete('/api/registros/:id', verificarToken, async (req, res) => {
 app.get('/api/empleados', verificarToken, async (req, res) => {
     if (req.usuario.rol === 'admin') {
         // El admin ve a todos
-        const empleados = await Empleado.find();
+        const empleados = await Empleado.find({ empresa_id: req.usuario.empresa_id });
         res.json(empleados);
     } else {
         // El usuario normal SOLO se ve a sí mismo
@@ -305,54 +270,42 @@ app.delete('/api/empleados/:id', verificarToken, async (req, res) => {
 });
 
 // Leer Ajustes
-app.get('/api/ajustes', verificarToken, (req, res) => {
-    res.json(limitesHorarios);
+// --- RUTAS DE AJUSTES SAAS (Aisladas por empresa) ---
+
+// 1. Leer Horarios
+app.get('/api/ajustes', verificarToken, async (req, res) => {
+    let config = await Ajustes.findOne({ empresa_id: req.usuario.empresa_id });
+    if (!config) config = new Ajustes({ empresa_id: req.usuario.empresa_id }); // Valores por defecto
+    res.json(config.limitesHorarios);
 });
 
-// Guardar Ajustes (Solo Admin) - AHORA GUARDA EN MONGODB
+// 2. Guardar Horarios
 app.post('/api/ajustes', verificarToken, async (req, res) => {
     if (req.usuario.rol !== 'admin') return res.status(403).json({ error: 'No autorizado' });
-    
-    try {
-        await Ajustes.findOneAndUpdate(
-            { configId: 'global_config' },
-            { $set: { limitesHorarios: req.body } },
-            { upsert: true }
-        );
-        // También actualizamos la variable en memoria para que el cambio sea instantáneo
-        limitesHorarios = req.body; 
-        res.json({ mensaje: 'Ajustes guardados en base de datos' });
-    } catch (error) {
-        res.status(500).json({ error: 'Error al guardar' });
-    }
+    await Ajustes.findOneAndUpdate(
+        { empresa_id: req.usuario.empresa_id },
+        { $set: { limitesHorarios: req.body } },
+        { upsert: true }
+    );
+    res.json({ mensaje: 'Horarios guardados' });
 });
 
-// Rutas para Reglas de Empresa
-app.get('/api/ajustes/empresa', verificarToken, (req, res) => {
-    res.json(ajustesEmpresa);
+// 3. Leer Reglas y Logos
+app.get('/api/ajustes/empresa', verificarToken, async (req, res) => {
+    let config = await Ajustes.findOne({ empresa_id: req.usuario.empresa_id });
+    if (!config) config = new Ajustes({ empresa_id: req.usuario.empresa_id }); // Valores por defecto
+    res.json(config.ajustesEmpresa);
 });
 
-// Guardar Reglas de Empresa (Días y Feriados) - AHORA GUARDA EN MONGODB
+// 4. Guardar Reglas y Logos
 app.post('/api/ajustes/empresa', verificarToken, async (req, res) => {
     if (req.usuario.rol !== 'admin') return res.status(403).json({ error: 'No autorizado' });
-    
-    try {
-        await Ajustes.findOneAndUpdate(
-            { configId: 'global_config' },
-            { $set: { ajustesEmpresa: req.body } },
-            { upsert: true }
-        );
-        ajustesEmpresa = req.body;
-        res.json({ mensaje: 'Reglas de empresa persistidas' });
-    } catch (error) {
-        res.status(500).json({ error: 'Error al guardar reglas' });
-    }
-});
-
-app.post('/api/ajustes/empresa', verificarToken, (req, res) => {
-    if (req.usuario.rol !== 'admin') return res.status(403).json({ error: 'No autorizado' });
-    ajustesEmpresa = req.body;
-    res.json({ mensaje: 'Reglas actualizadas' });
+    await Ajustes.findOneAndUpdate(
+        { empresa_id: req.usuario.empresa_id },
+        { $set: { ajustesEmpresa: req.body } },
+        { upsert: true }
+    );
+    res.json({ mensaje: 'Reglas guardadas' });
 });
 
 // NUEVA RUTA: Asignar estado manual (Admin)
@@ -375,10 +328,11 @@ app.post('/api/registros/manual', verificarToken, async (req, res) => {
         };
 
         const actualizacion = { 
+            empresa_id: req.usuario.empresa_id, // <--- EL SELLO FALTANTE
             uid, 
             nombre, 
             estado, 
-            tipo: 'MANUAL', // Marcamos que fue puesto por el admin
+            tipo: 'MANUAL', 
             fechaHora: fechaInicio 
         };
 
