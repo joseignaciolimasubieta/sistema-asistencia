@@ -286,15 +286,14 @@
         cargarDatos(); // El historial y dashboard se cargan para todos
         
         // --- CARGAS EXCLUSIVAS DEL ADMIN ---
+        // --- CARGAR LOGO PARA TODOS (ADMIN Y USUARIOS) ---
+        cargarBrandingGlobal(); 
+
+        // --- CARGAS EXCLUSIVAS DEL ADMIN ---
         if (rolUsuario === 'admin') {
             cargarAjustes();
             cargarReglasEmpresa();
             cargarDatosMatriz(); // La matriz ahora solo la carga el admin
-        } else {
-            // --- CARGAS PARA USUARIO NORMAL ---
-            // Le devolvemos su saludo personalizado
-            const nombreUsuario = sessionStorage.getItem('nombre') || 'Usuario';
-            document.getElementById('titulo-bienvenida').innerText = `Hola, ${nombreUsuario}`;
         }
     };
 
@@ -820,6 +819,29 @@
             }
         } catch (error) {
             Swal.fire('Error', 'No se pudieron sincronizar los cambios con el servidor.', 'error');
+        }
+    }
+
+    // ==========================================
+    // CARGA GLOBAL DE LOGO PARA TODOS LOS USUARIOS
+    // ==========================================
+    async function cargarBrandingGlobal() {
+        try {
+            const res = await fetch('/api/ajustes/empresa', { headers: headersSeguros });
+            if (res.ok) {
+                const ajustes = await res.json();
+                
+                // 1. Aplicamos el logo y colores automáticamente
+                aplicarBranding(ajustes.branding);
+                
+                // 2. Si es un empleado normal, le añadimos su saludo al lado del nombre de la empresa
+                if (rolUsuario !== 'admin') {
+                    const nombreUsuario = sessionStorage.getItem('nombre') || 'Usuario';
+                    document.getElementById('titulo-bienvenida').innerText = `${ajustes.branding.nombreEmpresa || 'Centro de Control'} | Hola, ${nombreUsuario}`;
+                }
+            }
+        } catch (error) {
+            console.error("Error cargando el logo:", error);
         }
     }
 
