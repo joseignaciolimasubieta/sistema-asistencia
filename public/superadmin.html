@@ -16,6 +16,22 @@
         <input type="password" id="master-key" class="input-ajuste" placeholder="Ingresa tu MASTER_KEY aquí..." required style="width: 80%; text-align: center; font-size: 18px;">
     </div>
 
+    <!-- MÉTRICAS GLOBALES DEL SAAS -->
+    <div id="panel-metricas" style="display: none; width: 100%; max-width: 900px; gap: 15px; margin-bottom: 20px; justify-content: space-between;">
+        <div class="contenedor-tarjeta" style="flex: 1; text-align: center; border-bottom: 4px solid #9c27b0; padding: 15px;">
+            <h4 style="margin: 0; color: var(--texto-secundario); font-size: 12px;">EMPRESAS ACTIVAS</h4>
+            <p id="metrica-empresas" style="font-size: 28px; font-weight: bold; color: white; margin: 5px 0;">0</p>
+        </div>
+        <div class="contenedor-tarjeta" style="flex: 1; text-align: center; border-bottom: 4px solid #05cd99; padding: 15px;">
+            <h4 style="margin: 0; color: var(--texto-secundario); font-size: 12px;">EMPLEADOS TOTALES</h4>
+            <p id="metrica-empleados" style="font-size: 28px; font-weight: bold; color: white; margin: 5px 0;">0</p>
+        </div>
+        <div class="contenedor-tarjeta" style="flex: 1; text-align: center; border-bottom: 4px solid #2196f3; padding: 15px;">
+            <h4 style="margin: 0; color: var(--texto-secundario); font-size: 12px;">REGISTROS DE ASISTENCIA</h4>
+            <p id="metrica-registros" style="font-size: 28px; font-weight: bold; color: white; margin: 5px 0;">0</p>
+        </div>
+    </div>
+
     <div style="display: flex; gap: 20px; width: 100%; max-width: 900px; flex-wrap: wrap; align-items: flex-start;">
         
         <!-- PANEL IZQUIERDO: CREAR EMPRESA -->
@@ -90,29 +106,46 @@
             const mKey = document.getElementById('master-key').value;
             if(!mKey) return Swal.fire('Alto', 'Escribe tu Llave de Seguridad primero', 'warning');
 
-            const res = await fetch('/api/master/empresas', { headers: { 'x-master-key': mKey } });
-            
-            if (res.ok) {
-                const empresas = await res.json();
-                const tbody = document.getElementById('lista-empresas');
-                tbody.innerHTML = '';
+            try {
+                // 1. Cargar lista de empresas
+                const resEmpresas = await fetch('/api/master/empresas', { headers: { 'x-master-key': mKey } });
+                
+                // 2. Cargar Métricas Globales
+                const resMetricas = await fetch('/api/master/metricas', { headers: { 'x-master-key': mKey } });
 
-                empresas.forEach(emp => {
-                    // Evitamos que salga el botón de borrar en tu cuenta principal
-                    const btnBorrar = emp.empresa_id === 'EMPRESA_GLOBAL' 
-                        ? `<span style="color: #05cd99; font-size:12px;">★ MAESTRA</span>` 
-                        : `<button onclick="eliminarEmpresa('${emp.empresa_id}', '${emp.ajustesEmpresa.branding.nombreEmpresa}')" class="btn-peligro">Borrar</button>`;
+                if (resEmpresas.ok && resMetricas.ok) {
+                    // Procesar Empresas
+                    const empresas = await resEmpresas.json();
+                    const tbody = document.getElementById('lista-empresas');
+                    tbody.innerHTML = '';
 
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><b>${emp.ajustesEmpresa.branding.nombreEmpresa || 'Sin nombre'}</b></td>
-                            <td style="font-size: 11px; font-family: monospace; color: var(--texto-secundario);">${emp.empresa_id}</td>
-                            <td>${btnBorrar}</td>
-                        </tr>
-                    `;
-                });
-            } else {
-                Swal.fire('Error', 'Llave incorrecta o error de servidor', 'error');
+                    empresas.forEach(emp => {
+                        const btnBorrar = emp.empresa_id === 'EMPRESA_GLOBAL' 
+                            ? `<span style="color: #05cd99; font-size:12px;">★ MAESTRA</span>` 
+                            : `<button onclick="eliminarEmpresa('${emp.empresa_id}', '${emp.ajustesEmpresa.branding.nombreEmpresa}')" class="btn-peligro">Borrar</button>`;
+
+                        tbody.innerHTML += `
+                            <tr>
+                                <td><b>${emp.ajustesEmpresa.branding.nombreEmpresa || 'Sin nombre'}</b></td>
+                                <td style="font-size: 11px; font-family: monospace; color: var(--texto-secundario);">${emp.empresa_id}</td>
+                                <td>${btnBorrar}</td>
+                            </tr>
+                        `;
+                    });
+
+                    // Procesar Métricas y hacerlas visibles
+                    const metricas = await resMetricas.json();
+                    document.getElementById('metrica-empresas').innerText = metricas.empresas;
+                    document.getElementById('metrica-empleados').innerText = metricas.empleados;
+                    document.getElementById('metrica-registros').innerText = metricas.registros;
+                    document.getElementById('panel-metricas').style.display = 'flex'; // Mostramos el panel
+
+                } else {
+                    Swal.fire('Error', 'Llave incorrecta o error de servidor', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                Swal.fire('Error', 'Fallo de conexión', 'error');
             }
         }
 

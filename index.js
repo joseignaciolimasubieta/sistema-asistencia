@@ -446,4 +446,25 @@ app.delete('/api/master/empresas/:id', async (req, res) => {
     }
 });
 
+// 3. Métricas Globales del SaaS
+app.get('/api/master/metricas', async (req, res) => {
+    const masterKey = req.headers['x-master-key'];
+    if (masterKey !== MASTER_KEY) return res.status(403).json({ error: "No autorizado" });
+
+    try {
+        // Le pedimos a MongoDB que cuente todo lo que hay en la base de datos
+        const totalEmpresas = await Ajustes.countDocuments();
+        const totalEmpleados = await Empleado.countDocuments();
+        const totalRegistros = await Registro.countDocuments();
+
+        res.json({
+            empresas: totalEmpresas,
+            empleados: totalEmpleados,
+            registros: totalRegistros
+        });
+    } catch (error) {
+        res.status(500).json({ error: "Error al cargar métricas" });
+    }
+});
+
 server.listen(PORT, () => console.log(`🚀 Servidor con Sockets en puerto ${PORT}`));
