@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Master - Creador de Empresas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Incluimos SweetAlert para las notificaciones bonitas -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: var(--fondo);">
+
+    <div class="contenedor-tarjeta" style="width: 100%; max-width: 450px; border-top: 5px solid #9c27b0;">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="color: var(--texto); margin-bottom: 5px;">🚀 Panel SuperAdmin</h2>
+            <p style="color: var(--texto-secundario); font-size: 13px; margin-top: 0;">Da de alta nuevos clientes en tu SaaS</p>
+        </div>
+
+        <form id="form-superadmin" onsubmit="crearEmpresa(event)" style="display: flex; flex-direction: column; gap: 15px;">
+            
+            <div>
+                <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">LLAVE MAESTRA DE SEGURIDAD</label>
+                <input type="password" id="master-key" class="input-ajuste" placeholder="Tu contraseña secreta" required style="width: 100%; margin-top: 5px;">
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--borde); margin: 10px 0;">
+
+            <div>
+                <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">NOMBRE DEL NUEVO CLIENTE (EMPRESA)</label>
+                <input type="text" id="nueva-empresa" class="input-ajuste" placeholder="Ej: Clínica San José" required style="width: 100%; margin-top: 5px;">
+            </div>
+
+            <div>
+                <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">CORREO DEL ADMINISTRADOR</label>
+                <input type="email" id="nuevo-email" class="input-ajuste" placeholder="admin@clinicasanjose.com" required style="width: 100%; margin-top: 5px;">
+            </div>
+
+            <div>
+                <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">CONTRASEÑA TEMPORAL</label>
+                <input type="text" id="nueva-pass" class="input-ajuste" placeholder="Ej: temporal123" required style="width: 100%; margin-top: 5px;">
+            </div>
+
+            <button type="submit" class="btn-primario" style="padding: 15px; font-size: 16px; margin-top: 10px; background-color: #9c27b0;">
+                ✨ Crear Nueva Empresa
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Aplicamos el tema oscuro por defecto para que se vea elegante
+        document.body.setAttribute('data-theme', 'dark');
+
+        async function crearEmpresa(e) {
+            e.preventDefault();
+            
+            const btn = document.querySelector('button[type="submit"]');
+            btn.innerHTML = '⏳ Creando...';
+            btn.disabled = true;
+
+            const payload = {
+                masterKey: document.getElementById('master-key').value,
+                nombreEmpresa: document.getElementById('nueva-empresa').value,
+                emailAdmin: document.getElementById('nuevo-email').value,
+                passwordAdmin: document.getElementById('nueva-pass').value
+            };
+
+            try {
+                // Llamamos a la ruta secreta que hiciste en index.js
+                const res = await fetch('/api/master/crear-empresa', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    Swal.fire({
+                        title: '¡Cliente Creado!',
+                        html: `La empresa <b>${data.detalles.nombre}</b> está lista.<br><br><b>ID Interno:</b> ${data.detalles.empresa_id}<br><br>Ya puedes entregarle el correo y contraseña a tu cliente.`,
+                        icon: 'success',
+                        confirmButtonColor: '#9c27b0'
+                    });
+                    
+                    // Limpiamos los campos del cliente, pero dejamos tu master key escrita por comodidad
+                    document.getElementById('nueva-empresa').value = '';
+                    document.getElementById('nuevo-email').value = '';
+                    document.getElementById('nueva-pass').value = '';
+                } else {
+                    Swal.fire('Error', data.error || 'No se pudo crear la empresa.', 'error');
+                }
+            } catch (error) {
+                Swal.fire('Error', 'Fallo de conexión con el servidor.', 'error');
+            } finally {
+                btn.innerHTML = '✨ Crear Nueva Empresa';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
