@@ -11,7 +11,7 @@ const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 const PORT = process.env.PORT || 3000;
 const SECRET_KEY = "ignacio_clave_super_secreta_2026";
-const MASTER_KEY = "tu_clave_secreta_pro_2026"; // <--- Cambia esto por algo difícil
+const MASTER_KEY = "12062002"; // <--- Cambia esto por algo difícil
 app.use(cors());
 app.use(express.json());
 
