@@ -11,6 +11,7 @@ const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 const PORT = process.env.PORT || 3000;
 const SECRET_KEY = "ignacio_clave_super_secreta_2026";
+const MASTER_KEY = "tu_clave_secreta_pro_2026"; // <--- Cambia esto por algo difícil
 app.use(cors());
 app.use(express.json());
 
@@ -341,6 +342,64 @@ app.post('/api/registros/manual', verificarToken, async (req, res) => {
         res.json({ mensaje: `Estado ${estado} asignado correctamente` });
     } catch (error) {
         res.status(500).json({ error: 'Error al asignar estado manual' });
+    }
+});
+
+// =============================================
+// 🚀 RUTA MAESTRA: CREACIÓN DE NUEVAS EMPRESAS
+// =============================================
+app.post('/api/master/crear-empresa', async (req, res) => {
+    const { masterKey, nombreEmpresa, emailAdmin, passwordAdmin } = req.body;
+
+    // 1. Verificamos que tú seas el que da la orden
+    if (masterKey !== MASTER_KEY) {
+        return res.status(403).json({ error: "No tienes permiso para crear empresas" });
+    }
+
+    try {
+        // 2. Generamos un empresa_id único basado en el nombre (ej: "Ferretería" -> "FERRETERIA_123")
+        const empresaId = nombreEmpresa.toUpperCase().replace(/\s+/g, '_') + "_" + Math.floor(1000 + Math.random() * 9000);
+
+        // 3. Verificamos si el correo ya existe
+        const existe = await Empleado.findOne({ email: emailAdmin });
+        if (existe) return res.status(400).json({ error: "Ese correo ya está registrado" });
+
+        // 4. Creamos al Administrador de la nueva empresa
+        const nuevoAdmin = new Empleado({
+            empresa_id: empresaId,
+            uid: `ADMIN_${Math.floor(Math.random() * 999)}`,
+            nombre: `Admin ${nombreEmpresa}`,
+            email: emailAdmin,
+            password: passwordAdmin,
+            rol: 'admin',
+            foto: 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
+        });
+
+        // 5. Creamos los Ajustes iniciales para esa empresa (Branding)
+        const nuevosAjustes = new Ajustes({
+            empresa_id: empresaId,
+            ajustesEmpresa: {
+                branding: {
+                    nombreEmpresa: nombreEmpresa,
+                    temaPorDefecto: 'dark'
+                }
+            }
+        });
+
+        await nuevoAdmin.save();
+        await nuevosAjustes.save();
+
+        res.json({
+            mensaje: "¡Empresa creada con éxito!",
+            detalles: {
+                nombre: nombreEmpresa,
+                empresa_id: empresaId,
+                acceso_admin: emailAdmin
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: "Error al crear la empresa" });
     }
 });
 
