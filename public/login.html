@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Control de Asistencia</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+
+    <div class="contenedor-tarjeta" style="width: 100%; max-width: 350px; text-align: center;">
+        <h2 style="color: var(--primario);">Iniciar Sesión</h2>
+        
+        <input type="email" id="email" placeholder="Correo Electrónico" 
+               style="width: 85%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--borde); background: var(--fondo); color: white; outline: none;">
+               
+        <input type="password" id="password" placeholder="Contraseña" 
+               style="width: 85%; padding: 12px; margin: 10px 0 20px 0; border-radius: 8px; border: 1px solid var(--borde); background: var(--fondo); color: white; outline: none;">
+        
+        <br>
+        <button onclick="iniciarSesion()" class="btn-primario" style="width: 90%; padding: 12px; font-size: 16px;">Entrar</button>
+        <p id="mensaje-error" style="color: var(--rojo); display: none; margin-top: 15px; font-weight: bold;">Correo o contraseña incorrectos</p>
+    </div>
+
+    <script>
+    if (sessionStorage.getItem('token')) { window.location.replace('/index.html'); }
+
+    async function iniciarSesion() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const errorMsg = document.getElementById('mensaje-error');
+        
+        try {
+            const respuesta = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (respuesta.ok) {
+                const data = await respuesta.json();
+                
+                sessionStorage.setItem('token', data.token);
+                sessionStorage.setItem('rol', data.rol);
+                sessionStorage.setItem('nombre', data.nombre);
+                
+                window.location.replace('/index.html');
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        } catch (error) { console.error("Error de conexión"); }
+    }
+    </script>
+</body>
+</html>
