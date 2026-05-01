@@ -403,4 +403,47 @@ app.post('/api/master/crear-empresa', async (req, res) => {
     }
 });
 
+// =============================================
+// 🗑️ RUTAS MAESTRAS: GESTIÓN Y BORRADO DE EMPRESAS
+// =============================================
+
+// 1. Listar todas las empresas activas
+app.get('/api/master/empresas', async (req, res) => {
+    // Para rutas GET/DELETE usamos headers en lugar del body
+    const masterKey = req.headers['x-master-key'];
+    if (masterKey !== MASTER_KEY) return res.status(403).json({ error: "No autorizado" });
+
+    try {
+        // Buscamos todas las configuraciones para sacar la lista de empresas
+        const empresas = await Ajustes.find({}, 'empresa_id ajustesEmpresa.branding.nombreEmpresa');
+        res.json(empresas);
+    } catch (error) {
+        res.status(500).json({ error: "Error al listar empresas" });
+    }
+});
+
+// 2. Eliminar una empresa (BORRADO EN CASCADA)
+app.delete('/api/master/empresas/:id', async (req, res) => {
+    const masterKey = req.headers['x-master-key'];
+    if (masterKey !== MASTER_KEY) return res.status(403).json({ error: "No autorizado" });
+
+    const empresaId = req.params.id;
+
+    // 🛡️ ESCUDO: Evita que borres tu propia cuenta maestra por accidente
+    if (empresaId === 'EMPRESA_GLOBAL') {
+        return res.status(400).json({ error: "No puedes eliminar tu cuenta matriz principal" });
+    }
+
+    try {
+        // Eliminamos TODO lo que tenga el sello de esa empresa
+        await Empleado.deleteMany({ empresa_id: empresaId });
+        await Registro.deleteMany({ empresa_id: empresaId });
+        await Ajustes.deleteOne({ empresa_id: empresaId });
+
+        res.json({ mensaje: "Empresa eliminada por completo" });
+    } catch (error) {
+        res.status(500).json({ error: "Error al eliminar la empresa" });
+    }
+});
+
 server.listen(PORT, () => console.log(`🚀 Servidor con Sockets en puerto ${PORT}`));

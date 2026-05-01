@@ -6,58 +6,63 @@
     <title>SaaS Master - Creador de Empresas</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <!-- Incluimos SweetAlert para las notificaciones bonitas -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: var(--fondo);">
+<body style="display: flex; flex-direction: column; align-items: center; min-height: 100vh; background-color: var(--fondo); padding: 40px 20px;">
 
-    <div class="contenedor-tarjeta" style="width: 100%; max-width: 450px; border-top: 5px solid #9c27b0;">
-        <div style="text-align: center; margin-bottom: 20px;">
-            <h2 style="color: var(--texto); margin-bottom: 5px;">🚀 Panel SuperAdmin</h2>
-            <p style="color: var(--texto-secundario); font-size: 13px; margin-top: 0;">Da de alta nuevos clientes en tu SaaS</p>
+    <!-- BARRA DE SEGURIDAD (LA LLAVE MAESTRA) -->
+    <div class="contenedor-tarjeta" style="width: 100%; max-width: 600px; margin-bottom: 20px; text-align: center; border: 2px solid #9c27b0;">
+        <h3 style="margin-top: 0;">🔑 Llave de Seguridad</h3>
+        <input type="password" id="master-key" class="input-ajuste" placeholder="Ingresa tu MASTER_KEY aquí..." required style="width: 80%; text-align: center; font-size: 18px;">
+    </div>
+
+    <div style="display: flex; gap: 20px; width: 100%; max-width: 900px; flex-wrap: wrap; align-items: flex-start;">
+        
+        <!-- PANEL IZQUIERDO: CREAR EMPRESA -->
+        <div class="contenedor-tarjeta" style="flex: 1; min-width: 300px; border-top: 5px solid #05cd99;">
+            <h2 style="color: var(--texto); margin-bottom: 5px;">✨ Nueva Empresa</h2>
+            <p style="color: var(--texto-secundario); font-size: 13px; margin-top: 0;">Dar de alta a un cliente</p>
+
+            <form id="form-superadmin" onsubmit="crearEmpresa(event)" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                <div>
+                    <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">NOMBRE COMERCIAL</label>
+                    <input type="text" id="nueva-empresa" class="input-ajuste" placeholder="Ej: Clínica San José" required style="width: 100%; margin-top: 5px;">
+                </div>
+                <div>
+                    <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">CORREO DEL ADMINISTRADOR</label>
+                    <input type="email" id="nuevo-email" class="input-ajuste" placeholder="admin@empresa.com" required style="width: 100%; margin-top: 5px;">
+                </div>
+                <div>
+                    <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">CONTRASEÑA TEMPORAL</label>
+                    <input type="text" id="nueva-pass" class="input-ajuste" placeholder="Ej: temporal123" required style="width: 100%; margin-top: 5px;">
+                </div>
+                <button type="submit" class="btn-primario" style="padding: 12px; font-size: 15px; background-color: #05cd99;">➕ Dar de Alta</button>
+            </form>
         </div>
 
-        <form id="form-superadmin" onsubmit="crearEmpresa(event)" style="display: flex; flex-direction: column; gap: 15px;">
+        <!-- PANEL DERECHO: ADMINISTRAR EMPRESAS -->
+        <div class="contenedor-tarjeta" style="flex: 1; min-width: 300px; border-top: 5px solid #ee5d50;">
+            <h2 style="color: var(--texto); margin-bottom: 5px;">🗑️ Directorio de Clientes</h2>
+            <p style="color: var(--texto-secundario); font-size: 13px; margin-top: 0;">Gestiona o elimina accesos</p>
             
-            <div>
-                <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">LLAVE MAESTRA DE SEGURIDAD</label>
-                <input type="password" id="master-key" class="input-ajuste" placeholder="Tu contraseña secreta" required style="width: 100%; margin-top: 5px;">
+            <button onclick="cargarEmpresas()" class="btn-primario" style="width: 100%; margin-top: 10px; background-color: #334155;">🔄 Cargar / Actualizar Lista</button>
+            
+            <div style="overflow-x: auto; margin-top: 20px;">
+                <table style="width: 100%; text-align: left;">
+                    <thead><tr><th>Empresa</th><th>ID Interno</th><th>Acción</th></tr></thead>
+                    <tbody id="lista-empresas">
+                        <tr><td colspan="3" style="text-align: center; color: var(--texto-secundario);">Haz clic en Cargar Lista...</td></tr>
+                    </tbody>
+                </table>
             </div>
-
-            <hr style="border: 0; border-top: 1px solid var(--borde); margin: 10px 0;">
-
-            <div>
-                <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">NOMBRE DEL NUEVO CLIENTE (EMPRESA)</label>
-                <input type="text" id="nueva-empresa" class="input-ajuste" placeholder="Ej: Clínica San José" required style="width: 100%; margin-top: 5px;">
-            </div>
-
-            <div>
-                <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">CORREO DEL ADMINISTRADOR</label>
-                <input type="email" id="nuevo-email" class="input-ajuste" placeholder="admin@clinicasanjose.com" required style="width: 100%; margin-top: 5px;">
-            </div>
-
-            <div>
-                <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">CONTRASEÑA TEMPORAL</label>
-                <input type="text" id="nueva-pass" class="input-ajuste" placeholder="Ej: temporal123" required style="width: 100%; margin-top: 5px;">
-            </div>
-
-            <button type="submit" class="btn-primario" style="padding: 15px; font-size: 16px; margin-top: 10px; background-color: #9c27b0;">
-                ✨ Crear Nueva Empresa
-            </button>
-        </form>
+        </div>
     </div>
 
     <script>
-        // Aplicamos el tema oscuro por defecto para que se vea elegante
         document.body.setAttribute('data-theme', 'dark');
 
         async function crearEmpresa(e) {
             e.preventDefault();
-            
-            const btn = document.querySelector('button[type="submit"]');
-            btn.innerHTML = '⏳ Creando...';
-            btn.disabled = true;
-
             const payload = {
                 masterKey: document.getElementById('master-key').value,
                 nombreEmpresa: document.getElementById('nueva-empresa').value,
@@ -65,37 +70,78 @@
                 passwordAdmin: document.getElementById('nueva-pass').value
             };
 
-            try {
-                // Llamamos a la ruta secreta que hiciste en index.js
-                const res = await fetch('/api/master/crear-empresa', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+            const res = await fetch('/api/master/crear-empresa', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+            });
 
-                const data = await res.json();
-
-                if (res.ok) {
-                    Swal.fire({
-                        title: '¡Cliente Creado!',
-                        html: `La empresa <b>${data.detalles.nombre}</b> está lista.<br><br><b>ID Interno:</b> ${data.detalles.empresa_id}<br><br>Ya puedes entregarle el correo y contraseña a tu cliente.`,
-                        icon: 'success',
-                        confirmButtonColor: '#9c27b0'
-                    });
-                    
-                    // Limpiamos los campos del cliente, pero dejamos tu master key escrita por comodidad
-                    document.getElementById('nueva-empresa').value = '';
-                    document.getElementById('nuevo-email').value = '';
-                    document.getElementById('nueva-pass').value = '';
-                } else {
-                    Swal.fire('Error', data.error || 'No se pudo crear la empresa.', 'error');
-                }
-            } catch (error) {
-                Swal.fire('Error', 'Fallo de conexión con el servidor.', 'error');
-            } finally {
-                btn.innerHTML = '✨ Crear Nueva Empresa';
-                btn.disabled = false;
+            if (res.ok) {
+                Swal.fire('¡Éxito!', 'Empresa creada.', 'success');
+                document.getElementById('nueva-empresa').value = '';
+                document.getElementById('nuevo-email').value = '';
+                document.getElementById('nueva-pass').value = '';
+                cargarEmpresas(); // Refresca la lista automáticamente
+            } else {
+                const err = await res.json();
+                Swal.fire('Error', err.error || 'Llave incorrecta', 'error');
             }
+        }
+
+        async function cargarEmpresas() {
+            const mKey = document.getElementById('master-key').value;
+            if(!mKey) return Swal.fire('Alto', 'Escribe tu Llave de Seguridad primero', 'warning');
+
+            const res = await fetch('/api/master/empresas', { headers: { 'x-master-key': mKey } });
+            
+            if (res.ok) {
+                const empresas = await res.json();
+                const tbody = document.getElementById('lista-empresas');
+                tbody.innerHTML = '';
+
+                empresas.forEach(emp => {
+                    // Evitamos que salga el botón de borrar en tu cuenta principal
+                    const btnBorrar = emp.empresa_id === 'EMPRESA_GLOBAL' 
+                        ? `<span style="color: #05cd99; font-size:12px;">★ MAESTRA</span>` 
+                        : `<button onclick="eliminarEmpresa('${emp.empresa_id}', '${emp.ajustesEmpresa.branding.nombreEmpresa}')" class="btn-peligro">Borrar</button>`;
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><b>${emp.ajustesEmpresa.branding.nombreEmpresa || 'Sin nombre'}</b></td>
+                            <td style="font-size: 11px; font-family: monospace; color: var(--texto-secundario);">${emp.empresa_id}</td>
+                            <td>${btnBorrar}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                Swal.fire('Error', 'Llave incorrecta o error de servidor', 'error');
+            }
+        }
+
+        async function eliminarEmpresa(id, nombre) {
+            const mKey = document.getElementById('master-key').value;
+
+            Swal.fire({
+                title: `¿Borrar a ${nombre}?`,
+                html: "Esto eliminará <b>TODOS</b> sus administradores, empleados, horarios y asistencias de la base de datos.<br><b>¡No se puede deshacer!</b>",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ee5d50',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Sí, ELIMINAR TODO'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const res = await fetch(`/api/master/empresas/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'x-master-key': mKey }
+                    });
+
+                    if (res.ok) {
+                        Swal.fire('Eliminado', 'La empresa ha sido borrada del sistema.', 'success');
+                        cargarEmpresas(); // Recargamos la lista
+                    } else {
+                        Swal.fire('Error', 'No se pudo eliminar', 'error');
+                    }
+                }
+            });
         }
     </script>
 </body>
