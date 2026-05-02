@@ -119,6 +119,14 @@ app.post('/api/login', async (req, res) => {
     const token = jwt.sign({ id: usuario._id, rol: usuario.rol, uid: usuario.uid, empresa_id: usuario.empresa_id }, SECRET_KEY);
     res.json({ token: token, rol: usuario.rol, nombre: usuario.nombre });
 });
+const verificarToken = (req, res, next) => {
+    const token = req.headers['authorization'];
+    if (!token) return res.status(403).json({ error: 'Acceso denegado' });
+    try {
+        req.usuario = jwt.verify(token, SECRET_KEY);
+        next();
+    } catch (error) { res.status(401).json({ error: 'Token inválido' }); }
+};
 // ---------------------------------------------
 // 4. RUTAS DEL HARDWARE (ESP32)
 // ---------------------------------------------
