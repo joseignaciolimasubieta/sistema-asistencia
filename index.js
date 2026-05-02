@@ -1,17 +1,22 @@
+require('dotenv').config(); // <--- CARGA LA BÓVEDA
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const http = require('http');
 const { Server } = require('socket.io');
-const path = require('path'); // <-- ERROR CORREGIDO
+const path = require('path');
+const bcrypt = require('bcryptjs'); // <--- ENCRIPTADOR DE CONTRASEÑAS
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
+
+// AHORA LAS LLAVES ESTÁN OCULTAS
 const PORT = process.env.PORT || 3000;
-const SECRET_KEY = "ignacio_clave_super_secreta_2026";
-const MASTER_KEY = "12062002"; // <--- Cambia esto por algo difícil
+const SECRET_KEY = process.env.SECRET_KEY;
+const MASTER_KEY = process.env.MASTER_KEY;
+
 app.use(cors());
 app.use(express.json());
 
@@ -80,7 +85,8 @@ async function crearAdminPorDefecto() {
     }
 }
 
-mongoose.connect('mongodb+srv://ignacio:12062002@cluster0.kpzeiq3.mongodb.net/control_asistencia?appName=Cluster0')
+// AHORA LA RUTA DE LA BASE DE DATOS ESTÁ OCULTA
+mongoose.connect(process.env.MONGO_URI)
     .then(async () => {
         console.log('✅ Conectado a MongoDB Atlas');
         crearAdminPorDefecto();
@@ -92,24 +98,21 @@ mongoose.connect('mongodb+srv://ignacio:12062002@cluster0.kpzeiq3.mongodb.net/co
 // ---------------------------------------------
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
-    const usuario = await Empleado.findOne({ email: email, password: password });
+    const usuario = await Empleado.findOne({ email: email }); // Solo buscamos por email
     
     if (!usuario) {
         return res.status(401).json({ error: 'Correo o contraseña incorrectos' });
     }
+
+    // 🛡️ COMPROBAR CONTRASEÑA ENCRIPTADA
+    const passwordValida = await bcrypt.compare(password, usuario.password);
+    if (!passwordValida) {
+        return res.status(401).json({ error: 'Correo o contraseña incorrectos' });
+    }
+
     const token = jwt.sign({ id: usuario._id, rol: usuario.rol, uid: usuario.uid, empresa_id: usuario.empresa_id }, SECRET_KEY);
     res.json({ token: token, rol: usuario.rol, nombre: usuario.nombre });
 });
-
-const verificarToken = (req, res, next) => {
-    const token = req.headers['authorization'];
-    if (!token) return res.status(403).json({ error: 'Acceso denegado' });
-    try {
-        req.usuario = jwt.verify(token, SECRET_KEY);
-        next();
-    } catch (error) { res.status(401).json({ error: 'Token inválido' }); }
-};
-
 // ---------------------------------------------
 // 4. RUTAS DEL HARDWARE (ESP32)
 // ---------------------------------------------
@@ -256,14 +259,20 @@ app.get('/api/empleados', verificarToken, async (req, res) => {
 app.post('/api/empleados', verificarToken, async (req, res) => {
     if (req.usuario.rol !== 'admin') return res.status(403).json({ error: 'No autorizado' });
     try {
-        // Le asignamos automáticamente el empresa_id del admin que lo está creando
-        const datosEmpleado = { ...req.body, empresa_id: req.usuario.empresa_id };
+        // 🛡️ ENCRIPTAR LA CONTRASEÑA ANTES DE GUARDARLA
+        const salt = await bcrypt.genSalt(10);
+        const passwordEncriptada = await bcrypt.hash(req.body.password, salt);
+
+        const datosEmpleado = { 
+            ...req.body, 
+            password: passwordEncriptada, // Guardamos el hash, no el texto
+            empresa_id: req.usuario.empresa_id 
+        };
         const nuevoEmpleado = new Empleado(datosEmpleado);
         await nuevoEmpleado.save();
         res.status(201).json({ mensaje: 'Empleado creado con éxito' });
     } catch (error) { res.status(400).json({ error: 'El UID o Email ya existen' }); }
 });
-
 app.delete('/api/empleados/:id', verificarToken, async (req, res) => {
     if (req.usuario.rol !== 'admin') return res.status(403).json({ error: 'No autorizado' });
     await Empleado.findByIdAndDelete(req.params.id);
@@ -364,13 +373,17 @@ app.post('/api/master/crear-empresa', async (req, res) => {
         const existe = await Empleado.findOne({ email: emailAdmin });
         if (existe) return res.status(400).json({ error: "Ese correo ya está registrado" });
 
+        // 🛡️ ENCRIPTAR CONTRASEÑA DEL NUEVO CLIENTE
+        const salt = await bcrypt.genSalt(10);
+        const passwordEncriptada = await bcrypt.hash(passwordAdmin, salt);
+
         // 4. Creamos al Administrador de la nueva empresa
         const nuevoAdmin = new Empleado({
             empresa_id: empresaId,
             uid: `ADMIN_${Math.floor(Math.random() * 999)}`,
             nombre: `Admin ${nombreEmpresa}`,
             email: emailAdmin,
-            password: passwordAdmin,
+            password: passwordEncriptada, // <--- SE USA LA ENCRIPTADA AQUÍ
             rol: 'admin',
             foto: 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
         });
