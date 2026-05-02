@@ -75,13 +75,19 @@ const Ajustes = mongoose.model('Ajustes', ajustesSchema);
 async function crearAdminPorDefecto() {
     const adminExiste = await Empleado.findOne({ email: 'admin@asistencia.com' });
     if (!adminExiste) {
+        // 🛡️ ENCRIPTAMOS LA CONTRASEÑA POR DEFECTO
+        const salt = await bcrypt.genSalt(10);
+        const passwordEncriptada = await bcrypt.hash('admin', salt);
+
         await Empleado.create({
-            empresa_id: 'EMPRESA_GLOBAL', // Le asignamos un ID a tu cuenta maestra
+            empresa_id: 'EMPRESA_GLOBAL', 
             uid: 'ADMIN_000', nombre: 'Administrador',
             foto: 'https://cdn-icons-png.flaticon.com/512/149/149071.png',
-            email: 'admin@asistencia.com', password: 'admin', rol: 'admin'
+            email: 'admin@asistencia.com', 
+            password: passwordEncriptada, // <--- SE GUARDA ENCRIPTADA
+            rol: 'admin'
         });
-        console.log('✅ Cuenta Administrador creada (admin@asistencia.com / admin)');
+        console.log('✅ Cuenta Administrador Global creada y encriptada');
     }
 }
 
