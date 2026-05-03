@@ -136,7 +136,12 @@ app.post('/api/asistencia', async (req, res) => {
         if (!uid) return res.status(400).json({ error: 'Falta el UID' });
 
         const empleado = await Empleado.findOne({ uid: uid });
-        if (!empleado) return res.status(404).json({ error: 'Empleado no encontrado' });
+        if (!empleado) {
+            // 🔮 MAGIA: Si la tarjeta no existe, le avisamos al Dashboard en tiempo real
+            io.emit('tarjeta_desconocida', { uid: uid });
+            console.log(`⚠️ Tarjeta no registrada detectada: ${uid}`);
+            return res.status(404).json({ error: 'Empleado no encontrado' });
+        }
 
         // 🛑 NUEVO: CARGAR AJUSTES DE LA EMPRESA DEL EMPLEADO
         let config = await Ajustes.findOne({ empresa_id: empleado.empresa_id });

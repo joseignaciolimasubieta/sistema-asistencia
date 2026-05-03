@@ -227,6 +227,20 @@
     window.onload = () => {
         const socket = io();
         socket.on('nueva_asistencia', () => { cargarDatos(); if (rolUsuario === 'admin') cargarDatosMatriz(); });
+
+        // 👇 AGREGAR ESTE NUEVO BLOQUE 👇
+        socket.on('tarjeta_desconocida', (data) => {
+            const modalAbierto = document.getElementById('modal-empleado').style.display === 'flex';
+            
+            if (modalAbierto) {
+                // Si tienes la ventana de registrar abierta, auto-escribe el código
+                document.getElementById('emp-uid').value = data.uid;
+                
+                // Hace sonar una campanita visual elegante
+                const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
+                Toast.fire({ icon: 'success', title: '¡Tarjeta leída con éxito!' });
+            }
+        });
         
         cambiarTema(true);
         if(rolUsuario === 'admin') {
