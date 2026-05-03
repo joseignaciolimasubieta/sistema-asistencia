@@ -1,20 +1,28 @@
 /* ========================================== */
-/* PALETA DE COLORES: MINIMALISMO TECNOLÓGICO */
+/* PALETA MONOCROMÁTICA: ESTILO PREMIUM SAAS  */
 /* ========================================== */
 :root {
-    /* MODO OSCURO (Estilo macOS: Gris Pizarra y Azul) */
-    --fondo: #0F172A; /* Azul noche / Pizarra muy oscuro */
-    --tarjeta: #1E293B; /* Pizarra un poco más claro para las cajas */
-    --texto: #F8FAFC; /* Blanco ahumado para no deslumbrar */
-    --texto-secundario: #94A3B8; /* Gris azulado para subtítulos */
-    --primario: #0A84FF; /* Azul brillante tecnológico (estilo Apple) */
-    --borde: #334155; /* Líneas separadoras oscuras */
-    
-    /* Colores de estado (Más limpios y modernos) */
-    --verde: #10B981; 
-    --rojo: #EF4444; 
-    --naranja: #F59E0B; 
-    --sombra: 0px 4px 20px rgba(0, 0, 0, 0.4);
+    /* MODO OSCURO (Default) */
+    --fondo: #0a0a0a;          /* Negro profundo */
+    --tarjeta: #141414;        /* Gris oscuro */
+    --texto: #ffffff;          /* Blanco */
+    --texto-secundario: #888888; /* Gris medio */
+    --primario: #ffffff;       /* Acentos en blanco */
+    --texto-inverso: #000000;  /* Texto negro para botones blancos */
+    --borde: #2a2a2a;          /* Líneas sutiles */
+    --sombra: none;
+}
+
+body[data-theme='light'] {
+    /* MODO CLARO (Opcional) */
+    --fondo: #f4f4f5;
+    --tarjeta: #ffffff;
+    --texto: #09090b;
+    --texto-secundario: #71717a;
+    --primario: #09090b;
+    --texto-inverso: #ffffff;
+    --borde: #e4e4e7;
+    --sombra: none;
 }
 
 body {
@@ -22,324 +30,105 @@ body {
     color: var(--texto);
     font-family: 'Poppins', sans-serif;
     margin: 0;
-    padding: 20px;
+    padding: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
 }
 
-body[data-theme='light'] {
-    /* MODO CLARO (Limpio, Blanco y Azul Vibrante) */
-    --fondo: #F9FAFB; /* Gris ultra claro, casi blanco */
-    --tarjeta: #FFFFFF; /* Cajas en blanco puro */
-    --texto: #111827; /* Gris casi negro para lectura cómoda */
-    --texto-secundario: #6B7280; /* Gris medio */
-    --primario: #0A84FF; /* Azul vibrante principal */
-    --borde: #E5E7EB; /* Líneas separadoras muy sutiles */
-    --sombra: 0px 4px 15px rgba(0, 0, 0, 0.04); /* Sombra súper suave */
-}
-
+/* CAJAS Y BORDES MÁS CUADRADOS (6px) */
 .contenedor-tarjeta {
     background: var(--tarjeta);
-    padding: 20px;
-    border-radius: 15px;
+    padding: 25px;
+    border-radius: 6px;
+    border: 1px solid var(--borde);
     box-shadow: var(--sombra);
 }
 
 table { width: 100%; border-collapse: collapse; margin-top: 15px; }
 th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--borde); }
-th { color: var(--texto-secundario); font-weight: 600; }
-.avatar { width: 30px; height: 30px; border-radius: 50%; margin-right: 10px; }
+th { color: var(--texto-secundario); font-weight: 400; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+.avatar { width: 30px; height: 30px; border-radius: 4px; margin-right: 10px; }
 
+/* BOTONES SOBRIOS */
 .btn-primario {
-    background-color: var(--primario); color: white;
-    border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;
-}
-.btn-peligro {
-    background-color: var(--rojo); color: white;
-    border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;
-}
-
-.menu-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-.tab-btn {
-    background: var(--tarjeta); color: var(--texto-secundario); border: 1px solid var(--borde);
-    padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;
-}
-.tab-btn.activo { background: var(--primario); color: white; border-color: var(--primario); }
-
-/* ========================================== */
-/* MATRIZ MENSUAL ESTILO EXCEL VISUAL */
-/* ========================================== */
-.tabla-matriz {
-    border-collapse: collapse;
-    width: 100%;
-    text-align: center;
+    background-color: var(--primario);
+    color: var(--texto-inverso);
+    border: 1px solid var(--primario);
+    padding: 10px 18px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
     font-size: 13px;
 }
+.btn-primario:hover { opacity: 0.8; }
 
-.tabla-matriz th {
-    background-color: var(--tarjeta);
+.btn-peligro {
+    background-color: transparent;
     color: var(--texto);
     border: 1px solid var(--borde);
-    padding: 8px 4px;
-    font-weight: bold;
-    text-align: center;
-}
-
-.tabla-matriz td {
-    border: 1px solid var(--fondo); /* La magia está aquí: usa el fondo como separador */
-    padding: 6px 2px;
-    min-width: 25px;
-    font-weight: bold;
-    color: white; 
-    text-align: center;
-}
-
-/* COLORES EXACTOS DE TU LEYENDA */
-.bg-A { background-color: #38a169; }
-.bg-R { background-color: #ecc94b; color: #744210 !important; }
-.bg-F { background-color: #e53e3e; }
-.bg-P { background-color: #ed8936; }
-.bg-D { background-color: var(--naranja); color: white; }
-.bg-C { background-color: #4299e1; }
-.bg-V { background-color: #319795; }
-.bg-S { background-color: #718096; }
-
-/* Columna fijada a la izquierda (Nombres) */
-.columna-fija {
-    position: sticky;
-    left: 0;
-    background-color: var(--tarjeta) !important;
-    color: var(--texto) !important;
-    text-align: left;
-    padding-left: 15px !important;
-    z-index: 10;
-    border-right: 2px solid var(--borde) !important;
-}
-
-/* =========================================
-   COLORES DE LA MATRIZ MENSUAL (CONCEPTOS)
-   ========================================= */
-.tabla-matriz td.bg-A { background-color: #05cd99; color: #ffffff; font-weight: bold; } /* Verde puro */
-.tabla-matriz td.bg-R { background-color: #ffeb3b; color: #000000; font-weight: bold; } /* Amarillo puro */
-.tabla-matriz td.bg-F { background-color: #f44336; color: #ffffff; font-weight: bold; } /* Rojo puro */
-.tabla-matriz td.bg-P { background-color: #2196f3; color: #ffffff; font-weight: bold; } /* Azul puro */
-.tabla-matriz td.bg-D { background-color: var(--naranja); color: #ffffff; font-weight: bold; } /* Naranja (Descanso) */
-.tabla-matriz td.bg-C { background-color: #00bcd4; color: #ffffff; font-weight: bold; } /* Celeste puro */
-.tabla-matriz td.bg-V { background-color: #9c27b0; color: #ffffff; font-weight: bold; } /* Morado puro */
-.tabla-matriz td.bg-S { background-color: #607d8b; color: #ffffff; font-weight: bold; } /* Azul grisáceo puro */
-
-.input-ajuste {
-    padding: 12px;
-    border-radius: 10px;
-    border: 2px solid var(--borde);
-    background: var(--fondo);
-    color: var(--texto);
-    font-family: 'Poppins', sans-serif;
-    outline: none;
-    transition: 0.3s;
-    box-sizing: border-box; /* <--- AÑADE ESTA LÍNEA */
-}
-
-.input-ajuste:focus {
-    border-color: var(--primario);
-    box-shadow: 0 0 8px rgba(67, 24, 255, 0.2);
-}
-
-.badge-feriado {
-    background: #ffb54720;
-    color: #ffb547;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border: 1px solid #ffb54740;
-}
-
-/* ========================================== */
-/* --- NUEVA ESTRUCTURA TOTAL RESPONSIVE --- */
-/* ========================================== */
-
-body {
-    margin: 0;
-    padding: 0;
-    height: 100vh; /* Respaldo para celulares antiguos */
-    height: 100dvh; /* Fix mágico para iPhone: Altura dinámica */
-    overflow: hidden;
-    background-color: var(--fondo);
-}
-
-/* 1. LA BARRA SUPERIOR (TOP BAR) - OCUPA TODO EL ANCHO */
-.top-bar {
-    height: 60px;
-    width: 100%;
-    background: var(--tarjeta);
-    border-bottom: 1px solid var(--borde);
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    position: fixed; /* Fijada arriba */
-    top: 0;
-    left: 0;
-    z-index: 100; /* Siempre encima */
-    box-sizing: border-box;
-}
-
-/* Botón de Hamburguesa (Gemini Style) */
-#btn-hamburguesa {
-    background: transparent;
-    border: none;
-    color: var(--texto);
-    font-size: 24px;
+    padding: 8px 15px;
+    border-radius: 4px;
     cursor: pointer;
-    margin-right: 15px;
-    padding: 5px;
-    display: flex;
-    align-items: center;
+    transition: 0.2s;
+    font-size: 13px;
 }
+.btn-peligro:hover { background-color: #333; border-color: #666; color: white; }
 
-/* 2. EL CONTENEDOR DE LA APP (DEBAJO DE LA BARRA) */
-.app-container {
-    display: flex;
-    position: absolute; /* Anclado estricto para evitar saltos */
-    top: 60px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    overflow: hidden;
-}
-
-/* 3. EL MENÚ LATERAL (SIDEBAR) CORREGIDO */
-.sidebar {
-    width: 260px;
-    background: var(--tarjeta);
-    border-right: 1px solid var(--borde);
-    display: flex;
-    flex-direction: column;
-    padding: 20px 0;
-    transition: all 0.3s ease; /* Animación suave */
-    overflow-x: hidden; /* Oculta texto al colapsar */
-    z-index: 90;
-    box-sizing: border-box;
-}
-
-/* Estado Colapsado en Escritorio */
-.sidebar.colapsado {
-    width: 70px; /* Solo se ven iconos/emojis */
-}
-
-/* Ajustes a botones del menú */
-.menu-tabs {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 0 10px;
-}
-
+/* TABS DE MENÚ */
+.menu-tabs { display: flex; flex-direction: column; gap: 8px; padding: 0 10px; }
 .tab-btn {
-    width: 100%;
-    text-align: left;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 14px;
-    border: none;
-    background: transparent;
-    color: var(--texto-secundario);
-    transition: 0.3s;
-    white-space: nowrap; /* Evita que el texto salte de línea */
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
+    width: 100%; text-align: left; padding: 12px; border-radius: 4px; font-size: 13px;
+    border: none; background: transparent; color: var(--texto-secundario);
+    transition: 0.2s; display: flex; align-items: center; gap: 12px; cursor: pointer;
 }
-
-/* Ocultar texto cuando está colapsado */
-.sidebar.colapsado .tab-btn span,
-.sidebar.colapsado .btn-peligro span {
-    display: none;
-}
-
-/* Evitar que el texto salte a la línea de abajo durante la animación */
-.sidebar .btn-peligro {
-    white-space: nowrap;
-}
-
 .tab-btn:hover { background: var(--fondo); color: var(--texto); }
-.tab-btn.activo { background: var(--primario); color: white !important; font-weight: bold; }
+.tab-btn.activo { background: var(--texto); color: var(--texto-inverso) !important; font-weight: 600; }
 
-/* 4. EL ÁREA DE CONTENIDO (DERECHA) */
-.main-content {
-    flex: 1;
-    padding: 30px;
-    overflow-y: auto; 
-    -webkit-overflow-scrolling: touch; /* Scroll suave en iPhone */
-    background: var(--fondo);
-    transition: all 0.3s ease;
-    box-sizing: border-box; /* Evita que el padding rompa la altura */
+/* INPUTS */
+.input-ajuste {
+    padding: 12px 15px; border-radius: 4px; border: 1px solid var(--borde);
+    background: var(--fondo); color: var(--texto); font-family: 'Poppins', sans-serif;
+    outline: none; transition: 0.3s; box-sizing: border-box; font-weight: 300;
 }
-/* --- MEDIA QUERY: CORRECCIÓN PARA CELULARES (MÓVIL) --- */
+.input-ajuste:focus { border-color: var(--texto); }
+
+/* MATRIZ MENSUAL (Escala de Grises) */
+.tabla-matriz { border-collapse: collapse; width: 100%; text-align: center; font-size: 12px; }
+.tabla-matriz th { background-color: var(--tarjeta); color: var(--texto-secundario); border: 1px solid var(--borde); padding: 8px 4px; font-weight: 400; text-align: center; }
+.tabla-matriz td { border: 1px solid var(--fondo); padding: 6px 2px; min-width: 25px; font-weight: 600; text-align: center; }
+
+/* Colores de estados en grises */
+.bg-A { background-color: #ffffff; color: #000000; }
+.bg-R { background-color: #888888; color: #ffffff; }
+.bg-F { background-color: #222222; color: #888888; }
+.bg-P { background-color: #dddddd; color: #000000; }
+.bg-D { background-color: #111111; color: #555555; }
+.bg-C { background-color: #aaaaaa; color: #000000; }
+.bg-V { background-color: #555555; color: #ffffff; }
+.bg-S { background-color: #444444; color: #ffffff; }
+
+.columna-fija { position: sticky; left: 0; background-color: var(--tarjeta) !important; color: var(--texto) !important; text-align: left; padding-left: 15px !important; z-index: 10; border-right: 1px solid var(--borde) !important; }
+
+/* LAYOUT RESPONSIVE */
+.top-bar { height: 60px; width: 100%; background: var(--tarjeta); border-bottom: 1px solid var(--borde); display: flex; align-items: center; padding: 0 20px; position: fixed; top: 0; left: 0; z-index: 100; box-sizing: border-box; }
+#btn-hamburguesa { background: transparent; border: none; color: var(--texto); font-size: 24px; cursor: pointer; margin-right: 15px; padding: 5px; display: flex; align-items: center; }
+.app-container { display: flex; position: absolute; top: 60px; bottom: 0; left: 0; right: 0; width: 100%; overflow: hidden; }
+.sidebar { width: 260px; background: var(--tarjeta); border-right: 1px solid var(--borde); display: flex; flex-direction: column; padding: 20px 0; transition: all 0.3s ease; overflow-x: hidden; z-index: 90; box-sizing: border-box; }
+.sidebar.colapsado { width: 70px; }
+.sidebar.colapsado .tab-btn span, .sidebar.colapsado .btn-peligro span { display: none; }
+.sidebar .btn-peligro { white-space: nowrap; }
+.main-content { flex: 1; padding: 30px; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--fondo); transition: all 0.3s ease; box-sizing: border-box; }
+
 @media (max-width: 768px) {
-
-    /* El Sidebar se convierte en un panel flotante oculto por defecto */
-    .sidebar {
-        position: fixed; /* <-- Hace que el menú NUNCA se mueva al hacer scroll */
-        left: -100%; 
-        top: 60px; /* <-- Lo anclamos exactamente debajo de la barra superior */
-        bottom: 0; /* <-- Lo estiramos hasta el fondo (Soluciona el bug de Safari) */
-        height: auto; /* <-- Dejamos que top y bottom controlen el tamaño */
-        width: 280px; 
-        box-shadow: 5px 0 15px rgba(0,0,0,0.5); /* Sombra un poco más fuerte para que resalte */
-        border-right: none;
-        z-index: 98; /* Asegura que no tape la barra superior */
-    }
-
-    /* Cuando se activa el menú en móvil */
-    .sidebar.active {
-        left: 0; /* Aparece desde la izquierda */
-    }
-
-    /* El contenido ocupa siempre el 100% en móvil */
-    .main-content {
-        padding: 15px;
-        width: 100%;
-        height: 100%;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        box-sizing: border-box;
-    }
-
-    /* Aseguramos que el texto de los botones se vea en móvil */
-    .sidebar.colapsado .tab-btn span, 
-    .sidebar .tab-btn span,
-    .sidebar.colapsado .btn-peligro span {
-        display: inline;
-    }
-} /* FIN DEL MEDIA QUERY MÓVIL */
-
-/* ========================================== */
-/* Ajuste para la cabecera doble de la matriz */
-/* ========================================== */
-.tabla-matriz thead tr:first-child th {
-    border-bottom: none; /* Quita la línea entre el nombre del día y el número */
+    .sidebar { position: fixed; left: -100%; top: 60px; bottom: 0; height: auto; width: 280px; box-shadow: 5px 0 15px rgba(0,0,0,0.5); border-right: none; z-index: 98; }
+    .sidebar.active { left: 0; }
+    .main-content { padding: 15px; width: 100%; height: 100%; overflow-y: auto; box-sizing: border-box; }
+    .sidebar.colapsado .tab-btn span, .sidebar .tab-btn span, .sidebar.colapsado .btn-peligro span { display: inline; }
 }
 
-.tabla-matriz thead tr:last-child th {
-    border-top: none; /* Asegura que se vean como un solo bloque */
-}
-
-/* Forzar alineación a la izquierda y respetar el padding original en iPhone (Safari) */
-input[type="time"] {
-    text-align: left !important;
-}
-
-input[type="time"]::-webkit-datetime-edit {
-    display: block !important; /* Apagamos el centrado automático de Apple */
-    text-align: left !important;
-    padding: 0 !important; /* Dejamos que el padding original de la caja haga el trabajo */
-}
-
-input[type="time"]::-webkit-datetime-edit-fields-wrapper {
-    display: inline-block !important;
-    padding: 0 !important;
-}
+.badge-feriado { background: #222222; color: #ffffff; padding: 6px 12px; border-radius: 4px; font-size: 12px; border: 1px solid var(--borde); display: flex; align-items: center; gap: 8px; }
+input[type="time"] { text-align: left !important; }
+input[type="time"]::-webkit-datetime-edit { display: block !important; text-align: left !important; padding: 0 !important; }
+input[type="time"]::-webkit-datetime-edit-fields-wrapper { display: inline-block !important; padding: 0 !important; }

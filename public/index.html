@@ -8,7 +8,7 @@
         if (!sessionStorage.getItem('token')) { window.location.replace('/login.html'); }
     </script>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -18,12 +18,9 @@
 </head>
 <body>
     <div class="top-bar">
-        <button id="btn-hamburguesa" onclick="toggleSidebar()">
-            ☰
-        </button>
-        
+        <button id="btn-hamburguesa" onclick="toggleSidebar()">☰</button>
         <div id="contenedor-logo-top" style="display: flex; align-items: center; gap: 10px;">
-            <h2 id="titulo-bienvenida" style="margin:0; font-size: 18px; color: var(--texto);">Cargando...</h2>
+            <h2 id="titulo-bienvenida" style="margin:0; font-size: 16px; font-weight: 400; letter-spacing: 1px; color: var(--texto);">Cargando...</h2>
         </div>
     </div>
 
@@ -32,16 +29,16 @@
         <div class="sidebar" id="sidebar">
             <div class="menu-tabs">
                 <button id="tab-asist" class="tab-btn activo" onclick="cambiarSeccion('asistencias')">
-                    <i>📋</i> <span>Historial Asistencias</span>
+                    <i>📋</i> <span>Historial</span>
                 </button>
                 <button id="tab-dashboard" class="tab-btn" onclick="cambiarSeccion('dashboard')">
-                    <i>📈</i> <span>Dashboard Analítico</span>
+                    <i>📈</i> <span>Métricas</span>
                 </button>
                 <button id="tab-matriz" class="tab-btn" onclick="cambiarSeccion('matriz')" style="display:none;">
-                    <i>📅</i> <span>Registros Mensuales</span>
+                    <i>📅</i> <span>Matriz Mensual</span>
                 </button>
                 <button id="tab-emp" class="tab-btn" onclick="cambiarSeccion('empleados')" style="display:none;">
-                    <i>👥</i> <span>Gestión de Personal</span>
+                    <i>👥</i> <span>Personal</span>
                 </button>
                 <button id="tab-ajustes" class="tab-btn" onclick="cambiarSeccion('ajustes')" style="display:none;">
                     <i>⚙️</i> <span>Ajustes</span>
@@ -49,7 +46,7 @@
             </div>
             
             <div style="margin-top: auto; padding: 0 10px 20px 10px;">
-                <button class="btn-peligro" onclick="cerrarSesion()" style="width: 100%; padding: 12px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <button class="btn-peligro" onclick="cerrarSesion()" style="width: 100%; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 10px;">
                     🚪 <span>Cerrar Sesión</span>
                 </button>
             </div>
@@ -58,31 +55,31 @@
         <div class="main-content" id="main-content">
             
             <div id="seccion-asistencias">
-                <h2 style="color: var(--primario); margin-bottom: 5px;">📋 Historial de Asistencias</h2>
-                <div style="margin-bottom: 25px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; background: var(--tarjeta); padding: 15px 20px; border-radius: 15px; box-shadow: var(--sombra);">
-                    <select id="tipo-filtro" onchange="cambiarTipoFiltro()" style="padding: 10px; border-radius: 8px; border: 2px solid var(--borde); font-family:'Poppins'; background: var(--fondo); color: var(--texto); outline: none; cursor: pointer;">
+                <h2 style="font-weight: 400; margin-bottom: 20px;">Historial de Accesos</h2>
+                <div style="margin-bottom: 25px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; background: var(--tarjeta); padding: 15px 20px; border-radius: 6px; border: 1px solid var(--borde);">
+                    <select id="tipo-filtro" onchange="cambiarTipoFiltro()" class="input-ajuste" style="cursor: pointer;">
                         <option value="dia">Día Específico</option>
                         <option value="mes">Mes Completo</option>
                         <option value="anio">Año Completo</option> 
                     </select>
-                    <input type="date" id="filtro-dia" style="padding: 10px; border-radius: 8px; border: 2px solid var(--borde); font-family:'Poppins'; background: var(--fondo); color: var(--texto); outline: none;">
-                    <input type="month" id="filtro-mes" style="padding: 10px; border-radius: 8px; border: 2px solid var(--borde); font-family:'Poppins'; background: var(--fondo); color: var(--texto); display: none; outline: none;">
-                    <input type="number" id="filtro-anio" placeholder="Ej: 2026" min="2020" max="2100" style="padding: 10px; border-radius: 8px; border: 2px solid var(--borde); font-family:'Poppins'; background: var(--fondo); color: var(--texto); display: none; outline: none; width: 100px;">
-                    <input type="text" id="filtro-nombre" placeholder="Buscar empleado..." style="padding: 10px; border-radius: 8px; border: 2px solid var(--borde); font-family:'Poppins'; background: var(--fondo); color: var(--texto); width: 220px; outline: none;">
-                    <button class="btn-primario" onclick="cargarDatos()" style="padding: 10px 20px;">🔍 Filtrar</button>
-                    <button class="btn-primario" onclick="descargarExcel()" style="background: var(--verde); margin-left: auto; padding: 10px 20px;">⬇️ Descargar Excel</button>
+                    <input type="date" id="filtro-dia" class="input-ajuste">
+                    <input type="month" id="filtro-mes" class="input-ajuste" style="display: none;">
+                    <input type="number" id="filtro-anio" class="input-ajuste" placeholder="Ej: 2026" min="2020" max="2100" style="display: none; width: 100px;">
+                    <input type="text" id="filtro-nombre" class="input-ajuste" placeholder="Buscar empleado..." style="width: 220px;">
+                    <button class="btn-primario" onclick="cargarDatos()">Filtrar</button>
+                    <button class="btn-peligro" onclick="descargarExcel()" style="margin-left: auto;">Exportar CSV</button>
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
                     <div class="contenedor-tarjeta" style="overflow-x: auto;">
-                        <h3 style="margin-top: 0; color: var(--verde);">🟢 Entradas</h3>
-                        <table style="min-width: 400px;"> <thead><tr><th>Empleado</th><th>Hora</th><th>Acción</th></tr></thead>
+                        <h3 style="margin-top: 0; font-weight: 400; font-size: 14px; text-transform: uppercase; color: var(--texto-secundario);">Ingresos</h3>
+                        <table style="min-width: 400px;"> <thead><tr><th>Colaborador</th><th>Hora</th><th>Acción</th></tr></thead>
                             <tbody id="tabla-ingresos"></tbody>
                         </table>
                     </div>
                     <div class="contenedor-tarjeta" style="overflow-x: auto;">
-                        <h3 style="margin-top: 0; color: var(--rojo);">🔴 Salidas</h3>
-                        <table style="min-width: 400px;"> <thead><tr><th>Empleado</th><th>Hora</th><th>Acción</th></tr></thead>
+                        <h3 style="margin-top: 0; font-weight: 400; font-size: 14px; text-transform: uppercase; color: var(--texto-secundario);">Salidas</h3>
+                        <table style="min-width: 400px;"> <thead><tr><th>Colaborador</th><th>Hora</th><th>Acción</th></tr></thead>
                             <tbody id="tabla-salidas"></tbody>
                         </table>
                     </div>
@@ -90,29 +87,29 @@
             </div>
 
             <div id="seccion-matriz" style="display:none;">
-                <h2 style="color: var(--primario); margin-bottom: 5px;">📅 Registros Mensuales de Asistencia</h2>
+                <h2 style="font-weight: 400; margin-bottom: 20px;">Matriz de Control</h2>
                 <div class="contenedor-tarjeta" style="overflow-x: auto;">
                    <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;">
-                        <input type="month" id="matriz-mes-anio" style="padding: 10px; border-radius: 8px; border: 1px solid var(--borde); background: var(--tarjeta); color: var(--texto); font-family: 'Poppins'; outline: none; cursor: pointer;">
-                        <button class="btn-primario" onclick="cargarDatosMatriz()">🔍 Ver Reporte Mensual</button>
-                        <button class="btn-primario btn-peligro" onclick="cerrarMes()" style="margin-left: auto;">🔒 Cerrar Mes y Descargar Excel</button>
+                        <input type="month" id="matriz-mes-anio" class="input-ajuste" style="cursor: pointer;">
+                        <button class="btn-primario" onclick="cargarDatosMatriz()">Generar Reporte</button>
+                        <button class="btn-peligro" onclick="cerrarMes()" style="margin-left: auto; border-color: #555;">Cerrar Mes y Descargar</button>
                     </div>
                     <div id="pantalla-matriz"></div>
                 </div>
             </div>
 
             <div id="seccion-dashboard" style="display:none;">
-                <h2 style="color: var(--primario); margin-bottom: 5px;">📈 Análisis de Asistencia y Rendimiento</h2>
+                <h2 style="font-weight: 400; margin-bottom: 20px;">Métricas Analíticas</h2>
                 <div class="kpis" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin-bottom: 20px;">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div class="contenedor-tarjeta" style="border-left: 5px solid #05cd99; text-align: center; padding: 15px;"><h3 style="margin: 0; color: var(--texto-secundario); font-size: 13px;">✅ Puntual</h3><p id="kpi-puntual" style="color: #05cd99; font-size: 24px; font-weight: bold; margin: 5px 0;">0</p></div>
-                        <div class="contenedor-tarjeta" style="border-left: 5px solid #ffeb3b; text-align: center; padding: 15px;"><h3 style="margin: 0; color: var(--texto-secundario); font-size: 13px;">⏱️ Retraso</h3><p id="kpi-retraso" style="color: #ffeb3b; font-size: 24px; font-weight: bold; margin: 5px 0;">0</p></div>
-                        <div class="contenedor-tarjeta" style="border-left: 5px solid #f44336; text-align: center; padding: 15px;"><h3 style="margin: 0; color: var(--texto-secundario); font-size: 13px;">❌ Falta</h3><p id="kpi-falta" style="color: #f44336; font-size: 24px; font-weight: bold; margin: 5px 0;">0</p></div>
-                        <div class="contenedor-tarjeta" style="border-left: 5px solid #2196f3; text-align: center; padding: 15px;"><h3 style="margin: 0; color: var(--texto-secundario); font-size: 13px;">📝 Permiso</h3><p id="kpi-permiso" style="color: #2196f3; font-size: 24px; font-weight: bold; margin: 5px 0;">0</p></div>
-                        <div class="contenedor-tarjeta" style="border-left: 5px solid #F59E0B; text-align: center; padding: 15px;"><h3 style="margin: 0; color: var(--texto-secundario); font-size: 13px;">☕ Descanso</h3><p id="kpi-descanso" style="color: #F59E0B; font-size: 24px; font-weight: bold; margin: 5px 0;">0</p></div>
-                        <div class="contenedor-tarjeta" style="border-left: 5px solid #00bcd4; text-align: center; padding: 15px;"><h3 style="margin: 0; color: var(--texto-secundario); font-size: 13px;">💼 Comisión</h3><p id="kpi-comision" style="color: #00bcd4; font-size: 24px; font-weight: bold; margin: 5px 0;">0</p></div>
-                        <div class="contenedor-tarjeta" style="border-left: 5px solid #9c27b0; text-align: center; padding: 15px;"><h3 style="margin: 0; color: var(--texto-secundario); font-size: 13px;">🏖️ Vacaciones</h3><p id="kpi-vacaciones" style="color: #9c27b0; font-size: 24px; font-weight: bold; margin: 5px 0;">0</p></div>
-                        <div class="contenedor-tarjeta" style="border-left: 5px solid #607d8b; text-align: center; padding: 15px;"><h3 style="margin: 0; color: var(--texto-secundario); font-size: 13px;">🚪 Sesantía</h3><p id="kpi-sesantia" style="color: #607d8b; font-size: 24px; font-weight: bold; margin: 5px 0;">0</p></div>
+                        <div class="contenedor-tarjeta" style="text-align: center; padding: 15px;"><h3 style="margin: 0; color: var(--texto-secundario); font-weight: 400; font-size: 11px; text-transform: uppercase;">Puntual</h3><p id="kpi-puntual" style="font-size: 24px; font-weight: 300; margin: 5px 0;">0</p></div>
+                        <div class="contenedor-tarjeta" style="text-align: center; padding: 15px;"><h3 style="margin: 0; color: var(--texto-secundario); font-weight: 400; font-size: 11px; text-transform: uppercase;">Retraso</h3><p id="kpi-retraso" style="font-size: 24px; font-weight: 300; margin: 5px 0;">0</p></div>
+                        <div class="contenedor-tarjeta" style="text-align: center; padding: 15px;"><h3 style="margin: 0; color: var(--texto-secundario); font-weight: 400; font-size: 11px; text-transform: uppercase;">Falta</h3><p id="kpi-falta" style="font-size: 24px; font-weight: 300; margin: 5px 0;">0</p></div>
+                        <div class="contenedor-tarjeta" style="text-align: center; padding: 15px;"><h3 style="margin: 0; color: var(--texto-secundario); font-weight: 400; font-size: 11px; text-transform: uppercase;">Permiso</h3><p id="kpi-permiso" style="font-size: 24px; font-weight: 300; margin: 5px 0;">0</p></div>
+                        <div class="contenedor-tarjeta" style="text-align: center; padding: 15px;"><h3 style="margin: 0; color: var(--texto-secundario); font-weight: 400; font-size: 11px; text-transform: uppercase;">Descanso</h3><p id="kpi-descanso" style="font-size: 24px; font-weight: 300; margin: 5px 0;">0</p></div>
+                        <div class="contenedor-tarjeta" style="text-align: center; padding: 15px;"><h3 style="margin: 0; color: var(--texto-secundario); font-weight: 400; font-size: 11px; text-transform: uppercase;">Comisión</h3><p id="kpi-comision" style="font-size: 24px; font-weight: 300; margin: 5px 0;">0</p></div>
+                        <div class="contenedor-tarjeta" style="text-align: center; padding: 15px;"><h3 style="margin: 0; color: var(--texto-secundario); font-weight: 400; font-size: 11px; text-transform: uppercase;">Vacaciones</h3><p id="kpi-vacaciones" style="font-size: 24px; font-weight: 300; margin: 5px 0;">0</p></div>
+                        <div class="contenedor-tarjeta" style="text-align: center; padding: 15px;"><h3 style="margin: 0; color: var(--texto-secundario); font-weight: 400; font-size: 11px; text-transform: uppercase;">Sesantía</h3><p id="kpi-sesantia" style="font-size: 24px; font-weight: 300; margin: 5px 0;">0</p></div>
                     </div>
                     <div class="contenedor-tarjeta" style="display: flex; justify-content: center; align-items: center; min-height: 400px;">
                         <div style="width: 100%; height: 100%; max-width: 400px; position: relative;">
@@ -123,109 +120,94 @@
             </div>
 
             <div id="seccion-empleados" style="display:none;">
-                <h2 style="color: var(--primario); margin-bottom: 5px;">👥 Gestión de Personal</h2>
+                <h2 style="font-weight: 400; margin-bottom: 20px;">Gestión de Personal</h2>
                 <div class="contenedor-tarjeta" style="overflow-x: auto;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-                        <h3 style="margin: 0; color: var(--texto); font-size: 18px;">📋 Nómina de Personal</h3>
-                        <button class="btn-primario" onclick="abrirModal()">+ Nuevo Empleado / Tarjeta</button>
+                        <h3 style="margin: 0; font-weight: 400; font-size: 14px;">Directorio</h3>
+                        <button class="btn-primario" onclick="abrirModal()">Registrar Usuario</button>
                     </div>
                     
                     <table style="min-width: 600px;">
-                        <thead><tr><th>Foto & Nombre</th><th>UID Tarjeta</th><th>Email</th><th>Rol</th><th>Acción</th></tr></thead>
+                        <thead><tr><th>Perfil</th><th>ID Tag</th><th>Contacto</th><th>Privilegio</th><th>Acción</th></tr></thead>
                         <tbody id="tabla-empleados"></tbody>
                     </table>
                 </div>
             </div>
 
             <div id="seccion-ajustes" style="display:none;">
-                <h2 style="color: var(--primario); margin-bottom: 5px;">⚙️ Configuración del Sistema</h2>
-                <div style="display: flex; flex-direction: column; gap: 25px;">
-                    <div class="contenedor-tarjeta" style="border-left: 6px solid var(--primario); padding: 25px;">
-                        <h3 style="margin: 0;">🏷️ Identidad de la Empresa</h3>
-                        <p style="font-size: 13px; color: var(--texto-secundario); margin: 10px 0 20px 0;">Personaliza el nombre, logo y apariencia global del sistema.</p>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px;">
-                            <div><label style="font-weight: 600; font-size: 12px;">NOMBRE DEL SISTEMA / EMPRESA</label><input type="text" id="nombre-empresa" class="input-ajuste" placeholder="Ej: Mi Empresa S.A." style="width: 100%; margin-top: 5px;"></div>
-                            <div style="min-width: 0;"> <label style="font-weight: 600; font-size: 12px;">LOGO DE LA EMPRESA</label>
+                <h2 style="font-weight: 400; margin-bottom: 20px;">Configuración del Entorno</h2>
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div class="contenedor-tarjeta">
+                        <h3 style="margin: 0; font-weight: 400;">Identidad Corporativa</h3>
+                        <p style="font-size: 12px; color: var(--texto-secundario); margin: 5px 0 20px 0;">Personaliza el branding del tenant.</p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+                            <div><label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Nombre Comercial</label><input type="text" id="nombre-empresa" class="input-ajuste" placeholder="Ej: Mi Empresa S.A." style="width: 100%; margin-top: 5px;"></div>
+                            <div style="min-width: 0;"> <label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Isotipo / Logo</label>
                                 <div style="display: flex; gap: 10px; margin-top: 5px; width: 100%;">
                                     <input type="file" id="input-archivo-logo" accept="image/png, image/jpeg, image/jpg" class="input-ajuste" style="flex: 1; min-width: 0; padding: 9px 5px; cursor: pointer; font-size: 11px;" onchange="procesarImagenLogo(event)">
-        
-                                    <button type="button" class="btn-peligro" style="padding: 10px; border-radius: 10px; width: 45px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;" onclick="eliminarLogo()" title="Eliminar logo actual">
-                                        🗑️
-                                    </button>
+                                    <button type="button" class="btn-peligro" style="padding: 10px; width: 45px; flex-shrink: 0;" onclick="eliminarLogo()" title="Eliminar logo">X</button>
                                 </div>
                                 <input type="hidden" id="logo-empresa">
                             </div>
-                            <div><label style="font-weight: 600; font-size: 12px;">TEMA POR DEFECTO</label><select id="tema-defecto" class="input-ajuste" style="width: 100%; margin-top: 5px; height: 48px;"><option value="dark">🌙 Modo Oscuro (Recomendado)</option><option value="light">☀️ Modo Claro</option></select></div>
+                            <div><label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Tema (Estilo)</label><select id="tema-defecto" class="input-ajuste" style="width: 100%; margin-top: 5px; height: 44px;"><option value="dark">Modo Oscuro</option><option value="light">Modo Claro</option></select></div>
                         </div>
                     </div>
-                    <div class="contenedor-tarjeta" style="border-left: 6px solid var(--primario); padding: 25px;">
-                        <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">🕒 Horarios de Turnos</h3>
-                        <p style="font-size: 13px; color: var(--texto-secundario); margin: 10px 0 20px 0;">Define la hora límite de entrada para cada jornada.</p>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px;">
-                            <div><label style="font-weight: 600; font-size: 12px; color: #ffb547;">MAÑANA</label><input type="time" id="limite-manana" class="input-ajuste" style="width: 100%; margin-top: 5px; text-align: left; justify-content: flex-start;"></div>
-                            <div><label style="font-weight: 600; font-size: 12px; color: #ed8936;">TARDE</label><input type="time" id="limite-tarde" class="input-ajuste" style="width: 100%; margin-top: 5px; text-align: left; justify-content: flex-start;"></div>
-                            <div><label style="font-weight: 600; font-size: 12px; color: #2b3674;">NOCHE</label><input type="time" id="limite-noche" class="input-ajuste" style="width: 100%; margin-top: 5px; text-align: left; justify-content: flex-start;"></div>
+                    <div class="contenedor-tarjeta">
+                        <h3 style="margin: 0; font-weight: 400;">Parámetros de Tiempo</h3>
+                        <p style="font-size: 12px; color: var(--texto-secundario); margin: 5px 0 20px 0;">Límites de jornada y holgura.</p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 25px;">
+                            <div><label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Jornada 1</label><input type="time" id="limite-manana" class="input-ajuste" style="width: 100%; margin-top: 5px;"></div>
+                            <div><label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Jornada 2</label><input type="time" id="limite-tarde" class="input-ajuste" style="width: 100%; margin-top: 5px;"></div>
+                            <div><label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Jornada 3</label><input type="time" id="limite-noche" class="input-ajuste" style="width: 100%; margin-top: 5px;"></div>
                         </div>
-                    </div>
-                    <div class="contenedor-tarjeta" style="border-left: 6px solid var(--primario); padding: 25px;">
-                        <h3 style="margin: 0;">⏱️ Tolerancia de Entrada</h3>
-                        <p style="font-size: 13px; color: var(--texto-secundario); margin: 10px 0 20px 0;">Minutos permitidos antes de marcar como "Retraso".</p>
-                        <div style="display: flex; align-items: center; gap: 15px;"><input type="number" id="ajuste-tolerancia" min="0" max="60" class="input-ajuste" style="width: 80px; text-align: center; font-weight: bold;"><span style="font-size: 14px; font-weight: 600;">minutos</span></div>
-                    </div>
-                    <div class="contenedor-tarjeta" style="border-left: 6px solid var(--primario); padding: 25px;">
-                        <h3 style="margin: 0;">🛡️ Control de Seguridad Avanzado</h3>
-                        <p style="font-size: 13px; color: var(--texto-secundario); margin: 10px 0 20px 0;">Evita el doble marcado accidental configurando un tiempo de espera entre registros.</p>
-    
                         <div style="display: flex; align-items: center; gap: 15px;">
-                            <label style="font-weight: 600; font-size: 12px;">IGNORAR LA MISMA TARJETA DURANTE:</label>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <input type="number" id="ajuste-bloqueo" min="0" max="60" class="input-ajuste" style="width: 80px; text-align: center; font-weight: bold;">
-                                <span style="font-size: 14px; font-weight: 600;">minutos</span>
-                            </div>
+                            <label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Tolerancia (Min):</label>
+                            <input type="number" id="ajuste-tolerancia" min="0" max="60" class="input-ajuste" style="width: 80px; text-align: center;">
                         </div>
                     </div>
-                    <div class="contenedor-tarjeta" style="border-left: 6px solid var(--primario); padding: 25px;">
-                        <h3 style="margin: 0;">🏢 Calendario Laboral</h3>
-                        <p style="font-size: 13px; color: var(--texto-secundario); margin: 10px 0 20px 0;">Activa los días en los que el personal debe registrar su asistencia.</p>
-                        <div id="check-dias" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;"></div>
-                    </div>
-                    <div class="contenedor-tarjeta" style="border-left: 6px solid var(--primario); padding: 25px;">
-                        <h3 style="margin: 0;">📅 Gestión de Feriados</h3>
-                        <p style="font-size: 13px; color: var(--texto-secundario); margin: 10px 0 20px 0;">Añade fechas especiales donde el sistema marcará descanso automático.</p>
+                    <div class="contenedor-tarjeta">
+                        <h3 style="margin: 0; font-weight: 400;">Reglas de Negocio</h3>
+                        <p style="font-size: 12px; color: var(--texto-secundario); margin: 5px 0 20px 0;">Restricciones de hardware y calendario.</p>
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+                            <label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Anti-duplicidad (Min):</label>
+                            <input type="number" id="ajuste-bloqueo" min="0" max="60" class="input-ajuste" style="width: 80px; text-align: center;">
+                        </div>
+                        <label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario); display: block; margin-bottom: 10px;">Días Operativos</label>
+                        <div id="check-dias" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 25px; font-size: 13px;"></div>
+                        
+                        <label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario); display: block; margin-bottom: 10px;">Excepciones (Feriados)</label>
                         <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                             <input type="date" id="nuevo-feriado" class="input-ajuste" style="flex: 1;">
-                            <button class="btn-primario" onclick="agregarFeriado()" style="padding: 0 20px;">+ Añadir</button>
+                            <button class="btn-peligro" onclick="agregarFeriado()">Agregar</button>
                         </div>
-                        <button onclick="autoCompletarFeriadosBO()" style="width: 100%; padding: 8px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #ffb547; background: #ffb54720; color: #d97706; font-weight: bold; cursor: pointer; transition: 0.3s;">
-                            🇧🇴 Auto-completar Feriados de Bolivia
-                        </button>
+                        <button onclick="autoCompletarFeriadosBO()" class="btn-peligro" style="width: 100%; margin-bottom: 15px;">Importar Feriados BO</button>
                         <div id="lista-feriados" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
                     </div>
-                    <button class="btn-primario" onclick="guardarAjustesTemporales()" style="padding: 18px; font-size: 16px; font-weight: bold; border-radius: 12px; margin-bottom: 50px;">
-                        💾 Sincronizar y Guardar Configuración
+                    <button class="btn-primario" onclick="guardarAjustesTemporales()" style="padding: 15px; font-size: 14px; margin-bottom: 50px;">
+                        Guardar Configuración
                     </button>
                 </div>
             </div>
         </div> 
     
-<div id="modal-empleado" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000;">
-    <div style="background: var(--tarjeta); padding: 30px; border-radius: 15px; width: 400px; position: relative;">
+<div id="modal-empleado" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000;">
+    <div style="background: var(--tarjeta); padding: 30px; border-radius: 6px; border: 1px solid var(--borde); width: 400px; position: relative;">
         <span onclick="cerrarModal()" style="position: absolute; right: 20px; top: 15px; font-size: 24px; cursor: pointer; color: var(--texto-secundario);">&times;</span>
-        <h2>Registrar Personal</h2>
+        <h2 style="font-weight: 400; margin-top: 0;">Registro</h2>
         <form id="form-empleado" onsubmit="crearEmpleado(event)" style="display: flex; flex-direction: column; gap: 15px;">
-            <input type="text" id="emp-nombre" placeholder="Nombre Completo" required style="padding: 10px; border-radius: 5px; border: 1px solid var(--borde); background: var(--fondo); color: var(--texto);">
-            <input type="text" id="emp-uid" placeholder="UID Tarjeta (Ej: A1B2C3D4)" required style="padding: 10px; border-radius: 5px; border: 1px solid var(--borde); background: var(--fondo); color: var(--texto);">
-            <input type="email" id="emp-email" placeholder="Correo Electrónico" required style="padding: 10px; border-radius: 5px; border: 1px solid var(--borde); background: var(--fondo); color: var(--texto);">
+            <input type="text" id="emp-nombre" class="input-ajuste" placeholder="Nombre Completo" required>
+            <input type="text" id="emp-uid" class="input-ajuste" placeholder="UID Tarjeta" required>
+            <input type="email" id="emp-email" class="input-ajuste" placeholder="Correo Electrónico" required>
             <div style="position: relative; width: 100%;">
-                <input type="password" id="emp-pass" placeholder="Contraseña de Acceso" required style="width: 100%; padding: 10px; padding-right: 40px; border-radius: 5px; border: 1px solid var(--borde); background: var(--fondo); color: var(--texto); box-sizing: border-box;">
-                <span onclick="togglePasswordVisibility()" id="icono-pass" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 16px;" title="Mostrar contraseña">👁️</span>
+                <input type="password" id="emp-pass" class="input-ajuste" placeholder="Contraseña" required style="width: 100%; padding-right: 40px;">
+                <span onclick="togglePasswordVisibility()" id="icono-pass" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888;">Ver</span>
             </div>
-            <input type="url" id="emp-foto" placeholder="URL Fotografía (Opcional)" style="padding: 10px; border-radius: 5px; border: 1px solid var(--borde); background: var(--fondo); color: var(--texto);">
-            <select id="emp-rol" style="padding: 10px; border-radius: 5px; border: 1px solid var(--borde); background: var(--fondo); color: var(--texto);">
-                <option value="usuario">Usuario Normal</option>
+            <input type="url" id="emp-foto" class="input-ajuste" placeholder="URL Fotografía (Opcional)">
+            <select id="emp-rol" class="input-ajuste">
+                <option value="usuario">Usuario Estándar</option>
                 <option value="admin">Administrador</option>
             </select>
-            <button type="submit" class="btn-primario">💾 Guardar Empleado</button>
+            <button type="submit" class="btn-primario">Confirmar</button>
         </form>
     </div>
 </div>
@@ -235,180 +217,107 @@
     const rolUsuario = sessionStorage.getItem('rol');
     let miGraficoDona = null;
 
-    // Función para abrir/cerrar el menú (Gemini Style)
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         const isMobile = window.innerWidth <= 768;
-
-        if (isMobile) {
-            sidebar.classList.toggle('active');
-        } else {
-            sidebar.classList.toggle('colapsado');
-        }
+        if (isMobile) sidebar.classList.toggle('active');
+        else sidebar.classList.toggle('colapsado');
     }
 
     window.onload = () => {
         const socket = io();
-        
-        // Reemplaza tu socket.on actual por este:
-    socket.on('nueva_asistencia', () => {
-        cargarDatos();
-        if (rolUsuario === 'admin') cargarDatosMatriz();
-    });
+        socket.on('nueva_asistencia', () => { cargarDatos(); if (rolUsuario === 'admin') cargarDatosMatriz(); });
         
         cambiarTema(true);
-        
-        // --- CONTROL DE VISIBILIDAD POR ROL ---
         if(rolUsuario === 'admin') {
-            document.getElementById('tab-matriz').style.display = 'flex'; // Mostrar matriz solo a admin
+            document.getElementById('tab-matriz').style.display = 'flex';
             document.getElementById('tab-emp').style.display = 'flex';
             document.getElementById('tab-ajustes').style.display = 'flex';
         }
 
-        // --- CORRECCIÓN DE FECHA LOCAL ---
         const hoy = new Date();
         const yyyy = hoy.getFullYear();
         const mm = String(hoy.getMonth() + 1).padStart(2, '0');
         const dd = String(hoy.getDate()).padStart(2, '0');
-        
         const fechaHoy = `${yyyy}-${mm}-${dd}`; 
         const mesHoy = `${yyyy}-${mm}`;         
 
         document.getElementById('filtro-dia').value = fechaHoy;
         document.getElementById('filtro-mes').value = mesHoy;
         document.getElementById('filtro-anio').value = yyyy;
+        if (document.getElementById('matriz-mes-anio')) document.getElementById('matriz-mes-anio').value = mesHoy;
         
-        if (document.getElementById('matriz-mes-anio')) {
-            document.getElementById('matriz-mes-anio').value = mesHoy;
-        }
-        // ---------------------------------
-        
-        cargarDatos(); // El historial y dashboard se cargan para todos
-        
-        // --- CARGAS EXCLUSIVAS DEL ADMIN ---
-        // --- CARGAR LOGO PARA TODOS (ADMIN Y USUARIOS) ---
+        cargarDatos();
         cargarBrandingGlobal(); 
-
-        // --- CARGAS EXCLUSIVAS DEL ADMIN ---
-        if (rolUsuario === 'admin') {
-            cargarAjustes();
-            cargarReglasEmpresa();
-            cargarDatosMatriz(); // La matriz ahora solo la carga el admin
-        }
+        if (rolUsuario === 'admin') { cargarAjustes(); cargarReglasEmpresa(); cargarDatosMatriz(); }
     };
 
     function cambiarSeccion(seccion) {
-        // Bloqueo de seguridad: si no es admin e intenta entrar a secciones prohibidas
         const seccionesProhibidas = ['matriz', 'empleados', 'ajustes'];
-        if (rolUsuario !== 'admin' && seccionesProhibidas.includes(seccion)) {
-            return; 
-        }
+        if (rolUsuario !== 'admin' && seccionesProhibidas.includes(seccion)) return; 
 
-        // ... resto de tu código de ocultar/mostrar pantallas ...
-        // 1. Ocultar TODAS las pantallas primero
         document.getElementById('seccion-asistencias').style.display = 'none';
         document.getElementById('seccion-matriz').style.display = 'none';
         document.getElementById('seccion-dashboard').style.display = 'none';
         document.getElementById('seccion-empleados').style.display = 'none';
-        document.getElementById('seccion-ajustes').style.display = 'none'; // NUEVO
+        document.getElementById('seccion-ajustes').style.display = 'none';
         
-        // 2. Apagar el color azul de TODOS los botones
         document.getElementById('tab-asist').className = 'tab-btn';
         document.getElementById('tab-matriz').className = 'tab-btn';
         document.getElementById('tab-dashboard').className = 'tab-btn';
         document.getElementById('tab-emp').className = 'tab-btn';
-        document.getElementById('tab-ajustes').className = 'tab-btn'; // NUEVO
+        document.getElementById('tab-ajustes').className = 'tab-btn';
 
-        // 3. Encender solo la pantalla y el botón que elegimos
-        if(seccion === 'asistencias') {
-            document.getElementById('seccion-asistencias').style.display = 'block';
-            document.getElementById('tab-asist').className = 'tab-btn activo';
-        } else if(seccion === 'matriz') {
-            document.getElementById('seccion-matriz').style.display = 'block';
-            document.getElementById('tab-matriz').className = 'tab-btn activo';
-        } else if(seccion === 'dashboard') {
-            document.getElementById('seccion-dashboard').style.display = 'block';
-            document.getElementById('tab-dashboard').className = 'tab-btn activo';
-        } else if(seccion === 'empleados') {
-            document.getElementById('seccion-empleados').style.display = 'block';
-            document.getElementById('tab-emp').className = 'tab-btn activo';
-            cargarEmpleados();
-        } else if(seccion === 'ajustes') {
-            document.getElementById('seccion-ajustes').style.display = 'block'; // NUEVO
-            document.getElementById('tab-ajustes').className = 'tab-btn activo'; // NUEVO
-        }
-        // Cerrar el menú automáticamente en el celular al elegir una opción
-        if (window.innerWidth <= 768) {
-            document.getElementById('sidebar').classList.remove('active');
-        }
+        if(seccion === 'asistencias') { document.getElementById('seccion-asistencias').style.display = 'block'; document.getElementById('tab-asist').className = 'tab-btn activo'; }
+        else if(seccion === 'matriz') { document.getElementById('seccion-matriz').style.display = 'block'; document.getElementById('tab-matriz').className = 'tab-btn activo'; }
+        else if(seccion === 'dashboard') { document.getElementById('seccion-dashboard').style.display = 'block'; document.getElementById('tab-dashboard').className = 'tab-btn activo'; }
+        else if(seccion === 'empleados') { document.getElementById('seccion-empleados').style.display = 'block'; document.getElementById('tab-emp').className = 'tab-btn activo'; cargarEmpleados(); }
+        else if(seccion === 'ajustes') { document.getElementById('seccion-ajustes').style.display = 'block'; document.getElementById('tab-ajustes').className = 'tab-btn activo'; }
+        
+        if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('active');
     }
 
     function cambiarTema(iniciar = false) {
         let temaActual = localStorage.getItem('tema') || 'dark';
-
-        if (!iniciar) {
-            temaActual = temaActual === 'dark' ? 'light' : 'dark';
-        }
-
-        if (temaActual === 'light') {
-            document.body.setAttribute('data-theme', 'light');
-        } else {
-            document.body.removeAttribute('data-theme');
-        }
-
+        if (!iniciar) temaActual = temaActual === 'dark' ? 'light' : 'dark';
+        if (temaActual === 'light') document.body.setAttribute('data-theme', 'light');
+        else document.body.removeAttribute('data-theme');
         localStorage.setItem('tema', temaActual);
     }
 
-    function cerrarSesion() {
-        sessionStorage.clear();
-        localStorage.clear(); // Limpiamos también el local por si quedó basura de antes
-        window.location.replace('/login.html');
-    }
+    function cerrarSesion() { sessionStorage.clear(); localStorage.clear(); window.location.replace('/login.html'); }
 
     function cambiarTipoFiltro() {
         const tipo = document.getElementById('tipo-filtro').value;
         document.getElementById('filtro-dia').style.display = tipo === 'dia' ? 'block' : 'none';
         document.getElementById('filtro-mes').style.display = tipo === 'mes' ? 'block' : 'none';
-        document.getElementById('filtro-anio').style.display = tipo === 'anio' ? 'block' : 'none'; // NUEVO
+        document.getElementById('filtro-anio').style.display = tipo === 'anio' ? 'block' : 'none';
     }
 
     async function cargarDatos() {
         const tipoFiltro = document.getElementById('tipo-filtro').value;
         const dia = document.getElementById('filtro-dia').value;
         const mes = document.getElementById('filtro-mes').value;
-        const anio = document.getElementById('filtro-anio').value; // NUEVO
+        const anio = document.getElementById('filtro-anio').value;
         const busqueda = document.getElementById('filtro-nombre').value;
 
         let url = `/api/registros?busqueda=${busqueda}`;
         if (tipoFiltro === 'dia') url += `&dia=${dia}`;
         if (tipoFiltro === 'mes') url += `&mes=${mes}`;
-        if (tipoFiltro === 'anio' && anio) url += `&anio=${anio}`; // NUEVO
+        if (tipoFiltro === 'anio' && anio) url += `&anio=${anio}`;
 
         try {
-            // ... (el resto del código se queda igual)
             const res = await fetch(url, { headers: headersSeguros });
-            
-            if (res.status === 401 || res.status === 403) {
-                return cerrarSesion();
-            }
-
+            if (res.status === 401 || res.status === 403) return cerrarSesion();
             const datos = await res.json();
             window.datosExcel = datos; 
 
-            // 1. Lógica de la Matriz Mensual (Filtro Admin aplicado)
-            if (rolUsuario !== 'admin') {
-                if(document.getElementById('pantalla-matriz')) {
-                    document.getElementById('pantalla-matriz').innerHTML = 
-                        "<p style='color: var(--texto-secundario); padding: 20px;'>Tu resumen personal de asistencia se muestra en las tablas de arriba.</p>";
-                }
+            if (rolUsuario !== 'admin' && document.getElementById('pantalla-matriz')) {
+                document.getElementById('pantalla-matriz').innerHTML = "<p style='color: var(--texto-secundario); padding: 20px;'>Tu resumen se muestra arriba.</p>";
             }
-            // ¡Listo! Ya no mezclamos los datos de la Matriz aquí.
             
-            // 2. Separar Ingresos, Salidas y Ajustes Manuales
             const ingresos = datos.filter(reg => reg.tipo === 'INGRESO' || reg.tipo === 'MANUAL' || !reg.tipo);
             const salidas = datos.filter(reg => reg.tipo === 'SALIDA');
-
-            // 3. Contadores para el Dashboard (8 Conceptos)
             let cPuntual = 0, cRetraso = 0, cFalta = 0, cPermiso = 0, cDescanso = 0, cComision = 0, cVacaciones = 0, cSesantia = 0;
 
             ingresos.forEach(reg => {
@@ -423,23 +332,15 @@
                 else if (est === 'FALTA' || est === 'FALTA INJUSTIFICADA') cFalta++;
             });
 
-            // 🛑 ESCUDOS DE SEGURIDAD
             if (document.getElementById('kpi-puntual')) {
-                document.getElementById('kpi-puntual').innerText = cPuntual;
-                document.getElementById('kpi-retraso').innerText = cRetraso;
-                document.getElementById('kpi-falta').innerText = cFalta;
-                document.getElementById('kpi-permiso').innerText = cPermiso;
-                document.getElementById('kpi-descanso').innerText = cDescanso;
-                document.getElementById('kpi-comision').innerText = cComision;
-                document.getElementById('kpi-vacaciones').innerText = cVacaciones;
-                document.getElementById('kpi-sesantia').innerText = cSesantia;
+                document.getElementById('kpi-puntual').innerText = cPuntual; document.getElementById('kpi-retraso').innerText = cRetraso;
+                document.getElementById('kpi-falta').innerText = cFalta; document.getElementById('kpi-permiso').innerText = cPermiso;
+                document.getElementById('kpi-descanso').innerText = cDescanso; document.getElementById('kpi-comision').innerText = cComision;
+                document.getElementById('kpi-vacaciones').innerText = cVacaciones; document.getElementById('kpi-sesantia').innerText = cSesantia;
             }
 
-            // Llamamos al Gráfico de Dona con los 8 datos
-            if (typeof dibujarGrafico === "function") {
-                dibujarGrafico(cPuntual, cRetraso, cFalta, cPermiso, cDescanso, cComision, cVacaciones, cSesantia);
-            }
-            // 4. Llenar las tablas de la primera pestaña
+            if (typeof dibujarGrafico === "function") dibujarGrafico(cPuntual, cRetraso, cFalta, cPermiso, cDescanso, cComision, cVacaciones, cSesantia);
+            
             const tbodyIngresos = document.getElementById('tabla-ingresos');
             const tbodySalidas = document.getElementById('tabla-salidas');
             if(tbodyIngresos) tbodyIngresos.innerHTML = '';
@@ -447,30 +348,18 @@
             
             const crearFila = (reg) => {
                 const fecha = new Date(reg.fechaHora).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' });
-                const btnEliminar = rolUsuario === 'admin' ? `<button onclick="eliminarRegistro('${reg._id}')" class="btn-peligro" style="padding: 2px 5px; font-size:12px;">X</button>` : '';
+                const btnEliminar = rolUsuario === 'admin' ? `<button onclick="eliminarRegistro('${reg._id}')" class="btn-peligro" style="padding: 2px 6px; font-size:11px;">X</button>` : '';
                 
-                // COLORES DE LOS BADGES DEL HISTORIAL
-                let colorEstado = '#05cd99'; 
+                // Color unificado y sobrio para badges
                 let textoEstado = reg.estado || 'PUNTUAL';
-                
-                if (textoEstado === 'RETRASO') colorEstado = '#ffb547';
-                if (textoEstado === 'PERMISO') colorEstado = '#4318ff';
-                if (textoEstado === 'COMISION') colorEstado = '#00b5e2';
-                if (textoEstado === 'VACACIONES') colorEstado = '#9c27b0';
-                if (textoEstado === 'SESANTIA') colorEstado = '#607d8b';
-                if (textoEstado === 'FALTA' || textoEstado === 'FALTA INJUSTIFICADA') colorEstado = '#ee5d50';
-                if (textoEstado === 'DESCANSO') colorEstado = '#718096';
-
-                const badgeEstado = `<span style="background: ${colorEstado}20; color: ${colorEstado}; padding: 3px 8px; border-radius: 5px; font-size: 11px; font-weight: bold; margin-left: 10px;">${textoEstado}</span>`;
-
-                // CORRECCIÓN AQUÍ: Permitimos mostrar el badge si es INGRESO o MANUAL
+                const badgeEstado = `<span style="background: var(--borde); color: var(--texto); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; margin-left: 10px; border: 1px solid var(--borde);">${textoEstado}</span>`;
                 const mostrarBadge = (reg.tipo === 'INGRESO' || reg.tipo === 'MANUAL' || !reg.tipo);
 
                 return `<tr>
                         <td><div style="display:flex; align-items:center;">
                             <img src="${reg.foto || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" class="avatar"> 
-                            <b style="font-size: 13px;">${reg.nombre}</b> ${mostrarBadge ? badgeEstado : ''}</div></td>
-                        <td style="font-size: 13px;">${fecha}</td>
+                            <span style="font-size: 13px;">${reg.nombre}</span> ${mostrarBadge ? badgeEstado : ''}</div></td>
+                        <td style="font-size: 13px; color: var(--texto-secundario);">${fecha}</td>
                         <td>${btnEliminar}</td>
                     </tr>`;
             };
@@ -478,12 +367,11 @@
             if(tbodyIngresos) ingresos.forEach(reg => tbodyIngresos.innerHTML += crearFila(reg));
             if(tbodySalidas) salidas.forEach(reg => tbodySalidas.innerHTML += crearFila(reg));
 
-        } catch (error) { 
-            console.error("Error cargando datos", error); 
-        }
+        } catch (error) { console.error("Error cargando datos", error); }
     }
+    
     async function eliminarRegistro(id) {
-        if(confirm('¿Borrar registro?')) {
+        if(confirm('¿Confirmar purga del registro?')) {
             await fetch(`/api/registros/${id}`, { method: 'DELETE', headers: headersSeguros });
             cargarDatos();
         }
@@ -496,10 +384,10 @@
         tbody.innerHTML = '';
         empleados.forEach(emp => {
             tbody.innerHTML += `<tr>
-                    <td><img src="${emp.foto || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" class="avatar"> <b>${emp.nombre}</b></td>
-                    <td><span style="background: #e9edf7; color: #2b3674; padding: 5px 10px; border-radius: 5px; font-family: monospace;">${emp.uid}</span></td>
-                    <td>${emp.email}</td><td><b>${emp.rol.toUpperCase()}</b></td>
-                    <td><button onclick="borrarEmpleado('${emp._id}')" class="btn-peligro">Eliminar</button></td>
+                    <td><div style="display:flex; align-items:center;"><img src="${emp.foto || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" class="avatar"> <span>${emp.nombre}</span></div></td>
+                    <td><span style="font-family: monospace; font-size: 12px; color: var(--texto-secundario);">${emp.uid}</span></td>
+                    <td style="font-size: 13px;">${emp.email}</td><td style="font-size: 12px; text-transform: uppercase;">${emp.rol}</td>
+                    <td><button onclick="borrarEmpleado('${emp._id}')" class="btn-peligro" style="padding: 4px 10px; font-size: 11px;">Eliminar</button></td>
                 </tr>`;
         });
     }
@@ -512,17 +400,12 @@
             foto: document.getElementById('emp-foto').value, rol: document.getElementById('emp-rol').value
         };
         const res = await fetch('/api/empleados', { method: 'POST', headers: headersSeguros, body: JSON.stringify(nuevoEmp) });
-        if(res.ok) {
-            Swal.fire('¡Éxito!', 'Empleado registrado', 'success');
-            cerrarModal(); cargarEmpleados();
-        } else { Swal.fire('Error', 'El UID o Email ya existen', 'error'); }
+        if(res.ok) { Swal.fire('Completado', 'Registro insertado', 'success'); cerrarModal(); cargarEmpleados(); } 
+        else { Swal.fire('Error', 'UID o Email duplicado', 'error'); }
     }
 
     async function borrarEmpleado(id) {
-        if(confirm('¿Eliminar empleado?')) {
-            await fetch(`/api/empleados/${id}`, { method: 'DELETE', headers: headersSeguros });
-            cargarEmpleados();
-        }
+        if(confirm('¿Revocar acceso del usuario?')) { await fetch(`/api/empleados/${id}`, { method: 'DELETE', headers: headersSeguros }); cargarEmpleados(); }
     }
 
     function abrirModal() { document.getElementById('modal-empleado').style.display = 'flex'; }
@@ -530,679 +413,193 @@
 
     function dibujarMatriz(registros, empleados) {
         const valorCalendario = document.getElementById('matriz-mes-anio').value;
-        const anioSel = parseInt(valorCalendario.split('-')[0]);
-        const mesSel = parseInt(valorCalendario.split('-')[1]);
+        const anioSel = parseInt(valorCalendario.split('-')[0]); const mesSel = parseInt(valorCalendario.split('-')[1]);
         const diasEnMes = new Date(anioSel, mesSel, 0).getDate();
+        const nombresDias = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
 
-        const nombresDias = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-
-        let tabla = `<table class="tabla-matriz">
-            <thead>
-                <tr>
-                    <th rowspan="2" class="columna-fija" style="vertical-align: middle;">Colaboradores</th>`;
-        
-        // --- FILA 1: Nombres de los días (Sin color especial) ---
-        for (let i = 1; i <= diasEnMes; i++) {
-            const fechaTemp = new Date(anioSel, mesSel - 1, i);
-            const nombreDia = nombresDias[fechaTemp.getDay()];
-            // Ahora todos los días usan el estilo estándar
-            tabla += `<th style="font-size: 10px; padding-bottom: 0;">${nombreDia}</th>`;
-        }
-
+        let tabla = `<table class="tabla-matriz"><thead><tr><th rowspan="2" class="columna-fija" style="vertical-align: middle;">Colaborador</th>`;
+        for (let i = 1; i <= diasEnMes; i++) { tabla += `<th style="font-size: 9px; padding-bottom: 0;">${nombresDias[new Date(anioSel, mesSel - 1, i).getDay()]}</th>`; }
         tabla += `</tr><tr>`;
-
-        // --- FILA 2: Números de los días ---
-        for (let i = 1; i <= diasEnMes; i++) {
-            tabla += `<th style="padding-top: 0;">${i}</th>`;
-        }
-
+        for (let i = 1; i <= diasEnMes; i++) { tabla += `<th style="padding-top: 0;">${i}</th>`; }
         tabla += `</tr></thead><tbody>`;
 
         empleados.forEach(emp => {
-            tabla += `<tr><td class="columna-fija">${emp.nombre.toUpperCase()}</td>`;
-            
+            tabla += `<tr><td class="columna-fija" style="font-weight: normal;">${emp.nombre}</td>`;
             for (let d = 1; d <= diasEnMes; d++) {
                 const reg = registros.find(r => {
                     const f = new Date(r.fechaHora);
                     return r.uid === emp.uid && f.getDate() === d && (f.getMonth() + 1) === mesSel && f.getFullYear() === anioSel && (r.tipo === 'INGRESO' || r.tipo === 'MANUAL');
                 });
-
-                let letra = '';
-                let claseCss = '';
-
+                let letra = '', claseCss = '';
                 if (reg) {
-                    const estadoDb = reg.estado || 'PUNTUAL';
-                    if (estadoDb === 'PUNTUAL' || estadoDb === 'ASISTENCIA') { letra = 'A'; claseCss = 'bg-A'; }
-                    else if (estadoDb === 'RETRASO') { letra = 'R'; claseCss = 'bg-R'; }
-                    else if (estadoDb === 'FALTA' || estadoDb === 'FALTA INJUSTIFICADA') { letra = 'F'; claseCss = 'bg-F'; }
-                    else if (estadoDb === 'PERMISO') { letra = 'P'; claseCss = 'bg-P'; }
-                    else if (estadoDb === 'DESCANSO') { letra = 'D'; claseCss = 'bg-D'; }
-                    else if (estadoDb === 'COMISION') { letra = 'C'; claseCss = 'bg-C'; }
-                    else if (estadoDb === 'VACACIONES') { letra = 'V'; claseCss = 'bg-V'; }
-                    else if (estadoDb === 'SESANTIA') { letra = 'S'; claseCss = 'bg-S'; }
+                    const est = reg.estado || 'PUNTUAL';
+                    if (est === 'PUNTUAL' || est === 'ASISTENCIA') { letra = 'A'; claseCss = 'bg-A'; }
+                    else if (est === 'RETRASO') { letra = 'R'; claseCss = 'bg-R'; }
+                    else if (est === 'FALTA' || est === 'FALTA INJUSTIFICADA') { letra = 'F'; claseCss = 'bg-F'; }
+                    else if (est === 'PERMISO') { letra = 'P'; claseCss = 'bg-P'; }
+                    else if (est === 'DESCANSO') { letra = 'D'; claseCss = 'bg-D'; }
+                    else if (est === 'COMISION') { letra = 'C'; claseCss = 'bg-C'; }
+                    else if (est === 'VACACIONES') { letra = 'V'; claseCss = 'bg-V'; }
+                    else if (est === 'SESANTIA') { letra = 'S'; claseCss = 'bg-S'; }
                 } else {
-                    const hoy = new Date();
                     const fechaCelda = new Date(anioSel, mesSel - 1, d);
-                    if (fechaCelda < hoy) {
-                        const diaSemana = fechaCelda.getDay();
-                        const fechaFeriado = `${anioSel}-${String(mesSel).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                        const esLaborable = ajustesEmpresaLocal.diasLaborables ? ajustesEmpresaLocal.diasLaborables[diaSemana] : (diaSemana !== 0 && diaSemana !== 6);
-                        const esFeriado = ajustesEmpresaLocal.feriados ? ajustesEmpresaLocal.feriados.includes(fechaFeriado) : false;
-                        if (!esLaborable || esFeriado) { letra = 'D'; claseCss = 'bg-D'; }
-                        else { letra = 'F'; claseCss = 'bg-F'; }
+                    if (fechaCelda < new Date()) {
+                        const esLaborable = ajustesEmpresaLocal.diasLaborables ? ajustesEmpresaLocal.diasLaborables[fechaCelda.getDay()] : (fechaCelda.getDay() !== 0 && fechaCelda.getDay() !== 6);
+                        const esFeriado = ajustesEmpresaLocal.feriados ? ajustesEmpresaLocal.feriados.includes(`${anioSel}-${String(mesSel).padStart(2, '0')}-${String(d).padStart(2, '0')}`) : false;
+                        if (!esLaborable || esFeriado) { letra = '-'; claseCss = 'bg-D'; } else { letra = 'F'; claseCss = 'bg-F'; }
                     }
                 }
-
-                const fechaISO = `${anioSel}-${String(mesSel).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                tabla += `<td class="${claseCss}" onclick="abrirSelectorManual('${emp.uid}', '${emp.nombre}', '${fechaISO}')" style="cursor: pointer;">${letra}</td>`;
+                tabla += `<td class="${claseCss}" onclick="abrirSelectorManual('${emp.uid}', '${emp.nombre}', '${anioSel}-${String(mesSel).padStart(2, '0')}-${String(d).padStart(2, '0')}')" style="cursor: pointer;">${letra}</td>`;
             }
             tabla += `</tr>`;
         });
-        
         document.getElementById('pantalla-matriz').innerHTML = tabla + `</tbody></table>`;
     }
 
     function descargarExcel() {
         const datosExportar = window.datosExcel || [];
-        if(datosExportar.length === 0) { Swal.fire('¡Vaya!', 'No hay datos para exportar.', 'info'); return; }
+        if(datosExportar.length === 0) return Swal.fire('Vacío', 'No hay datos.', 'info');
 
-        // 1. Preparamos los datos
-        const datosLimpios = datosExportar.map(r => ({
-            "Empleado": r.nombre || 'Desconocido', 
-            "UID": r.uid || 'N/A',
-            "Tipo": r.tipo || 'INGRESO', 
-            "Estado": r.estado || 'PUNTUAL',
-            "Fecha": new Date(r.fechaHora).toLocaleDateString('es-ES'),
-            "Hora": new Date(r.fechaHora).toLocaleTimeString('es-ES')
-        }));
-
-        const hoja = XLSX.utils.json_to_sheet(datosLimpios);
+        const hoja = XLSX.utils.json_to_sheet(datosExportar.map(r => ({
+            "Colaborador": r.nombre || 'Desconocido', "ID": r.uid || 'N/A', "Evento": r.tipo || 'INGRESO', "Estado": r.estado || 'PUNTUAL',
+            "Fecha": new Date(r.fechaHora).toLocaleDateString('es-ES'), "Hora": new Date(r.fechaHora).toLocaleTimeString('es-ES')
+        })));
+        
         const rango = XLSX.utils.decode_range(hoja['!ref']);
-
-        // 2. Diccionario de colores para los estados (Formato ARGB)
-        const coloresEstado = {
-            'PUNTUAL': { bg: 'FF05CD99', font: 'FFFFFFFF' },
-            'ASISTENCIA': { bg: 'FF05CD99', font: 'FFFFFFFF' },
-            'RETRASO': { bg: 'FFFFB547', font: 'FF000000' }, // Naranja con texto negro
-            'FALTA': { bg: 'FFEE5D50', font: 'FFFFFFFF' },
-            'FALTA INJUSTIFICADA': { bg: 'FFEE5D50', font: 'FFFFFFFF' },
-            'PERMISO': { bg: 'FF4318FF', font: 'FFFFFFFF' },
-            'COMISION': { bg: 'FF00B5E2', font: 'FFFFFFFF' },
-            'VACACIONES': { bg: 'FF9C27B0', font: 'FFFFFFFF' },
-            'SESANTIA': { bg: 'FF607D8B', font: 'FFFFFFFF' },
-            'DESCANSO': { bg: 'FF718096', font: 'FFFFFFFF' }
+        
+        // Colores Hexadecimales Sobrios para Excel (ARGB)
+        const coloresExcel = {
+            'PUNTUAL': { bg: 'FFFFFFFF', font: 'FF000000' }, 'ASISTENCIA': { bg: 'FFFFFFFF', font: 'FF000000' },
+            'RETRASO': { bg: 'FF888888', font: 'FFFFFFFF' }, 'FALTA': { bg: 'FF222222', font: 'FFFFFFFF' }, 'FALTA INJUSTIFICADA': { bg: 'FF222222', font: 'FFFFFFFF' },
+            'PERMISO': { bg: 'FFDDDDDD', font: 'FF000000' }, 'COMISION': { bg: 'FFAAAAAA', font: 'FF000000' }, 'VACACIONES': { bg: 'FF555555', font: 'FFFFFFFF' },
+            'SESANTIA': { bg: 'FF444444', font: 'FFFFFFFF' }, 'DESCANSO': { bg: 'FF111111', font: 'FF888888' }
         };
 
-        // 3. Recorremos celdas para aplicar el diseño
         for (let R = rango.s.r; R <= rango.e.r; ++R) {
             for (let C = rango.s.c; C <= rango.e.c; ++C) {
-                const celdaRef = XLSX.utils.encode_cell({c: C, r: R});
-                const celda = hoja[celdaRef];
+                const celda = hoja[XLSX.utils.encode_cell({c: C, r: R})];
                 if (!celda) continue;
-
-                // Estilo base
-                let estilo = {
-                    alignment: { horizontal: "center", vertical: "center" },
-                    border: {
-                        top: { style: "thin", color: { rgb: "FFCBD5E0" } },
-                        bottom: { style: "thin", color: { rgb: "FFCBD5E0" } },
-                        left: { style: "thin", color: { rgb: "FFCBD5E0" } },
-                        right: { style: "thin", color: { rgb: "FFCBD5E0" } }
-                    }
-                };
-
-                // Si es la fila 0 (La Cabecera)
-                if (R === 0) {
-                    estilo.fill = { fgColor: { rgb: "FF131B2F" } }; // Azul oscuro del tema
-                    estilo.font = { color: { rgb: "FFFFFFFF" }, bold: true };
-                } else {
-                    // Si son los datos normales
-                    estilo.font = { color: { rgb: "FF2B3674" } };
-                    
-                    if (C === 0) estilo.alignment.horizontal = "left"; // El nombre alineado a la izquierda
-
-                    // Si es la columna "Estado" (Índice 3) pintamos según el valor
-                    if (C === 3 && coloresEstado[celda.v]) {
-                        estilo.fill = { fgColor: { rgb: coloresEstado[celda.v].bg } };
-                        estilo.font = { color: { rgb: coloresEstado[celda.v].font }, bold: true };
-                    }
+                let estilo = { alignment: { horizontal: "center", vertical: "center" }, border: { top: { style: "thin", color: { rgb: "FF555555" } }, bottom: { style: "thin", color: { rgb: "FF555555" } }, left: { style: "thin", color: { rgb: "FF555555" } }, right: { style: "thin", color: { rgb: "FF555555" } } } };
+                if (R === 0) { estilo.fill = { fgColor: { rgb: "FF0A0A0A" } }; estilo.font = { color: { rgb: "FFFFFFFF" }, bold: true }; } 
+                else {
+                    estilo.font = { color: { rgb: "FF111111" } };
+                    if (C === 0) estilo.alignment.horizontal = "left";
+                    if (C === 3 && coloresExcel[celda.v]) { estilo.fill = { fgColor: { rgb: coloresExcel[celda.v].bg } }; estilo.font = { color: { rgb: coloresExcel[celda.v].font }, bold: true }; }
                 }
-                celda.s = estilo; // Aplicamos
+                celda.s = estilo;
             }
         }
-
-        // 4. Ajustar el ancho de las columnas
-        hoja['!cols'] = [
-            { wch: 35 }, // A: Empleado (Bien ancha)
-            { wch: 15 }, // B: UID
-            { wch: 15 }, // C: Tipo (INGRESO/SALIDA)
-            { wch: 22 }, // D: Estado (PUNTUAL/RETRASO)
-            { wch: 15 }, // E: Fecha
-            { wch: 15 }  // F: Hora
-        ];
-
-        // 5. Crear archivo y descargar
-        const libro = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(libro, hoja, "Historial");
-        XLSX.writeFile(libro, `Historial_Asistencia.xlsx`);
+        hoja['!cols'] = [{ wch: 30 }, { wch: 15 }, { wch: 15 }, { wch: 20 }, { wch: 15 }, { wch: 15 }];
+        const libro = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(libro, hoja, "Data"); XLSX.writeFile(libro, `Export_${Date.now()}.xlsx`);
     }
-    async function cargarDatosMatriz() {
-        // El nuevo input ya nos entrega el texto en formato exacto "YYYY-MM"
-        const mesFormateado = document.getElementById('matriz-mes-anio').value;
 
-        const url = `/api/registros?mes=${mesFormateado}`;
-        
-        // ... (el try { } de abajo se queda exactamente igual)
-        
+    async function cargarDatosMatriz() {
         try {
-            const res = await fetch(url, { headers: headersSeguros });
+            const mesFormateado = document.getElementById('matriz-mes-anio').value;
+            const res = await fetch(`/api/registros?mes=${mesFormateado}`, { headers: headersSeguros });
             const datos = await res.json();
             const resEmp = await fetch('/api/empleados', { headers: headersSeguros });
-            const empleadosTodos = await resEmp.json();
-            
-            // 🛑 NUEVO FILTRO: Quitamos a los administradores de la matriz de este mes
-            const empleadosNormales = empleadosTodos.filter(emp => emp.rol !== 'admin');
-
-            dibujarMatriz(datos, empleadosNormales);
-        } catch (error) { console.error("Error cargando matriz", error); }
+            dibujarMatriz(datos, (await resEmp.json()).filter(emp => emp.rol !== 'admin'));
+        } catch (error) { console.error(error); }
     }
 
     function dibujarGrafico(puntual, retraso, falta, permiso, descanso, comision, vacaciones, sesantia) {
         const ctx = document.getElementById('graficoDona').getContext('2d');
-        
-        if (miGraficoDona) {
-            miGraficoDona.destroy();
-        }
-
+        if (miGraficoDona) miGraficoDona.destroy();
         const total = puntual + retraso + falta + permiso + descanso + comision + vacaciones + sesantia;
         
-        // Asignamos los datos y los 8 colores puros
-        const dataValores = total === 0 ? [1] : [puntual, retraso, falta, permiso, descanso, comision, vacaciones, sesantia];
-        const dataColores = total === 0 ? ['#2d3748'] : ['#05cd99', '#ffeb3b', '#f44336', '#2196f3', '#F59E0B', '#00bcd4', '#9c27b0', '#607d8b'];
-        const etiquetas = total === 0 ? ['Sin datos'] : ['Puntual', 'Retraso', 'Falta', 'Permiso', 'Descanso', 'Comisión', 'Vacaciones', 'Sesantía'];
-
-        const colorTexto = document.body.getAttribute('data-theme') === 'light' ? '#2b3674' : '#ffffff';
+        // Paleta Monocromática (Grises)
+        const dataColores = total === 0 ? ['#141414'] : ['#ffffff', '#888888', '#222222', '#dddddd', '#111111', '#aaaaaa', '#555555', '#444444'];
+        const colorTexto = document.body.getAttribute('data-theme') === 'light' ? '#111' : '#fff';
 
         miGraficoDona = new Chart(ctx, {
             type: 'doughnut',
-            data: {
-                labels: etiquetas,
-                datasets: [{
-                    data: dataValores,
-                    backgroundColor: dataColores,
-                    borderWidth: 0,
-                    hoverOffset: 5
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '70%', // Hice el anillo un poco más grueso
-                plugins: {
-                    legend: {
-                        position: 'bottom', // Mueve las 8 etiquetas hacia abajo
-                        labels: { 
-                            color: colorTexto, 
-                            font: { family: 'Poppins', size: 12 },
-                            padding: 15 // Les da aire para que no se amontonen
-                        }
-                    }
-                }
-            }
+            data: { labels: total === 0 ? ['Sin datos'] : ['Puntual', 'Retraso', 'Falta', 'Permiso', 'Descanso', 'Comisión', 'Vacaciones', 'Sesantía'], datasets: [{ data: total === 0 ? [1] : [puntual, retraso, falta, permiso, descanso, comision, vacaciones, sesantia], backgroundColor: dataColores, borderWidth: 1, borderColor: '#2a2a2a', hoverOffset: 4 }] },
+            options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'bottom', labels: { color: colorTexto, font: { family: 'Poppins', size: 11 }, padding: 15 } } } }
         });
     }
+
     async function guardarAjustesTemporales() {
-        // 1. Función interna para convertir texto "08:15" a número 8.25
-        const convertirADecimal = (horaTexto) => {
-            if(!horaTexto) return 0;
-            const partes = horaTexto.split(':');
-            return parseInt(partes[0]) + (parseInt(partes[1]) / 60);
-        };
-
-        // 2. Recopilar los Horarios y Tolerancia
-        const nuevosLimites = {
-            manana: convertirADecimal(document.getElementById('limite-manana').value),
-            tarde: convertirADecimal(document.getElementById('limite-tarde').value),
-            noche: convertirADecimal(document.getElementById('limite-noche').value),
-            tolerancia: parseInt(document.getElementById('ajuste-tolerancia').value)
-        };
-
-        // 3. Recopilar los Días Laborales de los checkboxes
-        // Esto crea un arreglo de 7 valores true/false (uno por cada día)
-        const checks = document.querySelectorAll('.check-dia');
-        const diasLaborables = Array.from(checks).sort((a, b) => a.dataset.idx - b.dataset.idx).map(c => c.checked);
-
-        const nuevasReglasEmpresa = {
-            diasLaborables: diasLaborables,
-            feriados: ajustesEmpresaLocal.feriados,
-            tiempoBloqueo: parseInt(document.getElementById('ajuste-bloqueo').value) || 5,
-            branding: {
-                nombreEmpresa: document.getElementById('nombre-empresa') ? document.getElementById('nombre-empresa').value : 'Centro de Control',
-                logoUrl: document.getElementById('logo-empresa') ? document.getElementById('logo-empresa').value : '',
-                temaPorDefecto: document.getElementById('tema-defecto') ? document.getElementById('tema-defecto').value : 'dark'
-            }
-        };
-
+        const f = (val) => val ? parseInt(val.split(':')[0]) + (parseInt(val.split(':')[1]) / 60) : 0;
+        const lim = { manana: f(document.getElementById('limite-manana').value), tarde: f(document.getElementById('limite-tarde').value), noche: f(document.getElementById('limite-noche').value), tolerancia: parseInt(document.getElementById('ajuste-tolerancia').value) };
+        const reg = { diasLaborables: Array.from(document.querySelectorAll('.check-dia')).sort((a,b)=>a.dataset.idx-b.dataset.idx).map(c=>c.checked), feriados: ajustesEmpresaLocal.feriados, tiempoBloqueo: parseInt(document.getElementById('ajuste-bloqueo').value) || 5, branding: { nombreEmpresa: document.getElementById('nombre-empresa').value || 'Tenant', logoUrl: document.getElementById('logo-empresa').value || '', temaPorDefecto: document.getElementById('tema-defecto').value || 'dark' } };
         try {
-            // ENVIAR PASO 1: Horarios de turnos
-            const res1 = await fetch('/api/ajustes', {
-                method: 'POST',
-                headers: headersSeguros,
-                body: JSON.stringify(nuevosLimites)
-            });
-
-            // ENVIAR PASO 2: Días laborales y Feriados
-            const res2 = await fetch('/api/ajustes/empresa', {
-                method: 'POST',
-                headers: headersSeguros,
-                body: JSON.stringify(nuevasReglasEmpresa)
-            });
-
-            if (res1.ok && res2.ok) {
-                ajustesEmpresaLocal.diasLaborables = diasLaborables;
-                ajustesEmpresaLocal.tiempoBloqueo = nuevasReglasEmpresa.tiempoBloqueo;
-
-                // 👇 NUEVA LÍNEA: Aplica el logo y el nombre al instante 👇
-                aplicarBranding(nuevasReglasEmpresa.branding); 
-
-                Swal.fire({
-                    title: '¡Ajustes Guardados!',
-                    text: 'Datos actualizados correctamente.',
-                    icon: 'success',
-                    confirmButtonColor: '#4318ff'
-                });
-                
-                // Opcional: Recargar la matriz si estás en esa pestaña para ver los cambios
-                cargarDatosMatriz();
-            } else {
-                throw new Error('Error en el servidor');
-            }
-        } catch (error) {
-            Swal.fire('Error', 'No se pudieron sincronizar los cambios con el servidor.', 'error');
-        }
+            const r1 = await fetch('/api/ajustes', { method: 'POST', headers: headersSeguros, body: JSON.stringify(lim) });
+            const r2 = await fetch('/api/ajustes/empresa', { method: 'POST', headers: headersSeguros, body: JSON.stringify(reg) });
+            if (r1.ok && r2.ok) { ajustesEmpresaLocal.diasLaborables = reg.diasLaborables; ajustesEmpresaLocal.tiempoBloqueo = reg.tiempoBloqueo; aplicarBranding(reg.branding); Swal.fire('Guardado', 'Entorno actualizado', 'success'); cargarDatosMatriz(); } 
+            else throw new Error('Error');
+        } catch (e) { Swal.fire('Error', 'Fallo de sincronización', 'error'); }
     }
 
-    // ==========================================
-    // CARGA GLOBAL DE LOGO PARA TODOS LOS USUARIOS
-    // ==========================================
     async function cargarBrandingGlobal() {
-        try {
-            const res = await fetch('/api/ajustes/empresa', { headers: headersSeguros });
-            if (res.ok) {
-                const ajustes = await res.json();
-                
-                // 1. Aplicamos el logo y colores automáticamente
-                aplicarBranding(ajustes.branding);
-                
-                // 2. Si es un empleado normal, le añadimos su saludo al lado del nombre de la empresa
-                if (rolUsuario !== 'admin') {
-                    const nombreUsuario = sessionStorage.getItem('nombre') || 'Usuario';
-                    document.getElementById('titulo-bienvenida').innerText = `${ajustes.branding.nombreEmpresa || 'Centro de Control'} | Hola, ${nombreUsuario}`;
-                }
-            }
-        } catch (error) {
-            console.error("Error cargando el logo:", error);
-        }
+        try { const res = await fetch('/api/ajustes/empresa', { headers: headersSeguros }); if (res.ok) { const aj = await res.json(); aplicarBranding(aj.branding); if (rolUsuario !== 'admin') document.getElementById('titulo-bienvenida').innerText = `${aj.branding.nombreEmpresa || 'Tenant'} | ID: ${sessionStorage.getItem('nombre')}`; } } catch (e) {}
     }
 
     async function cargarAjustes() {
-        const res = await fetch('/api/ajustes', { headers: headersSeguros });
-        const limites = await res.json();
-        
-        const convertirAVisual = (decimal) => {
-            const horas = Math.floor(decimal);
-            const minutos = Math.round((decimal - horas) * 60);
-            return `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`;
-        };
-
-        document.getElementById('limite-manana').value = convertirAVisual(limites.manana);
-        document.getElementById('limite-tarde').value = convertirAVisual(limites.tarde);
-        document.getElementById('limite-noche').value = convertirAVisual(limites.noche);
-        document.getElementById('ajuste-tolerancia').value = limites.tolerancia || 15; // NUEVO
+        const res = await fetch('/api/ajustes', { headers: headersSeguros }); const lim = await res.json();
+        const f = (d) => `${String(Math.floor(d)).padStart(2, '0')}:${String(Math.round((d - Math.floor(d)) * 60)).padStart(2, '0')}`;
+        document.getElementById('limite-manana').value = f(lim.manana); document.getElementById('limite-tarde').value = f(lim.tarde); document.getElementById('limite-noche').value = f(lim.noche); document.getElementById('ajuste-tolerancia').value = lim.tolerancia || 15;
     }
 
     async function abrirSelectorManual(uid, nombre, fecha) {
-        const { value: nuevoEstado } = await Swal.fire({
-            title: `Asignar Estado`,
-            text: `${nombre} - Día: ${fecha}`,
-            input: 'select',
-            inputOptions: {
-                'PUNTUAL': 'A - Asistencia',
-                'RETRASO': 'R - Retraso',
-                'FALTA': 'F - Falta Injustificada',
-                'PERMISO': 'P - Permiso',
-                'DESCANSO': 'D - Descanso',
-                'COMISION': 'C - Comisión',
-                'VACACIONES': 'V - Vacaciones',
-                'SESANTIA': 'S - Sesantía'
-            },
-            inputPlaceholder: 'Selecciona un concepto',
-            showCancelButton: true,
-            confirmButtonColor: '#4318ff',
-            cancelButtonText: 'Cancelar'
-        });
-
-        if (nuevoEstado) {
-            try {
-                const res = await fetch('/api/registros/manual', {
-                    method: 'POST',
-                    headers: headersSeguros,
-                    body: JSON.stringify({ uid, nombre, fecha, estado: nuevoEstado })
-                });
-
-                if (res.ok) {
-                    Swal.fire('¡Actualizado!', `Se asignó ${nuevoEstado} correctamente.`, 'success');
-                    cargarDatosMatriz(); // Recargamos la matriz para ver el cambio
-                }
-            } catch (error) {
-                Swal.fire('Error', 'No se pudo guardar el cambio.', 'error');
-            }
-        }
+        const { value: est } = await Swal.fire({ title: 'Ajuste Manual', text: `${nombre} | ${fecha}`, input: 'select', inputOptions: { 'PUNTUAL': 'A - Asistencia', 'RETRASO': 'R - Retraso', 'FALTA': 'F - Falta', 'PERMISO': 'P - Permiso', 'DESCANSO': 'D - Descanso', 'COMISION': 'C - Comisión', 'VACACIONES': 'V - Vacaciones', 'SESANTIA': 'S - Sesantía' }, showCancelButton: true });
+        if (est && (await fetch('/api/registros/manual', { method: 'POST', headers: headersSeguros, body: JSON.stringify({ uid, nombre, fecha, estado: est }) })).ok) { Swal.fire('Actualizado', '', 'success'); cargarDatosMatriz(); }
     } 
     
     let ajustesEmpresaLocal = { diasLaborables: [], feriados: [] };
 
-    // Función para aplicar el branding en la interfaz
     function aplicarBranding(branding) {
         if (!branding) return;
-
-        // 1. Cambiar Título Principal
-        const titulo = document.getElementById('titulo-bienvenida');
-        if (titulo) {
-            titulo.innerText = branding.nombreEmpresa || 'Centro de Control';
-        }
-
-        // 2. Manejar Logo (Actualizado para el nuevo Sidebar)
-        const header = document.getElementById('contenedor-logo-top'); // <--- CORREGIDO
-        let imgLogo = document.getElementById('logo-sistema');
-        
-        if (branding.logoUrl) {
-            if (!imgLogo) {
-                imgLogo = document.createElement('img');
-                imgLogo.id = 'logo-sistema';
-                imgLogo.style.height = '35px'; // Un poco más pequeño para el menú
-                imgLogo.style.marginRight = '10px';
-                imgLogo.style.borderRadius = '5px';
-                if (header) header.prepend(imgLogo);
-            }
-            imgLogo.src = branding.logoUrl;
-        } else if (imgLogo) {
-            imgLogo.remove();
-        }
-
-        // 3. Tema por Defecto (Ahora el sistema OBEDECE siempre a la configuración)
-        if (branding.temaPorDefecto) {
-            localStorage.setItem('tema', branding.temaPorDefecto);
-            // Llamamos a cambiarTema con 'true' para que aplique el modo guardado
-            cambiarTema(true);
-        }
+        const titulo = document.getElementById('titulo-bienvenida'); if (titulo) titulo.innerText = branding.nombreEmpresa || 'Tenant';
+        const header = document.getElementById('contenedor-logo-top'); let imgLogo = document.getElementById('logo-sistema');
+        if (branding.logoUrl) { if (!imgLogo) { imgLogo = document.createElement('img'); imgLogo.id = 'logo-sistema'; imgLogo.style.height = '24px'; imgLogo.style.marginRight = '10px'; imgLogo.style.borderRadius = '2px'; if (header) header.prepend(imgLogo); } imgLogo.src = branding.logoUrl; } else if (imgLogo) imgLogo.remove();
+        if (branding.temaPorDefecto) { localStorage.setItem('tema', branding.temaPorDefecto); cambiarTema(true); }
     }
 
     async function cargarReglasEmpresa() {
-        const res = await fetch('/api/ajustes/empresa', { headers: headersSeguros });
-        ajustesEmpresaLocal = await res.json();
-        
-        // NUEVO ORDEN: Empezamos por Lunes (1) y terminamos en Domingo (0)
-        const ordenDias = [
-            { nombre: 'Lunes', idx: 1 },
-            { nombre: 'Martes', idx: 2 },
-            { nombre: 'Miércoles', idx: 3 },
-            { nombre: 'Jueves', idx: 4 },
-            { nombre: 'Viernes', idx: 5 },
-            { nombre: 'Sábado', idx: 6 },
-            { nombre: 'Domingo', idx: 0 }
-        ];
-
-        const contenedor = document.getElementById('check-dias');
-        contenedor.innerHTML = '';
-        
-        ordenDias.forEach(dia => {
-            // Leemos el valor usando el índice matemático correcto (dia.idx)
-            const check = ajustesEmpresaLocal.diasLaborables[dia.idx] ? 'checked' : '';
-            contenedor.innerHTML += `
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                    <input type="checkbox" class="check-dia" data-idx="${dia.idx}" ${check}> ${dia.nombre}
-                </label>`;
-        });
-
-        if (document.getElementById('check-sonido')) {
-            document.getElementById('check-sonido').checked = ajustesEmpresaLocal.sonidoActivado !== false; // true por defecto
-        }
-
+        ajustesEmpresaLocal = await (await fetch('/api/ajustes/empresa', { headers: headersSeguros })).json();
+        const dias = [{n:'Lun',i:1},{n:'Mar',i:2},{n:'Mié',i:3},{n:'Jue',i:4},{n:'Vie',i:5},{n:'Sáb',i:6},{n:'Dom',i:0}];
+        document.getElementById('check-dias').innerHTML = dias.map(d => `<label style="display:flex; gap:8px;"><input type="checkbox" class="check-dia" data-idx="${d.i}" ${ajustesEmpresaLocal.diasLaborables[d.i] ? 'checked' : ''}> ${d.n}</label>`).join('');
         actualizarListaFeriadosVisual();
-
-        if (ajustesEmpresaLocal.tiempoBloqueo !== undefined) {
-            if(document.getElementById('ajuste-bloqueo')) {
-                document.getElementById('ajuste-bloqueo').value = ajustesEmpresaLocal.tiempoBloqueo;
-            }
-        }
-
-        // Llenar campos de Branding al cargar la página
-        if (ajustesEmpresaLocal.branding) {
-            if(document.getElementById('nombre-empresa')) document.getElementById('nombre-empresa').value = ajustesEmpresaLocal.branding.nombreEmpresa || '';
-            if(document.getElementById('logo-empresa')) document.getElementById('logo-empresa').value = ajustesEmpresaLocal.branding.logoUrl || '';
-            if(document.getElementById('tema-defecto')) document.getElementById('tema-defecto').value = ajustesEmpresaLocal.branding.temaPorDefecto || 'dark';
-            aplicarBranding(ajustesEmpresaLocal.branding);
-        }
+        if(document.getElementById('ajuste-bloqueo')) document.getElementById('ajuste-bloqueo').value = ajustesEmpresaLocal.tiempoBloqueo || 5;
+        if(ajustesEmpresaLocal.branding) { document.getElementById('nombre-empresa').value = ajustesEmpresaLocal.branding.nombreEmpresa || ''; document.getElementById('logo-empresa').value = ajustesEmpresaLocal.branding.logoUrl || ''; document.getElementById('tema-defecto').value = ajustesEmpresaLocal.branding.temaPorDefecto || 'dark'; aplicarBranding(ajustesEmpresaLocal.branding); }
     }
 
-    function actualizarListaFeriadosVisual() {
-        const lista = document.getElementById('lista-feriados');
-        lista.innerHTML = '';
-        ajustesEmpresaLocal.feriados.forEach(f => {
-            lista.innerHTML += `
-                <div class="badge-feriado">
-                    <span>🗓️ ${f}</span>
-                    <b onclick="eliminarFeriado('${f}')" style="cursor:pointer; font-size: 16px; color: #ee5d50;">&times;</b>
-                </div>`;
-        });
-    }
-
-    function agregarFeriado() {
-        const f = document.getElementById('nuevo-feriado').value;
-        if (f && !ajustesEmpresaLocal.feriados.includes(f)) {
-            ajustesEmpresaLocal.feriados.push(f);
-            actualizarListaFeriadosVisual();
-        }
-    }
-
-    function eliminarFeriado(fecha) {
-        ajustesEmpresaLocal.feriados = ajustesEmpresaLocal.feriados.filter(f => f !== fecha);
-        actualizarListaFeriadosVisual();
-    }
-
-    async function autoCompletarFeriadosBO() {
-        // Mostramos un mensaje de carga
-        Swal.fire({ title: 'Buscando feriados...', text: 'Conectando con el calendario oficial...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-
-        try {
-            const anioActual = new Date().getFullYear();
-            
-            // Hacemos la petición a la API gratuita para Bolivia (Código: BO)
-            const res = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${anioActual}/BO`);
-            if (!res.ok) throw new Error('Error en la API');
-            
-            const feriadosBolivia = await res.json();
-            let agregados = 0;
-
-            // Recorremos los feriados que nos devuelve la API
-            feriadosBolivia.forEach(feriado => {
-                // La API devuelve la fecha en formato YYYY-MM-DD (ej. "2026-08-06")
-                // Verificamos que no esté repetido antes de agregarlo
-                if (!ajustesEmpresaLocal.feriados.includes(feriado.date)) {
-                    ajustesEmpresaLocal.feriados.push(feriado.date);
-                    agregados++;
-                }
-            });
-
-            // Actualizamos la pantalla
-            actualizarListaFeriadosVisual();
-
-            if (agregados > 0) {
-                Swal.fire('¡Éxito!', `Se importaron ${agregados} feriados nacionales de Bolivia para el año ${anioActual}. (No olvides darle a Sincronizar y Guardar)`, 'success');
-            } else {
-                Swal.fire('Información', `Todos los feriados del ${anioActual} ya estaban en tu lista.`, 'info');
-            }
-
-        } catch (error) {
-            Swal.fire('Error', 'No se pudo conectar con el servidor de calendarios. Revisa tu conexión.', 'error');
-        }
-    }
+    function actualizarListaFeriadosVisual() { document.getElementById('lista-feriados').innerHTML = ajustesEmpresaLocal.feriados.map(f => `<div class="badge-feriado"><span>${f}</span> <b onclick="eliminarFeriado('${f}')" style="cursor:pointer; color:#ff5252;">&times;</b></div>`).join(''); }
+    function agregarFeriado() { const f = document.getElementById('nuevo-feriado').value; if(f && !ajustesEmpresaLocal.feriados.includes(f)) { ajustesEmpresaLocal.feriados.push(f); actualizarListaFeriadosVisual(); } }
+    function eliminarFeriado(f) { ajustesEmpresaLocal.feriados = ajustesEmpresaLocal.feriados.filter(x => x !== f); actualizarListaFeriadosVisual(); }
+    async function autoCompletarFeriadosBO() { Swal.fire({title:'Buscando...', didOpen:()=>Swal.showLoading()}); try { const r = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${new Date().getFullYear()}/BO`); const data = await r.json(); let n = 0; data.forEach(d=>{if(!ajustesEmpresaLocal.feriados.includes(d.date)){ajustesEmpresaLocal.feriados.push(d.date);n++;}}); actualizarListaFeriadosVisual(); Swal.fire('Listo', `Se agregaron ${n} fechas`, 'success'); } catch(e){ Swal.fire('Error', 'Fallo de API', 'error'); } }
 
     function cerrarMes() {
-        const mesFormateado = document.getElementById('matriz-mes-anio').value;
-        if (!mesFormateado) return Swal.fire('Atención', 'Selecciona un mes primero', 'warning');
-
-        Swal.fire({
-            title: `¿Cerrar Planilla de ${mesFormateado}?`,
-            text: "Esto descargará el Excel definitivo con diseño a color.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#f44336',
-            cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Sí, Cerrar Mes'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const tablaMatriz = document.querySelector('.tabla-matriz');
-                if (tablaMatriz) {
-                    // 1. Crear libro leyendo la tabla web
-                    const libro = XLSX.utils.table_to_book(tablaMatriz, { raw: true });
-                    const hoja = libro.Sheets[libro.SheetNames[0]];
-
-                    // 2. Diccionario de colores (Formato ARGB que usa Excel)
-                    const colores = {
-                        'A': { bg: 'FF05CD99', font: 'FFFFFFFF' }, // Verde
-                        'R': { bg: 'FFFFEB3B', font: 'FF000000' }, // Amarillo
-                        'F': { bg: 'FFF44336', font: 'FFFFFFFF' }, // Rojo
-                        'P': { bg: 'FF2196F3', font: 'FFFFFFFF' }, // Azul
-                        'D': { bg: 'FF2D3748', font: 'FFFFFFFF' }, // Gris Oscuro
-                        'C': { bg: 'FF00BCD4', font: 'FFFFFFFF' }, // Celeste
-                        'V': { bg: 'FF9C27B0', font: 'FFFFFFFF' }, // Morado
-                        'S': { bg: 'FF607D8B', font: 'FFFFFFFF' }  // Azul Grisáceo
-                    };
-
-                    // 3. Recorrer todas las celdas para aplicar el diseño
-                    const rango = XLSX.utils.decode_range(hoja['!ref']);
-                    
-                    for (let R = rango.s.r; R <= rango.e.r; ++R) {
-                        for (let C = rango.s.c; C <= rango.e.c; ++C) {
-                            const celdaRef = XLSX.utils.encode_cell({c: C, r: R});
-                            const celda = hoja[celdaRef];
-
-                            if (!celda) continue;
-
-                            // Estilo base (Bordes y centrado)
-                            let estilo = {
-                                alignment: { horizontal: "center", vertical: "center" },
-                                border: {
-                                    top: { style: "thin", color: { rgb: "FFCBD5E0" } },
-                                    bottom: { style: "thin", color: { rgb: "FFCBD5E0" } },
-                                    left: { style: "thin", color: { rgb: "FFCBD5E0" } },
-                                    right: { style: "thin", color: { rgb: "FFCBD5E0" } }
-                                },
-                                font: { bold: true }
-                            };
-
-                            // Diseñar la fila de los números (Cabecera)
-                            if (R === 0) {
-                                estilo.fill = { fgColor: { rgb: "FF131B2F" } }; 
-                                estilo.font = { color: { rgb: "FFFFFFFF" }, bold: true };
-                            } 
-                            // Diseñar la columna de los Nombres
-                            else if (C === 0) {
-                                estilo.alignment = { horizontal: "left", vertical: "center" };
-                                estilo.fill = { fgColor: { rgb: "FFF4F7FE" } }; 
-                                estilo.font = { color: { rgb: "FF2B3674" }, bold: true };
-                            }
-                            // Diseñar los cuadritos de colores
-                            else if (colores[celda.v]) {
-                                estilo.fill = { fgColor: { rgb: colores[celda.v].bg } };
-                                estilo.font = { color: { rgb: colores[celda.v].font }, bold: true };
-                            }
-
-                            celda.s = estilo; // Aplicamos el estilo a la celda
-                        }
+        const mes = document.getElementById('matriz-mes-anio').value; if (!mes) return Swal.fire('Falta mes', '', 'warning');
+        Swal.fire({ title: 'Exportar Matriz', icon: 'warning', showCancelButton: true, confirmButtonText: 'Exportar' }).then((r) => {
+            if (r.isConfirmed) {
+                const hoja = XLSX.utils.table_to_book(document.querySelector('.tabla-matriz'), { raw: true }).Sheets['Sheet1'];
+                const col = { 'A':{bg:'FFFFFFFF',font:'FF000000'}, 'R':{bg:'FF888888',font:'FFFFFFFF'}, 'F':{bg:'FF222222',font:'FFFFFFFF'}, 'P':{bg:'FFDDDDDD',font:'FF000000'}, 'D':{bg:'FF111111',font:'FF888888'}, 'C':{bg:'FFAAAAAA',font:'FF000000'}, 'V':{bg:'FF555555',font:'FFFFFFFF'}, 'S':{bg:'FF444444',font:'FFFFFFFF'}, '-':{bg:'FF0A0A0A',font:'FF333333'} };
+                const rg = XLSX.utils.decode_range(hoja['!ref']);
+                for (let R = rg.s.r; R <= rg.e.r; ++R) {
+                    for (let C = rg.s.c; C <= rg.e.c; ++C) {
+                        const cell = hoja[XLSX.utils.encode_cell({c:C,r:R})]; if(!cell) continue;
+                        let st = { alignment: { horizontal: "center", vertical: "center" }, border: { top:{style:"thin",color:{rgb:"FF555555"}}, bottom:{style:"thin",color:{rgb:"FF555555"}}, left:{style:"thin",color:{rgb:"FF555555"}}, right:{style:"thin",color:{rgb:"FF555555"}} }, font: {bold:true} };
+                        if(R===0||R===1) { st.fill = {fgColor:{rgb:"FF0A0A0A"}}; st.font.color = {rgb:"FFFFFFFF"}; }
+                        else if(C===0) { st.alignment.horizontal="left"; st.fill={fgColor:{rgb:"FF141414"}}; st.font.color={rgb:"FFFFFFFF"}; }
+                        else if(col[cell.v]) { st.fill={fgColor:{rgb:col[cell.v].bg}}; st.font.color={rgb:col[cell.v].font}; }
+                        cell.s = st;
                     }
-
-                    // 4. Ajustar el tamaño de las columnas para que se vea bonito
-                    const anchos = [{ wch: 30 }]; // Columna 1 ancha para los nombres
-                    for (let i = 1; i <= rango.e.c; i++) {
-                        anchos.push({ wch: 4 }); // Columnas de días cortitas y cuadradas
-                    }
-                    hoja['!cols'] = anchos;
-
-                    // 5. Descargar el archivo final
-                    XLSX.writeFile(libro, `Cierre_Asistencia_${mesFormateado}.xlsx`);
-                    
-                    Swal.fire('¡Éxito!', 'El mes ha sido cerrado y la planilla con formato ha sido descargada.', 'success');
                 }
+                const w = [{wch:25}]; for(let i=1;i<=rg.e.c;i++) w.push({wch:4}); hoja['!cols'] = w;
+                const lib = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(lib, hoja, "Matriz"); XLSX.writeFile(lib, `Matriz_${mes}.xlsx`);
             }
         });
     }
 
     function procesarImagenLogo(event) {
-        const archivo = event.target.files[0];
-        
-        if (archivo) {
-            // Protección: Evitar que suban imágenes extremadamente pesadas (Máximo 2MB)
-            if (archivo.size > 2 * 1024 * 1024) {
-                Swal.fire('Atención', 'La imagen es muy pesada. Por favor elige una de menos de 2MB para no saturar la base de datos.', 'warning');
-                event.target.value = ''; // Limpiamos el error
-                return;
-            }
-            
-            // Convertimos la imagen a un código de texto (Base64 Data URL)
-            const lector = new FileReader();
-            lector.onload = function(e) {
-                // Inyectamos el código en el input oculto que usa el sistema para guardar
-                document.getElementById('logo-empresa').value = e.target.result;
-                
-                // Avisamos al usuario que la imagen se cargó en memoria
-                const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true });
-                Toast.fire({ icon: 'success', title: 'Logo cargado temporalmente. Presiona "Sincronizar y Guardar" para aplicarlo.' });
-            };
-            lector.readAsDataURL(archivo);
-        }
+        const a = event.target.files[0]; if (!a) return;
+        if (a.size > 2 * 1024 * 1024) return Swal.fire('Error', 'Máximo 2MB', 'error');
+        const r = new FileReader(); r.onload = (e) => { document.getElementById('logo-empresa').value = e.target.result; Swal.fire({toast:true, position:'top-end', showConfirmButton:false, timer:2000, icon:'success', title:'Logo pre-cargado'}); }; r.readAsDataURL(a);
     }
-
-    function eliminarLogo() {
-        Swal.fire({
-            title: '¿Eliminar logo?',
-            text: "El sistema volverá a mostrar solo el nombre de la empresa.",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#ee5d50',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // 1. Limpiamos los inputs
-                document.getElementById('logo-empresa').value = '';
-                document.getElementById('input-archivo-logo').value = '';
-
-                // 2. Quitamos el logo de la barra superior al instante
-                const imgLogo = document.getElementById('logo-sistema');
-                if (imgLogo) imgLogo.remove();
-
-                Swal.fire('Eliminado', 'El logo se ha quitado. No olvides presionar "Sincronizar y Guardar" para confirmar el cambio.', 'success');
-            }
-        });
-    }
-
-    function togglePasswordVisibility() {
-        const inputPass = document.getElementById('emp-pass');
-        const iconoPass = document.getElementById('icono-pass');
-        
-        if (inputPass.type === 'password') {
-            inputPass.type = 'text'; // Muestra el texto
-            iconoPass.innerText = '🚫'; // Cambia el icono al monito tapándose los ojos (o el que prefieras)
-            iconoPass.title = "Ocultar contraseña";
-        } else {
-            inputPass.type = 'password'; // Oculta el texto
-            iconoPass.innerText = '👁️';  // Vuelve al ojo normal
-            iconoPass.title = "Mostrar contraseña";
-        }
-    }
+    function eliminarLogo() { document.getElementById('logo-empresa').value = ''; document.getElementById('input-archivo-logo').value = ''; const img = document.getElementById('logo-sistema'); if(img) img.remove(); }
+    function togglePasswordVisibility() { const i = document.getElementById('emp-pass'); const ic = document.getElementById('icono-pass'); if(i.type==='password'){i.type='text';ic.innerText='Ocultar';}else{i.type='password';ic.innerText='Ver';} }
 </script>
 </body>
 </html>
