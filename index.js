@@ -163,8 +163,11 @@ app.post('/api/asistencia', async (req, res) => {
             }
         }
 
+        // ⏱️ RELOJ SINCRONIZADO A BOLIVIA (UTC-4)
         const inicioDia = new Date();
-        inicioDia.setUTCHours(4, 0, 0, 0); 
+        inicioDia.setUTCHours(inicioDia.getUTCHours() - 4); // 1. Retrocedemos a la hora de Bolivia
+        inicioDia.setUTCHours(0, 0, 0, 0);                  // 2. Buscamos la medianoche exacta
+        inicioDia.setUTCHours(inicioDia.getUTCHours() + 4); // 3. Devolvemos a UTC para que Mongo lo entienda
 
         const ultimoRegistro = await Registro.findOne({
             uid: empleado.uid, fechaHora: { $gte: inicioDia }
