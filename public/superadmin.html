@@ -3,85 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaaS Master - Creador de Empresas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>SaaS Master - Panel Administrativo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
-<body style="display: flex; flex-direction: column; align-items: center; min-height: 100vh; height: auto; overflow-y: auto; background-color: var(--fondo); padding: 40px 20px 80px 20px; box-sizing: border-box;">
+    
+    <style>
+        /* ==========================================
+           TEMA PREMIUM MONOCROMÁTICO (Solo para SuperAdmin)
+           ========================================== */
+        :root {
+            --fondo: #0a0a0a;          /* Negro profundo */
+            --tarjeta: #141414;        /* Gris casi negro */
+            --texto: #ffffff;          /* Blanco puro */
+            --texto-secundario: #888888; /* Gris medio */
+            --borde: #2a2a2a;          /* Líneas sutiles */
+        }
+        
+        body {
+            background-color: var(--fondo) !important;
+            color: var(--texto) !important;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+        }
+        
+        /* Cajas minimalistas sin sombras exageradas */
+        .contenedor-tarjeta {
+            background: var(--tarjeta) !important;
+            border: 1px solid var(--borde) !important;
+            box-shadow: none !important;
+            border-radius: 8px !important;
+            padding: 25px !important;
+        }
+        
+        /* Inputs oscuros y elegantes */
+        .input-ajuste {
+            background-color: #000000 !important;
+            border: 1px solid var(--borde) !important;
+            color: var(--texto) !important;
+            border-radius: 6px !important;
+            padding: 12px 15px !important;
+            font-weight: 300 !important;
+        }
+        .input-ajuste:focus {
+            border-color: #ffffff !important;
+            box-shadow: none !important;
+        }
+        
+        /* Botones Sobrios */
+        .btn-blanco {
+            background-color: #ffffff;
+            color: #000000;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+        .btn-blanco:hover { background-color: #cccccc; }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--texto);
+            border: 1px solid var(--borde);
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 13px;
+        }
+        .btn-outline:hover { border-color: #ffffff; }
 
-    <!-- 🔒 PANTALLA 1: ACCESO DE SEGURIDAD (Se ve primero) -->
+        .btn-peligro-outline {
+            background-color: transparent;
+            color: #ff5252;
+            border: 1px solid #4a1919;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-peligro-outline:hover {
+            background-color: #ff5252;
+            color: #ffffff;
+        }
+
+        /* Tablas limpias */
+        table th {
+            border-bottom: 1px solid var(--borde) !important;
+            color: var(--texto-secundario) !important;
+            font-weight: 400;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+            padding-bottom: 15px !important;
+        }
+        table td {
+            border-bottom: 1px solid var(--borde) !important;
+            padding: 15px 10px !important;
+            color: #cccccc;
+        }
+    </style>
+</head>
+<body style="display: flex; flex-direction: column; align-items: center; min-height: 100vh; height: auto; overflow-y: auto; padding: 40px 20px 80px 20px; box-sizing: border-box;">
+
+    <!-- PANTALLA 1: ACCESO DE SEGURIDAD -->
     <div id="pantalla-acceso" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 70vh;">
-        <div class="contenedor-tarjeta" style="width: 100%; max-width: 400px; text-align: center; border: 2px solid #9c27b0; padding: 40px 20px;">
-            <h2 style="margin-top: 0; color: white;">🛡️ Portal SuperAdmin</h2>
-            <p style="color: var(--texto-secundario); font-size: 14px; margin-bottom: 25px;">Ingresa tu llave maestra para acceder</p>
+        <div class="contenedor-tarjeta" style="width: 100%; max-width: 380px; text-align: center;">
+            <h2 style="margin-top: 0; font-weight: 400; letter-spacing: 1px;">Autenticación</h2>
+            <p style="color: var(--texto-secundario); font-size: 13px; margin-bottom: 30px;">Acceso restringido al sistema matriz</p>
             
-            <input type="password" id="master-key" class="input-ajuste" placeholder="Tu MASTER_KEY secreta..." required style="width: 85%; text-align: center; font-size: 16px; margin-bottom: 20px;">
-            <button onclick="verificarAcceso()" class="btn-primario" style="width: 90%; padding: 12px; font-size: 16px; background-color: #9c27b0;">Desbloquear Sistema</button>
+            <input type="password" id="master-key" class="input-ajuste" placeholder="Ingresa la llave maestra" required style="width: 100%; text-align: center; margin-bottom: 25px; box-sizing: border-box;">
+            <button onclick="verificarAcceso()" class="btn-blanco" style="width: 100%;">Desbloquear</button>
         </div>
     </div>
 
-    <!-- 📊 PANTALLA 2: DASHBOARD COMPLETO (Oculto por defecto) -->
+    <!-- PANTALLA 2: DASHBOARD COMPLETO -->
     <div id="pantalla-dashboard" style="display: none; flex-direction: column; align-items: center; width: 100%;">
         
-        <!-- Botón para cerrar sesión maestra -->
-        <div style="width: 100%; max-width: 900px; display: flex; justify-content: flex-end; margin-bottom: 15px;">
-            <button onclick="cerrarSuperAdmin()" class="btn-peligro" style="padding: 8px 15px;">🔒 Salir del Panel</button>
+        <!-- Botón de Salida -->
+        <div style="width: 100%; max-width: 950px; display: flex; justify-content: flex-end; margin-bottom: 20px;">
+            <button onclick="cerrarSuperAdmin()" class="btn-outline">Cerrar Sesión Matriz</button>
         </div>
 
-        <!-- MÉTRICAS GLOBALES DEL SAAS -->
-        <div id="panel-metricas" style="display: flex; width: 100%; max-width: 900px; gap: 15px; margin-bottom: 20px; justify-content: space-between;">
-            <div class="contenedor-tarjeta" style="flex: 1; text-align: center; border-bottom: 4px solid #9c27b0; padding: 15px;">
-                <h4 style="margin: 0; color: var(--texto-secundario); font-size: 12px;">EMPRESAS ACTIVAS</h4>
-                <p id="metrica-empresas" style="font-size: 28px; font-weight: bold; color: white; margin: 5px 0;">0</p>
+        <!-- MÉTRICAS GLOBALES -->
+        <div id="panel-metricas" style="display: flex; width: 100%; max-width: 950px; gap: 20px; margin-bottom: 30px; justify-content: space-between;">
+            <div class="contenedor-tarjeta" style="flex: 1; text-align: center;">
+                <h4 style="margin: 0; color: var(--texto-secundario); font-size: 11px; letter-spacing: 1px; text-transform: uppercase;">Empresas Activas</h4>
+                <p id="metrica-empresas" style="font-size: 32px; font-weight: 300; margin: 10px 0 0 0;">0</p>
             </div>
-            <div class="contenedor-tarjeta" style="flex: 1; text-align: center; border-bottom: 4px solid #05cd99; padding: 15px;">
-                <h4 style="margin: 0; color: var(--texto-secundario); font-size: 12px;">EMPLEADOS TOTALES</h4>
-                <p id="metrica-empleados" style="font-size: 28px; font-weight: bold; color: white; margin: 5px 0;">0</p>
+            <div class="contenedor-tarjeta" style="flex: 1; text-align: center;">
+                <h4 style="margin: 0; color: var(--texto-secundario); font-size: 11px; letter-spacing: 1px; text-transform: uppercase;">Empleados Totales</h4>
+                <p id="metrica-empleados" style="font-size: 32px; font-weight: 300; margin: 10px 0 0 0;">0</p>
             </div>
-            <div class="contenedor-tarjeta" style="flex: 1; text-align: center; border-bottom: 4px solid #2196f3; padding: 15px;">
-                <h4 style="margin: 0; color: var(--texto-secundario); font-size: 12px;">REGISTROS DE ASISTENCIA</h4>
-                <p id="metrica-registros" style="font-size: 28px; font-weight: bold; color: white; margin: 5px 0;">0</p>
+            <div class="contenedor-tarjeta" style="flex: 1; text-align: center;">
+                <h4 style="margin: 0; color: var(--texto-secundario); font-size: 11px; letter-spacing: 1px; text-transform: uppercase;">Volumen de Registros</h4>
+                <p id="metrica-registros" style="font-size: 32px; font-weight: 300; margin: 10px 0 0 0;">0</p>
             </div>
         </div>
 
-        <!-- PANELES DE EMPRESAS -->
-        <div style="display: flex; gap: 20px; width: 100%; max-width: 900px; flex-wrap: wrap; align-items: flex-start;">
+        <div style="display: flex; gap: 20px; width: 100%; max-width: 950px; flex-wrap: wrap; align-items: flex-start;">
             
             <!-- PANEL IZQUIERDO: CREAR EMPRESA -->
-            <div class="contenedor-tarjeta" style="flex: 1; min-width: 300px; border-top: 5px solid #05cd99;">
-                <h2 style="color: var(--texto); margin-bottom: 5px;">✨ Nueva Empresa</h2>
-                <p style="color: var(--texto-secundario); font-size: 13px; margin-top: 0;">Dar de alta a un cliente</p>
+            <div class="contenedor-tarjeta" style="flex: 1; min-width: 300px;">
+                <h3 style="font-weight: 400; margin-top: 0; margin-bottom: 5px;">Nueva Organización</h3>
+                <p style="color: var(--texto-secundario); font-size: 12px; margin-top: 0; margin-bottom: 25px;">Registrar un nuevo inquilino en la plataforma.</p>
 
-                <form id="form-superadmin" onsubmit="crearEmpresa(event)" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                <form id="form-superadmin" onsubmit="crearEmpresa(event)" style="display: flex; flex-direction: column; gap: 18px;">
                     <div>
-                        <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">NOMBRE COMERCIAL</label>
-                        <input type="text" id="nueva-empresa" class="input-ajuste" placeholder="Ej: Clínica San José" required style="width: 100%; margin-top: 5px;">
+                        <label style="font-size: 11px; color: var(--texto-secundario); text-transform: uppercase; letter-spacing: 1px;">Nombre Comercial</label>
+                        <input type="text" id="nueva-empresa" class="input-ajuste" placeholder="Ej: Corporación Alpha" required style="width: 100%; margin-top: 5px; box-sizing: border-box;">
                     </div>
                     <div>
-                        <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">CORREO DEL ADMINISTRADOR</label>
-                        <input type="email" id="nuevo-email" class="input-ajuste" placeholder="admin@empresa.com" required style="width: 100%; margin-top: 5px;">
+                        <label style="font-size: 11px; color: var(--texto-secundario); text-transform: uppercase; letter-spacing: 1px;">Correo Administrador</label>
+                        <input type="email" id="nuevo-email" class="input-ajuste" placeholder="admin@alpha.com" required style="width: 100%; margin-top: 5px; box-sizing: border-box;">
                     </div>
                     <div>
-                        <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">CONTRASEÑA TEMPORAL</label>
-                        <input type="text" id="nueva-pass" class="input-ajuste" placeholder="Ej: temporal123" required style="width: 100%; margin-top: 5px;">
+                        <label style="font-size: 11px; color: var(--texto-secundario); text-transform: uppercase; letter-spacing: 1px;">Contraseña Asignada</label>
+                        <input type="text" id="nueva-pass" class="input-ajuste" placeholder="Ej: tempAlpha2026" required style="width: 100%; margin-top: 5px; box-sizing: border-box;">
                     </div>
-                    <button type="submit" class="btn-primario" style="padding: 12px; font-size: 15px; background-color: #05cd99;">➕ Dar de Alta</button>
+                    <button type="submit" class="btn-blanco" style="margin-top: 10px;">Crear Organización</button>
                 </form>
             </div>
 
             <!-- PANEL DERECHO: ADMINISTRAR EMPRESAS -->
-            <div class="contenedor-tarjeta" style="flex: 1; min-width: 300px; border-top: 5px solid #ee5d50;">
-                <h2 style="color: var(--texto); margin-bottom: 5px;">🗑️ Directorio de Clientes</h2>
-                <p style="color: var(--texto-secundario); font-size: 13px; margin-top: 0;">Gestiona o elimina accesos</p>
+            <div class="contenedor-tarjeta" style="flex: 2; min-width: 400px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div>
+                        <h3 style="font-weight: 400; margin-top: 0; margin-bottom: 5px;">Directorio de Clientes</h3>
+                        <p style="color: var(--texto-secundario); font-size: 12px; margin: 0;">Gestión de accesos y bases de datos aisladas.</p>
+                    </div>
+                    <button onclick="cargarEmpresas()" class="btn-outline">Sincronizar</button>
+                </div>
                 
-                <button onclick="cargarEmpresas()" class="btn-primario" style="width: 100%; margin-top: 10px; background-color: #334155;">🔄 Refrescar Lista</button>
-                
-                <div style="overflow-x: auto; margin-top: 20px;">
-                    <table style="width: 100%; text-align: left;">
-                        <thead><tr><th>Empresa</th><th>ID Interno</th><th>Acción</th></tr></thead>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th>Empresa</th>
+                                <th>ID de Sistema</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
                         <tbody id="lista-empresas">
-                            <!-- Los datos se inyectarán aquí -->
+                            <tr><td colspan="3" style="text-align: center; color: var(--texto-secundario); padding: 30px !important;">Esperando sincronización...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -92,6 +203,33 @@
     <script>
         document.body.setAttribute('data-theme', 'dark');
 
+        // FUNCIONES DE TRANSICIÓN DE PANTALLAS
+        async function verificarAcceso() {
+            const mKey = document.getElementById('master-key').value;
+            if(!mKey) return Swal.fire('Atención', 'Ingresa la llave de seguridad', 'warning');
+
+            try {
+                const res = await fetch('/api/master/metricas', { headers: { 'x-master-key': mKey } });
+                
+                if (res.ok) {
+                    document.getElementById('pantalla-acceso').style.display = 'none';
+                    document.getElementById('pantalla-dashboard').style.display = 'flex';
+                    cargarEmpresas();
+                } else {
+                    Swal.fire('Acceso Denegado', 'Credenciales incorrectas', 'error');
+                }
+            } catch (error) {
+                Swal.fire('Error', 'Sin conexión al servidor', 'error');
+            }
+        }
+
+        function cerrarSuperAdmin() {
+            document.getElementById('master-key').value = '';
+            document.getElementById('pantalla-dashboard').style.display = 'none';
+            document.getElementById('pantalla-acceso').style.display = 'flex';
+        }
+
+        // LÓGICA DE DATOS
         async function crearEmpresa(e) {
             e.preventDefault();
             const payload = {
@@ -106,61 +244,49 @@
             });
 
             if (res.ok) {
-                Swal.fire('¡Éxito!', 'Empresa creada.', 'success');
-                document.getElementById('nueva-empresa').value = '';
-                document.getElementById('nuevo-email').value = '';
-                document.getElementById('nueva-pass').value = '';
-                cargarEmpresas(); // Refresca la lista automáticamente
+                Swal.fire('Registrado', 'Organización creada correctamente.', 'success');
+                document.getElementById('form-superadmin').reset();
+                cargarEmpresas(); 
             } else {
                 const err = await res.json();
-                Swal.fire('Error', err.error || 'Llave incorrecta', 'error');
+                Swal.fire('Error', err.error || 'Fallo de autorización', 'error');
             }
         }
 
         async function cargarEmpresas() {
             const mKey = document.getElementById('master-key').value;
-            if(!mKey) return Swal.fire('Alto', 'Escribe tu Llave de Seguridad primero', 'warning');
-
             try {
-                // 1. Cargar lista de empresas
                 const resEmpresas = await fetch('/api/master/empresas', { headers: { 'x-master-key': mKey } });
-                
-                // 2. Cargar Métricas Globales
                 const resMetricas = await fetch('/api/master/metricas', { headers: { 'x-master-key': mKey } });
 
                 if (resEmpresas.ok && resMetricas.ok) {
-                    // Procesar Empresas
                     const empresas = await resEmpresas.json();
                     const tbody = document.getElementById('lista-empresas');
                     tbody.innerHTML = '';
 
                     empresas.forEach(emp => {
-                        const btnBorrar = emp.empresa_id === 'EMPRESA_GLOBAL' 
-                            ? `<span style="color: #05cd99; font-size:12px;">★ MAESTRA</span>` 
-                            : `<button onclick="eliminarEmpresa('${emp.empresa_id}', '${emp.ajustesEmpresa.branding.nombreEmpresa}')" class="btn-peligro">Borrar</button>`;
+                        const esMatriz = emp.empresa_id === 'EMPRESA_GLOBAL';
+                        const btnBorrar = esMatriz 
+                            ? `<span style="color: #ffffff; font-size:11px; border: 1px solid #555; padding: 4px 8px; border-radius: 4px;">NÚCLEO</span>` 
+                            : `<button onclick="eliminarEmpresa('${emp.empresa_id}', '${emp.ajustesEmpresa.branding.nombreEmpresa}')" class="btn-peligro-outline">Revocar</button>`;
 
                         tbody.innerHTML += `
                             <tr>
-                                <td><b>${emp.ajustesEmpresa.branding.nombreEmpresa || 'Sin nombre'}</b></td>
-                                <td style="font-size: 11px; font-family: monospace; color: var(--texto-secundario);">${emp.empresa_id}</td>
+                                <td style="color: #fff;">${emp.ajustesEmpresa.branding.nombreEmpresa || 'Desconocido'}</td>
+                                <td style="font-family: monospace; font-size: 12px;">${emp.empresa_id}</td>
                                 <td>${btnBorrar}</td>
                             </tr>
                         `;
                     });
 
-                    // Procesar Métricas y hacerlas visibles
                     const metricas = await resMetricas.json();
                     document.getElementById('metrica-empresas').innerText = metricas.empresas;
                     document.getElementById('metrica-empleados').innerText = metricas.empleados;
                     document.getElementById('metrica-registros').innerText = metricas.registros;
-                    document.getElementById('panel-metricas').style.display = 'flex'; // Mostramos el panel
 
-                } else {
-                    Swal.fire('Error', 'Llave incorrecta o error de servidor', 'error');
                 }
             } catch (error) {
                 console.error(error);
-                Swal.fire('Error', 'Fallo de conexión', 'error');
             }
         }
 
@@ -168,13 +294,13 @@
             const mKey = document.getElementById('master-key').value;
 
             Swal.fire({
-                title: `¿Borrar a ${nombre}?`,
-                html: "Esto eliminará <b>TODOS</b> sus administradores, empleados, horarios y asistencias de la base de datos.<br><b>¡No se puede deshacer!</b>",
+                title: `¿Revocar acceso a ${nombre}?`,
+                text: "Se purgarán todas sus bases de datos aisladas. Esta acción es irreversible.",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#ee5d50',
+                confirmButtonColor: '#ff5252',
                 cancelButtonText: 'Cancelar',
-                confirmButtonText: 'Sí, ELIMINAR TODO'
+                confirmButtonText: 'Sí, Purgar Datos'
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     const res = await fetch(`/api/master/empresas/${id}`, {
@@ -183,44 +309,11 @@
                     });
 
                     if (res.ok) {
-                        Swal.fire('Eliminado', 'La empresa ha sido borrada del sistema.', 'success');
-                        cargarEmpresas(); // Recargamos la lista
-                    } else {
-                        Swal.fire('Error', 'No se pudo eliminar', 'error');
+                        Swal.fire('Purgado', 'La organización ha sido eliminada.', 'success');
+                        cargarEmpresas();
                     }
                 }
             });
-        }
-
-        // 1. FUNCIONES NUEVAS DE TRANSICIÓN DE PANTALLAS
-        async function verificarAcceso() {
-            const mKey = document.getElementById('master-key').value;
-            if(!mKey) return Swal.fire('Alto', 'Escribe tu Llave de Seguridad primero', 'warning');
-
-            try {
-                // Hacemos una petición rápida al servidor para ver si la llave es real
-                const res = await fetch('/api/master/metricas', { headers: { 'x-master-key': mKey } });
-                
-                if (res.ok) {
-                    // ¡Llave correcta! Ocultamos el login y mostramos el dashboard
-                    document.getElementById('pantalla-acceso').style.display = 'none';
-                    document.getElementById('pantalla-dashboard').style.display = 'flex';
-                    
-                    // Cargamos los datos para que todo esté listo
-                    cargarEmpresas();
-                } else {
-                    Swal.fire('Acceso Denegado', 'La Llave Maestra es incorrecta', 'error');
-                }
-            } catch (error) {
-                Swal.fire('Error', 'Problema de conexión con el servidor', 'error');
-            }
-        }
-
-        function cerrarSuperAdmin() {
-            // Borramos la clave por seguridad y volvemos a la pantalla de login
-            document.getElementById('master-key').value = '';
-            document.getElementById('pantalla-dashboard').style.display = 'none';
-            document.getElementById('pantalla-acceso').style.display = 'flex';
         }
     </script>
 </body>
