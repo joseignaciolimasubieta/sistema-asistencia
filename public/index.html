@@ -315,10 +315,20 @@
         const anio = document.getElementById('filtro-anio').value;
         const busqueda = document.getElementById('filtro-nombre').value;
 
+        // --- SOLUCIÓN: ASEGURAR QUE SIEMPRE HAYA UN FILTRO POR DEFECTO ---
         let url = `/api/registros?busqueda=${busqueda}`;
-        if (tipoFiltro === 'dia') url += `&dia=${dia}`;
-        if (tipoFiltro === 'mes') url += `&mes=${mes}`;
-        if (tipoFiltro === 'anio' && anio) url += `&anio=${anio}`;
+        
+        // Si el usuario no ha tocado los filtros y todo está vacío, forzamos la búsqueda del mes actual
+        if (!dia && !mes && !anio) {
+            const hoy = new Date();
+            const mesActual = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`;
+            url += `&mes=${mesActual}`;
+        } else {
+            if (tipoFiltro === 'dia' && dia) url += `&dia=${dia}`;
+            if (tipoFiltro === 'mes' && mes) url += `&mes=${mes}`;
+            if (tipoFiltro === 'anio' && anio) url += `&anio=${anio}`;
+        }
+        // ----------------------------------------------------------------
 
         try {
             const res = await fetch(url, { headers: headersSeguros });
@@ -364,18 +374,18 @@
                 const fecha = new Date(reg.fechaHora).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' });
                 const btnEliminar = rolUsuario === 'admin' ? `<button onclick="eliminarRegistro('${reg._id}')" class="btn-peligro" style="padding: 2px 6px; font-size:11px;">X</button>` : '';
                 
-                // Paleta unificada y sobria para badges del Historial
                 let textoEstado = reg.estado || 'PUNTUAL';
-                let bgSober = '#2e7d32'; // Verde apagado
+                let bgSober = '#2e7d32'; 
                 if (textoEstado === 'RETRASO') bgSober = '#b45309';
-                else if (textoEstado === 'FALTA' || textoEstado === 'FALTA INJUSTIFICADA') bgSober = '#b91c1c'; // Rojo apagado
+                else if (textoEstado === 'FALTA' || textoEstado === 'FALTA INJUSTIFICADA') bgSober = '#b91c1c'; 
                 else if (textoEstado === 'PERMISO') bgSober = '#1d4ed8';
-                else if (textoEstado === 'DESCANSO') bgSober = '#c2410c'; // Naranja apagado
+                else if (textoEstado === 'DESCANSO') bgSober = '#c2410c'; 
                 else if (textoEstado === 'COMISION') bgSober = '#0f766e';
                 else if (textoEstado === 'VACACIONES') bgSober = '#6d28d9';
                 else if (textoEstado === 'SESANTIA') bgSober = '#475569';
 
                 const badgeEstado = `<span style="background: ${bgSober}; color: #ffffff; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; margin-left: 10px; border: none; letter-spacing: 0.5px;">${textoEstado}</span>`;
+                const mostrarBadge = (reg.tipo === 'INGRESO' || reg.tipo === 'MANUAL' || !reg.tipo);
 
                 return `<tr>
                         <td><div style="display:flex; align-items:center;">
