@@ -297,8 +297,25 @@ app.post('/api/empleados', verificarToken, async (req, res) => {
 });
 app.delete('/api/empleados/:id', verificarToken, async (req, res) => {
     if (req.usuario.rol !== 'admin') return res.status(403).json({ error: 'No autorizado' });
-    await Empleado.findByIdAndDelete(req.params.id);
-    res.json({ mensaje: 'Empleado eliminado' });
+    
+    try {
+        // 1. Primero buscamos al empleado para saber cuál es su UID
+        const empleadoAEliminar = await Empleado.findById(req.params.id);
+        
+        if (!empleadoAEliminar) {
+            return res.status(404).json({ error: 'Empleado no encontrado' });
+        }
+
+        // 2. BORRADO EN CASCADA: Eliminamos TODOS los registros de asistencia que tengan ese UID
+        await Registro.deleteMany({ uid: empleadoAEliminar.uid, empresa_id: req.usuario.empresa_id });
+
+        // 3. Finalmente, eliminamos al empleado
+        await Empleado.findByIdAndDelete(req.params.id);
+
+        res.json({ mensaje: 'Empleado y todos sus registros históricos han sido eliminados' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al eliminar el empleado y sus registros' });
+    }
 });
 
 // Leer Ajustes
