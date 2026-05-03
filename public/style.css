@@ -99,15 +99,17 @@ th { color: var(--texto-secundario); font-weight: 400; text-transform: uppercase
 .tabla-matriz th { background-color: var(--tarjeta); color: var(--texto-secundario); border: 1px solid var(--borde); padding: 8px 4px; font-weight: 400; text-align: center; }
 .tabla-matriz td { border: 1px solid var(--fondo); padding: 6px 2px; min-width: 25px; font-weight: 600; text-align: center; }
 
-/* Colores de estados en grises */
-.bg-A { background-color: #ffffff; color: #000000; }
-.bg-R { background-color: #888888; color: #ffffff; }
-.bg-F { background-color: #222222; color: #888888; }
-.bg-P { background-color: #dddddd; color: #000000; }
-.bg-D { background-color: #111111; color: #555555; }
-.bg-C { background-color: #aaaaaa; color: #000000; }
-.bg-V { background-color: #555555; color: #ffffff; }
-.bg-S { background-color: #444444; color: #ffffff; }
+/* =========================================
+   COLORES DE ESTADOS (SOBRIOS Y ELEGANTES)
+   ========================================= */
+.bg-A { background-color: #2e7d32; color: #ffffff; } /* Verde apagado (Puntual) */
+.bg-R { background-color: #b45309; color: #ffffff; } /* Ocre / Mostaza (Retraso) */
+.bg-F { background-color: #b91c1c; color: #ffffff; } /* Rojo sangre oscuro (Falta) */
+.bg-P { background-color: #1d4ed8; color: #ffffff; } /* Azul marino (Permiso) */
+.bg-D { background-color: #c2410c; color: #ffffff; } /* Naranja quemado (Descanso/Feriado) */
+.bg-C { background-color: #0f766e; color: #ffffff; } /* Verde azulado (Comisión) */
+.bg-V { background-color: #6d28d9; color: #ffffff; } /* Morado sobrio (Vacaciones) */
+.bg-S { background-color: #475569; color: #ffffff; } /* Gris pizarra (Sesantía) */
 
 .columna-fija { position: sticky; left: 0; background-color: var(--tarjeta) !important; color: var(--texto) !important; text-align: left; padding-left: 15px !important; z-index: 10; border-right: 1px solid var(--borde) !important; }
 

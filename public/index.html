@@ -364,10 +364,18 @@
                 const fecha = new Date(reg.fechaHora).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' });
                 const btnEliminar = rolUsuario === 'admin' ? `<button onclick="eliminarRegistro('${reg._id}')" class="btn-peligro" style="padding: 2px 6px; font-size:11px;">X</button>` : '';
                 
-                // Color unificado y sobrio para badges
+                // Paleta unificada y sobria para badges del Historial
                 let textoEstado = reg.estado || 'PUNTUAL';
-                const badgeEstado = `<span style="background: var(--borde); color: var(--texto); padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; margin-left: 10px; border: 1px solid var(--borde);">${textoEstado}</span>`;
-                const mostrarBadge = (reg.tipo === 'INGRESO' || reg.tipo === 'MANUAL' || !reg.tipo);
+                let bgSober = '#2e7d32'; // Verde apagado
+                if (textoEstado === 'RETRASO') bgSober = '#b45309';
+                else if (textoEstado === 'FALTA' || textoEstado === 'FALTA INJUSTIFICADA') bgSober = '#b91c1c'; // Rojo apagado
+                else if (textoEstado === 'PERMISO') bgSober = '#1d4ed8';
+                else if (textoEstado === 'DESCANSO') bgSober = '#c2410c'; // Naranja apagado
+                else if (textoEstado === 'COMISION') bgSober = '#0f766e';
+                else if (textoEstado === 'VACACIONES') bgSober = '#6d28d9';
+                else if (textoEstado === 'SESANTIA') bgSober = '#475569';
+
+                const badgeEstado = `<span style="background: ${bgSober}; color: #ffffff; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; margin-left: 10px; border: none; letter-spacing: 0.5px;">${textoEstado}</span>`;
 
                 return `<tr>
                         <td><div style="display:flex; align-items:center;">
@@ -460,7 +468,10 @@
                     if (fechaCelda < new Date()) {
                         const esLaborable = ajustesEmpresaLocal.diasLaborables ? ajustesEmpresaLocal.diasLaborables[fechaCelda.getDay()] : (fechaCelda.getDay() !== 0 && fechaCelda.getDay() !== 6);
                         const esFeriado = ajustesEmpresaLocal.feriados ? ajustesEmpresaLocal.feriados.includes(`${anioSel}-${String(mesSel).padStart(2, '0')}-${String(d).padStart(2, '0')}`) : false;
-                        if (!esLaborable || esFeriado) { letra = '-'; claseCss = 'bg-D'; } else { letra = 'F'; claseCss = 'bg-F'; }
+                        
+                        // AQUÍ ESTÁ EL CAMBIO: Feriados y fines de semana usan "D" y color naranja (bg-D)
+                        if (!esLaborable || esFeriado) { letra = 'D'; claseCss = 'bg-D'; } 
+                        else { letra = 'F'; claseCss = 'bg-F'; }
                     }
                 }
                 tabla += `<td class="${claseCss}" onclick="abrirSelectorManual('${emp.uid}', '${emp.nombre}', '${anioSel}-${String(mesSel).padStart(2, '0')}-${String(d).padStart(2, '0')}')" style="cursor: pointer;">${letra}</td>`;
@@ -481,12 +492,12 @@
         
         const rango = XLSX.utils.decode_range(hoja['!ref']);
         
-        // Colores Hexadecimales Sobrios para Excel (ARGB)
+        // Colores Hexadecimales Sobrios para Excel (Formato ARGB)
         const coloresExcel = {
-            'PUNTUAL': { bg: 'FFFFFFFF', font: 'FF000000' }, 'ASISTENCIA': { bg: 'FFFFFFFF', font: 'FF000000' },
-            'RETRASO': { bg: 'FF888888', font: 'FFFFFFFF' }, 'FALTA': { bg: 'FF222222', font: 'FFFFFFFF' }, 'FALTA INJUSTIFICADA': { bg: 'FF222222', font: 'FFFFFFFF' },
-            'PERMISO': { bg: 'FFDDDDDD', font: 'FF000000' }, 'COMISION': { bg: 'FFAAAAAA', font: 'FF000000' }, 'VACACIONES': { bg: 'FF555555', font: 'FFFFFFFF' },
-            'SESANTIA': { bg: 'FF444444', font: 'FFFFFFFF' }, 'DESCANSO': { bg: 'FF111111', font: 'FF888888' }
+            'PUNTUAL': { bg: 'FF2E7D32', font: 'FFFFFFFF' }, 'ASISTENCIA': { bg: 'FF2E7D32', font: 'FFFFFFFF' },
+            'RETRASO': { bg: 'FFB45309', font: 'FFFFFFFF' }, 'FALTA': { bg: 'FFB91C1C', font: 'FFFFFFFF' }, 'FALTA INJUSTIFICADA': { bg: 'FFB91C1C', font: 'FFFFFFFF' },
+            'PERMISO': { bg: 'FF1D4ED8', font: 'FFFFFFFF' }, 'COMISION': { bg: 'FF0F766E', font: 'FFFFFFFF' }, 'VACACIONES': { bg: 'FF6D28D9', font: 'FFFFFFFF' },
+            'SESANTIA': { bg: 'FF475569', font: 'FFFFFFFF' }, 'DESCANSO': { bg: 'FFC2410C', font: 'FFFFFFFF' }
         };
 
         for (let R = rango.s.r; R <= rango.e.r; ++R) {
@@ -507,6 +518,32 @@
         const libro = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(libro, hoja, "Data"); XLSX.writeFile(libro, `Export_${Date.now()}.xlsx`);
     }
 
+    function cerrarMes() {
+        const mes = document.getElementById('matriz-mes-anio').value; if (!mes) return Swal.fire('Falta mes', '', 'warning');
+        Swal.fire({ title: 'Exportar Matriz', icon: 'warning', showCancelButton: true, confirmButtonText: 'Exportar' }).then((r) => {
+            if (r.isConfirmed) {
+                const hoja = XLSX.utils.table_to_book(document.querySelector('.tabla-matriz'), { raw: true }).Sheets['Sheet1'];
+                
+                // Mismos colores sobrios para la matriz descargable
+                const col = { 'A':{bg:'FF2E7D32',font:'FFFFFFFF'}, 'R':{bg:'FFB45309',font:'FFFFFFFF'}, 'F':{bg:'FFB91C1C',font:'FFFFFFFF'}, 'P':{bg:'FF1D4ED8',font:'FFFFFFFF'}, 'D':{bg:'FFC2410C',font:'FFFFFFFF'}, 'C':{bg:'FF0F766E',font:'FFFFFFFF'}, 'V':{bg:'FF6D28D9',font:'FFFFFFFF'}, 'S':{bg:'FF475569',font:'FFFFFFFF'} };
+                
+                const rg = XLSX.utils.decode_range(hoja['!ref']);
+                for (let R = rg.s.r; R <= rg.e.r; ++R) {
+                    for (let C = rg.s.c; C <= rg.e.c; ++C) {
+                        const cell = hoja[XLSX.utils.encode_cell({c:C,r:R})]; if(!cell) continue;
+                        let st = { alignment: { horizontal: "center", vertical: "center" }, border: { top:{style:"thin",color:{rgb:"FF555555"}}, bottom:{style:"thin",color:{rgb:"FF555555"}}, left:{style:"thin",color:{rgb:"FF555555"}}, right:{style:"thin",color:{rgb:"FF555555"}} }, font: {bold:true} };
+                        if(R===0||R===1) { st.fill = {fgColor:{rgb:"FF0A0A0A"}}; st.font.color = {rgb:"FFFFFFFF"}; }
+                        else if(C===0) { st.alignment.horizontal="left"; st.fill={fgColor:{rgb:"FF141414"}}; st.font.color={rgb:"FFFFFFFF"}; }
+                        else if(col[cell.v]) { st.fill={fgColor:{rgb:col[cell.v].bg}}; st.font.color={rgb:col[cell.v].font}; }
+                        cell.s = st;
+                    }
+                }
+                const w = [{wch:25}]; for(let i=1;i<=rg.e.c;i++) w.push({wch:4}); hoja['!cols'] = w;
+                const lib = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(lib, hoja, "Matriz"); XLSX.writeFile(lib, `Matriz_${mes}.xlsx`);
+            }
+        });
+    }
+
     async function cargarDatosMatriz() {
         try {
             const mesFormateado = document.getElementById('matriz-mes-anio').value;
@@ -522,9 +559,11 @@
         if (miGraficoDona) miGraficoDona.destroy();
         const total = puntual + retraso + falta + permiso + descanso + comision + vacaciones + sesantia;
         
-        // Paleta Monocromática (Grises)
-        const dataColores = total === 0 ? ['#141414'] : ['#ffffff', '#888888', '#222222', '#dddddd', '#111111', '#aaaaaa', '#555555', '#444444'];
-        const colorTexto = document.body.getAttribute('data-theme') === 'light' ? '#111' : '#fff';
+        // Nueva Paleta de Colores Sobrios
+        const dataColores = total === 0 ? ['#141414'] : ['#2e7d32', '#b45309', '#b91c1c', '#1d4ed8', '#c2410c', '#0f766e', '#6d28d9', '#475569'];
+        
+        // SOLUCIÓN AL BUG: Lee el color exacto del texto desde el CSS (blanco o negro según el tema)
+        const colorTexto = getComputedStyle(document.body).getPropertyValue('--texto').trim() || '#888';
 
         miGraficoDona = new Chart(ctx, {
             type: 'doughnut',
@@ -583,29 +622,6 @@
     function agregarFeriado() { const f = document.getElementById('nuevo-feriado').value; if(f && !ajustesEmpresaLocal.feriados.includes(f)) { ajustesEmpresaLocal.feriados.push(f); actualizarListaFeriadosVisual(); } }
     function eliminarFeriado(f) { ajustesEmpresaLocal.feriados = ajustesEmpresaLocal.feriados.filter(x => x !== f); actualizarListaFeriadosVisual(); }
     async function autoCompletarFeriadosBO() { Swal.fire({title:'Buscando...', didOpen:()=>Swal.showLoading()}); try { const r = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${new Date().getFullYear()}/BO`); const data = await r.json(); let n = 0; data.forEach(d=>{if(!ajustesEmpresaLocal.feriados.includes(d.date)){ajustesEmpresaLocal.feriados.push(d.date);n++;}}); actualizarListaFeriadosVisual(); Swal.fire('Listo', `Se agregaron ${n} fechas`, 'success'); } catch(e){ Swal.fire('Error', 'Fallo de API', 'error'); } }
-
-    function cerrarMes() {
-        const mes = document.getElementById('matriz-mes-anio').value; if (!mes) return Swal.fire('Falta mes', '', 'warning');
-        Swal.fire({ title: 'Exportar Matriz', icon: 'warning', showCancelButton: true, confirmButtonText: 'Exportar' }).then((r) => {
-            if (r.isConfirmed) {
-                const hoja = XLSX.utils.table_to_book(document.querySelector('.tabla-matriz'), { raw: true }).Sheets['Sheet1'];
-                const col = { 'A':{bg:'FFFFFFFF',font:'FF000000'}, 'R':{bg:'FF888888',font:'FFFFFFFF'}, 'F':{bg:'FF222222',font:'FFFFFFFF'}, 'P':{bg:'FFDDDDDD',font:'FF000000'}, 'D':{bg:'FF111111',font:'FF888888'}, 'C':{bg:'FFAAAAAA',font:'FF000000'}, 'V':{bg:'FF555555',font:'FFFFFFFF'}, 'S':{bg:'FF444444',font:'FFFFFFFF'}, '-':{bg:'FF0A0A0A',font:'FF333333'} };
-                const rg = XLSX.utils.decode_range(hoja['!ref']);
-                for (let R = rg.s.r; R <= rg.e.r; ++R) {
-                    for (let C = rg.s.c; C <= rg.e.c; ++C) {
-                        const cell = hoja[XLSX.utils.encode_cell({c:C,r:R})]; if(!cell) continue;
-                        let st = { alignment: { horizontal: "center", vertical: "center" }, border: { top:{style:"thin",color:{rgb:"FF555555"}}, bottom:{style:"thin",color:{rgb:"FF555555"}}, left:{style:"thin",color:{rgb:"FF555555"}}, right:{style:"thin",color:{rgb:"FF555555"}} }, font: {bold:true} };
-                        if(R===0||R===1) { st.fill = {fgColor:{rgb:"FF0A0A0A"}}; st.font.color = {rgb:"FFFFFFFF"}; }
-                        else if(C===0) { st.alignment.horizontal="left"; st.fill={fgColor:{rgb:"FF141414"}}; st.font.color={rgb:"FFFFFFFF"}; }
-                        else if(col[cell.v]) { st.fill={fgColor:{rgb:col[cell.v].bg}}; st.font.color={rgb:col[cell.v].font}; }
-                        cell.s = st;
-                    }
-                }
-                const w = [{wch:25}]; for(let i=1;i<=rg.e.c;i++) w.push({wch:4}); hoja['!cols'] = w;
-                const lib = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(lib, hoja, "Matriz"); XLSX.writeFile(lib, `Matriz_${mes}.xlsx`);
-            }
-        });
-    }
 
     function procesarImagenLogo(event) {
         const a = event.target.files[0]; if (!a) return;
