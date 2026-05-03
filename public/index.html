@@ -228,15 +228,10 @@
         const socket = io();
         socket.on('nueva_asistencia', () => { cargarDatos(); if (rolUsuario === 'admin') cargarDatosMatriz(); });
 
-        // 👇 AGREGAR ESTE NUEVO BLOQUE 👇
         socket.on('tarjeta_desconocida', (data) => {
             const modalAbierto = document.getElementById('modal-empleado').style.display === 'flex';
-            
             if (modalAbierto) {
-                // Si tienes la ventana de registrar abierta, auto-escribe el código
                 document.getElementById('emp-uid').value = data.uid;
-                
-                // Hace sonar una campanita visual elegante
                 const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
                 Toast.fire({ icon: 'success', title: '¡Tarjeta leída con éxito!' });
             }
@@ -256,10 +251,21 @@
         const fechaHoy = `${yyyy}-${mm}-${dd}`; 
         const mesHoy = `${yyyy}-${mm}`;         
 
-        document.getElementById('filtro-dia').value = fechaHoy;
-        document.getElementById('filtro-mes').value = mesHoy;
-        document.getElementById('filtro-anio').value = yyyy;
-        if (document.getElementById('matriz-mes-anio')) document.getElementById('matriz-mes-anio').value = mesHoy;
+        // 🧠 MEMORIA: Recuperar filtros guardados o usar los de hoy
+        document.getElementById('tipo-filtro').value = sessionStorage.getItem('filtro-tipo') || 'dia';
+        cambiarTipoFiltro(); // Actualiza la vista para que coincida con el selector
+        document.getElementById('filtro-dia').value = sessionStorage.getItem('filtro-dia') || fechaHoy;
+        document.getElementById('filtro-mes').value = sessionStorage.getItem('filtro-mes') || mesHoy;
+        document.getElementById('filtro-anio').value = sessionStorage.getItem('filtro-anio') || yyyy;
+        document.getElementById('filtro-nombre').value = sessionStorage.getItem('filtro-nombre') || '';
+
+        if (document.getElementById('matriz-mes-anio')) {
+            document.getElementById('matriz-mes-anio').value = sessionStorage.getItem('filtro-matriz') || mesHoy;
+        }
+
+        // 🧠 MEMORIA: Recuperar la pestaña exacta donde estabas
+        const seccionGuardada = sessionStorage.getItem('seccionActiva') || 'asistencias';
+        cambiarSeccion(seccionGuardada);
         
         cargarDatos();
         cargarBrandingGlobal(); 
@@ -269,6 +275,9 @@
     function cambiarSeccion(seccion) {
         const seccionesProhibidas = ['matriz', 'empleados', 'ajustes'];
         if (rolUsuario !== 'admin' && seccionesProhibidas.includes(seccion)) return; 
+
+        // 🧠 Guardar la pestaña actual en memoria
+        sessionStorage.setItem('seccionActiva', seccion);
 
         document.getElementById('seccion-asistencias').style.display = 'none';
         document.getElementById('seccion-matriz').style.display = 'none';
@@ -314,6 +323,13 @@
         const mes = document.getElementById('filtro-mes').value;
         const anio = document.getElementById('filtro-anio').value;
         const busqueda = document.getElementById('filtro-nombre').value;
+
+        // 🧠 Guardar los filtros exactos en la memoria del navegador
+        sessionStorage.setItem('filtro-tipo', tipoFiltro);
+        sessionStorage.setItem('filtro-dia', dia);
+        sessionStorage.setItem('filtro-mes', mes);
+        sessionStorage.setItem('filtro-anio', anio);
+        sessionStorage.setItem('filtro-nombre', busqueda);
 
         // --- SOLUCIÓN: ASEGURAR QUE SIEMPRE HAYA UN FILTRO POR DEFECTO ---
         let url = `/api/registros?busqueda=${busqueda}`;
@@ -603,6 +619,8 @@
     async function cargarDatosMatriz() {
         try {
             const mesFormateado = document.getElementById('matriz-mes-anio').value;
+            // 🧠 Guardar el mes del reporte en memoria
+            sessionStorage.setItem('filtro-matriz', mesFormateado);
             const res = await fetch(`/api/registros?mes=${mesFormateado}`, { headers: headersSeguros });
             const datos = await res.json();
             const resEmp = await fetch('/api/empleados', { headers: headersSeguros });
