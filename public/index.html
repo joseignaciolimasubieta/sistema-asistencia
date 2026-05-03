@@ -446,53 +446,47 @@
     function abrirModal() { document.getElementById('modal-empleado').style.display = 'flex'; }
     function cerrarModal() { document.getElementById('modal-empleado').style.display = 'none'; document.getElementById('form-empleado').reset(); }
 
-    function dibujarMatriz(registros, empleados) {
-        const valorCalendario = document.getElementById('matriz-mes-anio').value;
-        const anioSel = parseInt(valorCalendario.split('-')[0]); const mesSel = parseInt(valorCalendario.split('-')[1]);
-        const diasEnMes = new Date(anioSel, mesSel, 0).getDate();
-        const nombresDias = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
+    function dibujarGrafico(puntual, retraso, falta, permiso, descanso, comision, vacaciones, sesantia) {
+        const ctx = document.getElementById('graficoDona').getContext('2d');
+        if (miGraficoDona) miGraficoDona.destroy();
+        const total = puntual + retraso + falta + permiso + descanso + comision + vacaciones + sesantia;
+        
+        // Paleta de Colores Vivos (como los solicitaste)
+        const dataColores = total === 0 ? ['#141414'] : ['#10B981', '#FBBF24', '#EF4444', '#3B82F6', '#6B7280', '#06B6D4', '#8B5CF6', '#cbd5e1'];
+        
+        // 🔮 MAGIA: Extraemos los colores EXACTOS que está usando tu CSS en este preciso momento
+        const estilosGenerales = getComputedStyle(document.body);
+        const colorTexto = estilosGenerales.getPropertyValue('--texto').trim() || '#ffffff';
+        const colorFondoTarjeta = estilosGenerales.getPropertyValue('--tarjeta').trim() || '#141414';
 
-        let tabla = `<table class="tabla-matriz"><thead><tr><th rowspan="2" class="columna-fija" style="vertical-align: middle;">Colaborador</th>`;
-        for (let i = 1; i <= diasEnMes; i++) { tabla += `<th style="font-size: 9px; padding-bottom: 0;">${nombresDias[new Date(anioSel, mesSel - 1, i).getDay()]}</th>`; }
-        tabla += `</tr><tr>`;
-        for (let i = 1; i <= diasEnMes; i++) { tabla += `<th style="padding-top: 0;">${i}</th>`; }
-        tabla += `</tr></thead><tbody>`;
-
-        empleados.forEach(emp => {
-            tabla += `<tr><td class="columna-fija" style="font-weight: normal;">${emp.nombre}</td>`;
-            for (let d = 1; d <= diasEnMes; d++) {
-                const reg = registros.find(r => {
-                    const f = new Date(r.fechaHora);
-                    return r.uid === emp.uid && f.getDate() === d && (f.getMonth() + 1) === mesSel && f.getFullYear() === anioSel && (r.tipo === 'INGRESO' || r.tipo === 'MANUAL');
-                });
-                let letra = '', claseCss = '';
-                if (reg) {
-                    const est = reg.estado || 'PUNTUAL';
-                    if (est === 'PUNTUAL' || est === 'ASISTENCIA') { letra = 'A'; claseCss = 'bg-A'; }
-                    else if (est === 'RETRASO') { letra = 'R'; claseCss = 'bg-R'; }
-                    else if (est === 'FALTA' || est === 'FALTA INJUSTIFICADA') { letra = 'F'; claseCss = 'bg-F'; }
-                    else if (est === 'PERMISO') { letra = 'P'; claseCss = 'bg-P'; }
-                    else if (est === 'DESCANSO') { letra = 'D'; claseCss = 'bg-D'; }
-                    else if (est === 'COMISION') { letra = 'C'; claseCss = 'bg-C'; }
-                    else if (est === 'VACACIONES') { letra = 'V'; claseCss = 'bg-V'; }
-                    else if (est === 'SESANTIA') { letra = 'S'; claseCss = 'bg-S'; }
-                } else {
-                    const fechaCelda = new Date(anioSel, mesSel - 1, d);
-                    if (fechaCelda < new Date()) {
-                        const esLaborable = ajustesEmpresaLocal.diasLaborables ? ajustesEmpresaLocal.diasLaborables[fechaCelda.getDay()] : (fechaCelda.getDay() !== 0 && fechaCelda.getDay() !== 6);
-                        const esFeriado = ajustesEmpresaLocal.feriados ? ajustesEmpresaLocal.feriados.includes(`${anioSel}-${String(mesSel).padStart(2, '0')}-${String(d).padStart(2, '0')}`) : false;
-                        
-                        // CORRECCIÓN: Feriados usan "D" y color naranja (bg-D). Fines de semana usan "-" y color gris oscuro.
-                        if (esFeriado) { letra = 'D'; claseCss = 'bg-D'; } 
-                        else if (!esLaborable) { letra = '-'; claseCss = 'bg-S'; } // Usamos bg-S (Gris pizarra) para que se vea sobrio
-                        else { letra = 'F'; claseCss = 'bg-F'; }
-                    }
-                }
-                tabla += `<td class="${claseCss}" onclick="abrirSelectorManual('${emp.uid}', '${emp.nombre}', '${anioSel}-${String(mesSel).padStart(2, '0')}-${String(d).padStart(2, '0')}')" style="cursor: pointer;">${letra}</td>`;
+        miGraficoDona = new Chart(ctx, {
+            type: 'doughnut',
+            data: { 
+                labels: total === 0 ? ['Sin datos'] : ['Puntual', 'Retraso', 'Falta', 'Permiso', 'Descanso', 'Comisión', 'Vacaciones', 'Sesantía'], 
+                datasets: [{ 
+                    data: total === 0 ? [1] : [puntual, retraso, falta, permiso, descanso, comision, vacaciones, sesantia], 
+                    backgroundColor: dataColores, 
+                    borderWidth: 2, 
+                    borderColor: colorFondoTarjeta, // Hace que las líneas separadoras sean del mismo color de la caja de fondo
+                    hoverOffset: 4 
+                }] 
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                cutout: '75%', 
+                plugins: { 
+                    legend: { 
+                        position: 'bottom', 
+                        labels: { 
+                            color: colorTexto, // 👈 ¡Ahora el texto será blanco en modo oscuro y negro en modo claro automáticamente!
+                            font: { family: 'Poppins', size: 12 }, 
+                            padding: 15 
+                        } 
+                    } 
+                } 
             }
-            tabla += `</tr>`;
         });
-        document.getElementById('pantalla-matriz').innerHTML = tabla + `</tbody></table>`;
     }
 
     function descargarExcel() {
