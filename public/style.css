@@ -132,3 +132,77 @@ th { color: var(--texto-secundario); font-weight: 400; text-transform: uppercase
 input[type="time"] { text-align: left !important; }
 input[type="time"]::-webkit-datetime-edit { display: block !important; text-align: left !important; padding: 0 !important; }
 input[type="time"]::-webkit-datetime-edit-fields-wrapper { display: inline-block !important; padding: 0 !important; }
+
+/* ========================================== */
+/* ALERTAS SOBRIAS (SWEETALERT2 CUSTOM)       */
+/* ========================================== */
+
+/* 1. La caja principal de la alerta */
+.swal2-popup {
+    background-color: var(--tarjeta) !important;
+    color: var(--texto) !important;
+    border: 1px solid var(--borde) !important;
+    border-radius: 6px !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important; /* Sombra profunda y elegante */
+    font-family: 'Poppins', sans-serif !important;
+}
+
+/* 2. El título de la alerta */
+.swal2-title {
+    color: var(--texto) !important;
+    font-weight: 400 !important;
+    font-size: 18px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+}
+
+/* 3. El texto descriptivo */
+.swal2-html-container {
+    color: var(--texto-secundario) !important;
+    font-weight: 300 !important;
+    font-size: 13px !important;
+}
+
+/* 4. EL TRUCO MAESTRO: Apagar los colores vivos de los iconos */
+.swal2-icon {
+    filter: grayscale(100%) opacity(0.7) !important; /* Vuelve todo gris/blanco y un poco transparente */
+    transform: scale(0.85) !important; /* Los hace un poco más pequeños y minimalistas */
+    margin-top: 1.5em !important;
+}
+
+/* 5. Botón Principal (Aceptar / Confirmar) */
+.swal2-styled.swal2-confirm {
+    background-color: var(--primario) !important;
+    color: var(--texto-inverso) !important;
+    border: 1px solid var(--primario) !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    padding: 10px 24px !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    box-shadow: none !important;
+    transition: 0.2s !important;
+}
+.swal2-styled.swal2-confirm:hover {
+    opacity: 0.8 !important;
+}
+
+/* 6. Botón Secundario (Cancelar) */
+.swal2-styled.swal2-cancel {
+    background-color: transparent !important;
+    color: var(--texto) !important;
+    border: 1px solid var(--borde) !important;
+    border-radius: 4px !important;
+    font-weight: 400 !important;
+    padding: 10px 24px !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    box-shadow: none !important;
+    transition: 0.2s !important;
+}
+.swal2-styled.swal2-cancel:hover {
+    background-color: var(--borde) !important;
+    color: var(--texto) !important;
+}
