@@ -100,16 +100,16 @@ th { color: var(--texto-secundario); font-weight: 400; text-transform: uppercase
 .tabla-matriz td { border: 1px solid var(--fondo); padding: 6px 2px; min-width: 25px; font-weight: 600; text-align: center; }
 
 /* =========================================
-   COLORES DE ESTADOS (SOBRIOS Y ELEGANTES)
+   COLORES DE ESTADOS (TONOS SOBRIOS/AHUMADOS)
    ========================================= */
-.bg-A { background-color: #2e7d32; color: #ffffff; } /* Verde apagado (Puntual) */
-.bg-R { background-color: #b45309; color: #ffffff; } /* Ocre / Mostaza (Retraso) */
-.bg-F { background-color: #b91c1c; color: #ffffff; } /* Rojo sangre oscuro (Falta) */
-.bg-P { background-color: #1d4ed8; color: #ffffff; } /* Azul marino (Permiso) */
-.bg-D { background-color: #c2410c; color: #ffffff; } /* Naranja quemado (Descanso/Feriado) */
-.bg-C { background-color: #0f766e; color: #ffffff; } /* Verde azulado (Comisión) */
-.bg-V { background-color: #6d28d9; color: #ffffff; } /* Morado sobrio (Vacaciones) */
-.bg-S { background-color: #475569; color: #ffffff; } /* Gris pizarra (Sesantía) */
+.bg-A { background-color: #466b52; color: #ffffff; } /* Verde pino apagado (Puntual) */
+.bg-R { background-color: #a38a41; color: #000000; } /* Amarillo ocre / Mostaza sucio (Retraso) */
+.bg-F { background-color: #8c3a3a; color: #ffffff; } /* Rojo ladrillo oscuro (Falta) */
+.bg-P { background-color: #455c80; color: #ffffff; } /* Azul acero / Cadete (Permiso) */
+.bg-D { background-color: #545454; color: #ffffff; } /* Gris asfalto (Descanso) */
+.bg-C { background-color: #417d8a; color: #ffffff; } /* Celeste verdoso apagado (Comisión) */
+.bg-V { background-color: #705187; color: #ffffff; } /* Morado ciruela pálido (Vacaciones) */
+.bg-S { background-color: #a1a5ab; color: #000000; } /* Plomo claro (Sesantía) */
 
 .columna-fija { position: sticky; left: 0; background-color: var(--tarjeta) !important; color: var(--texto) !important; text-align: left; padding-left: 15px !important; z-index: 10; border-right: 1px solid var(--borde) !important; }
 

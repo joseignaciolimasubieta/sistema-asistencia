@@ -374,17 +374,20 @@
                 const fecha = new Date(reg.fechaHora).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' });
                 const btnEliminar = rolUsuario === 'admin' ? `<button onclick="eliminarRegistro('${reg._id}')" class="btn-peligro" style="padding: 2px 6px; font-size:11px;">X</button>` : '';
                 
+                // Paleta sobria para los badges del Historial
                 let textoEstado = reg.estado || 'PUNTUAL';
-                let bgSober = '#2e7d32'; 
-                if (textoEstado === 'RETRASO') bgSober = '#b45309';
-                else if (textoEstado === 'FALTA' || textoEstado === 'FALTA INJUSTIFICADA') bgSober = '#b91c1c'; 
-                else if (textoEstado === 'PERMISO') bgSober = '#1d4ed8';
-                else if (textoEstado === 'DESCANSO') bgSober = '#c2410c'; 
-                else if (textoEstado === 'COMISION') bgSober = '#0f766e';
-                else if (textoEstado === 'VACACIONES') bgSober = '#6d28d9';
-                else if (textoEstado === 'SESANTIA') bgSober = '#475569';
+                let bgSober = '#466b52'; // Verde apagado
+                let colorTextoBadge = '#ffffff';
 
-                const badgeEstado = `<span style="background: ${bgSober}; color: #ffffff; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; margin-left: 10px; border: none; letter-spacing: 0.5px;">${textoEstado}</span>`;
+                if (textoEstado === 'RETRASO') { bgSober = '#a38a41'; colorTextoBadge = '#000000'; } // Amarillo ocre
+                else if (textoEstado === 'FALTA' || textoEstado === 'FALTA INJUSTIFICADA') { bgSober = '#8c3a3a'; } // Rojo ladrillo
+                else if (textoEstado === 'PERMISO') { bgSober = '#455c80'; } // Azul acero
+                else if (textoEstado === 'DESCANSO') { bgSober = '#545454'; } // Gris asfalto
+                else if (textoEstado === 'COMISION') { bgSober = '#417d8a'; } // Celeste apagado
+                else if (textoEstado === 'VACACIONES') { bgSober = '#705187'; } // Morado ciruela
+                else if (textoEstado === 'SESANTIA') { bgSober = '#a1a5ab'; colorTextoBadge = '#000000'; } // Plomo claro
+
+                const badgeEstado = `<span style="background: ${bgSober}; color: ${colorTextoBadge}; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; margin-left: 10px; border: none; letter-spacing: 0.5px;">${textoEstado}</span>`;
                 const mostrarBadge = (reg.tipo === 'INGRESO' || reg.tipo === 'MANUAL' || !reg.tipo);
 
                 return `<tr>
@@ -479,8 +482,9 @@
                         const esLaborable = ajustesEmpresaLocal.diasLaborables ? ajustesEmpresaLocal.diasLaborables[fechaCelda.getDay()] : (fechaCelda.getDay() !== 0 && fechaCelda.getDay() !== 6);
                         const esFeriado = ajustesEmpresaLocal.feriados ? ajustesEmpresaLocal.feriados.includes(`${anioSel}-${String(mesSel).padStart(2, '0')}-${String(d).padStart(2, '0')}`) : false;
                         
-                        // AQUÍ ESTÁ EL CAMBIO: Feriados y fines de semana usan "D" y color naranja (bg-D)
-                        if (!esLaborable || esFeriado) { letra = 'D'; claseCss = 'bg-D'; } 
+                        // CORRECCIÓN: Feriados usan "D" y color naranja (bg-D). Fines de semana usan "-" y color gris oscuro.
+                        if (esFeriado) { letra = 'D'; claseCss = 'bg-D'; } 
+                        else if (!esLaborable) { letra = '-'; claseCss = 'bg-S'; } // Usamos bg-S (Gris pizarra) para que se vea sobrio
                         else { letra = 'F'; claseCss = 'bg-F'; }
                     }
                 }
@@ -502,12 +506,12 @@
         
         const rango = XLSX.utils.decode_range(hoja['!ref']);
         
-        // Colores Hexadecimales Sobrios para Excel (Formato ARGB)
+        // Colores ARGB Sobrios para Excel
         const coloresExcel = {
-            'PUNTUAL': { bg: 'FF2E7D32', font: 'FFFFFFFF' }, 'ASISTENCIA': { bg: 'FF2E7D32', font: 'FFFFFFFF' },
-            'RETRASO': { bg: 'FFB45309', font: 'FFFFFFFF' }, 'FALTA': { bg: 'FFB91C1C', font: 'FFFFFFFF' }, 'FALTA INJUSTIFICADA': { bg: 'FFB91C1C', font: 'FFFFFFFF' },
-            'PERMISO': { bg: 'FF1D4ED8', font: 'FFFFFFFF' }, 'COMISION': { bg: 'FF0F766E', font: 'FFFFFFFF' }, 'VACACIONES': { bg: 'FF6D28D9', font: 'FFFFFFFF' },
-            'SESANTIA': { bg: 'FF475569', font: 'FFFFFFFF' }, 'DESCANSO': { bg: 'FFC2410C', font: 'FFFFFFFF' }
+            'PUNTUAL': { bg: 'FF466B52', font: 'FFFFFFFF' }, 'ASISTENCIA': { bg: 'FF466B52', font: 'FFFFFFFF' },
+            'RETRASO': { bg: 'FFA38A41', font: 'FF000000' }, 'FALTA': { bg: 'FF8C3A3A', font: 'FFFFFFFF' }, 'FALTA INJUSTIFICADA': { bg: 'FF8C3A3A', font: 'FFFFFFFF' },
+            'PERMISO': { bg: 'FF455C80', font: 'FFFFFFFF' }, 'COMISION': { bg: 'FF417D8A', font: 'FFFFFFFF' }, 'VACACIONES': { bg: 'FF705187', font: 'FFFFFFFF' },
+            'SESANTIA': { bg: 'FFA1A5AB', font: 'FF000000' }, 'DESCANSO': { bg: 'FF545454', font: 'FFFFFFFF' }
         };
 
         for (let R = rango.s.r; R <= rango.e.r; ++R) {
@@ -534,8 +538,8 @@
             if (r.isConfirmed) {
                 const hoja = XLSX.utils.table_to_book(document.querySelector('.tabla-matriz'), { raw: true }).Sheets['Sheet1'];
                 
-                // Mismos colores sobrios para la matriz descargable
-                const col = { 'A':{bg:'FF2E7D32',font:'FFFFFFFF'}, 'R':{bg:'FFB45309',font:'FFFFFFFF'}, 'F':{bg:'FFB91C1C',font:'FFFFFFFF'}, 'P':{bg:'FF1D4ED8',font:'FFFFFFFF'}, 'D':{bg:'FFC2410C',font:'FFFFFFFF'}, 'C':{bg:'FF0F766E',font:'FFFFFFFF'}, 'V':{bg:'FF6D28D9',font:'FFFFFFFF'}, 'S':{bg:'FF475569',font:'FFFFFFFF'} };
+                // Mismos colores sobrios para la matriz en Excel
+                const col = { 'A':{bg:'FF466B52',font:'FFFFFFFF'}, 'R':{bg:'FFA38A41',font:'FF000000'}, 'F':{bg:'FF8C3A3A',font:'FFFFFFFF'}, 'P':{bg:'FF455C80',font:'FFFFFFFF'}, 'D':{bg:'FF545454',font:'FFFFFFFF'}, 'C':{bg:'FF417D8A',font:'FFFFFFFF'}, 'V':{bg:'FF705187',font:'FFFFFFFF'}, 'S':{bg:'FFA1A5AB',font:'FF000000'} };
                 
                 const rg = XLSX.utils.decode_range(hoja['!ref']);
                 for (let R = rg.s.r; R <= rg.e.r; ++R) {
@@ -569,11 +573,11 @@
         if (miGraficoDona) miGraficoDona.destroy();
         const total = puntual + retraso + falta + permiso + descanso + comision + vacaciones + sesantia;
         
-        // Nueva Paleta de Colores Sobrios
-        const dataColores = total === 0 ? ['#141414'] : ['#2e7d32', '#b45309', '#b91c1c', '#1d4ed8', '#c2410c', '#0f766e', '#6d28d9', '#475569'];
+        // Paleta de Tonos Sobrios/Ahumados
+        const dataColores = total === 0 ? ['#141414'] : ['#466b52', '#a38a41', '#8c3a3a', '#455c80', '#545454', '#417d8a', '#705187', '#a1a5ab'];
         
-        // SOLUCIÓN AL BUG: Lee el color exacto del texto desde el CSS (blanco o negro según el tema)
-        const colorTexto = getComputedStyle(document.body).getPropertyValue('--texto').trim() || '#888';
+        const temaActual = localStorage.getItem('tema') || 'dark';
+        const colorTexto = temaActual === 'light' ? '#111111' : '#ffffff'; 
 
         miGraficoDona = new Chart(ctx, {
             type: 'doughnut',
