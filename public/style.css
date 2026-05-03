@@ -208,3 +208,30 @@ input[type="time"]::-webkit-datetime-edit-fields-wrapper { display: inline-block
     background-color: var(--borde) !important;
     color: var(--texto) !important;
 }
+
+/* ========================================== */
+/* ICONOS NATIVOS DE CALENDARIO Y RELOJ       */
+/* ========================================== */
+
+/* 1. Volver blancos los iconos en MODO OSCURO */
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.5; /* Se ve grisáceo para que combine con el texto secundario */
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+/* Brillo al pasar el ratón */
+::-webkit-calendar-picker-indicator:hover {
+    opacity: 1; /* Se vuelve blanco puro */
+}
+
+/* 2. Devolver los iconos a negro en MODO CLARO */
+body[data-theme='light'] ::-webkit-calendar-picker-indicator {
+    filter: none; /* Quita la inversión de color */
+    opacity: 0.5;
+}
+
+body[data-theme='light'] ::-webkit-calendar-picker-indicator:hover {
+    opacity: 1; /* Se vuelve negro puro al pasar el ratón */
+}
