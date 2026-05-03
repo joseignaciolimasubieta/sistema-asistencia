@@ -10,66 +10,81 @@
 </head>
 <body style="display: flex; flex-direction: column; align-items: center; min-height: 100vh; height: auto; overflow-y: auto; background-color: var(--fondo); padding: 40px 20px 80px 20px; box-sizing: border-box;">
 
-    <!-- BARRA DE SEGURIDAD (LA LLAVE MAESTRA) -->
-    <div class="contenedor-tarjeta" style="width: 100%; max-width: 600px; margin-bottom: 20px; text-align: center; border: 2px solid #9c27b0;">
-        <h3 style="margin-top: 0;">🔑 Llave de Seguridad</h3>
-        <input type="password" id="master-key" class="input-ajuste" placeholder="Ingresa tu MASTER_KEY aquí..." required style="width: 80%; text-align: center; font-size: 18px;">
-    </div>
-
-    <!-- MÉTRICAS GLOBALES DEL SAAS -->
-    <div id="panel-metricas" style="display: none; width: 100%; max-width: 900px; gap: 15px; margin-bottom: 20px; justify-content: space-between;">
-        <div class="contenedor-tarjeta" style="flex: 1; text-align: center; border-bottom: 4px solid #9c27b0; padding: 15px;">
-            <h4 style="margin: 0; color: var(--texto-secundario); font-size: 12px;">EMPRESAS ACTIVAS</h4>
-            <p id="metrica-empresas" style="font-size: 28px; font-weight: bold; color: white; margin: 5px 0;">0</p>
-        </div>
-        <div class="contenedor-tarjeta" style="flex: 1; text-align: center; border-bottom: 4px solid #05cd99; padding: 15px;">
-            <h4 style="margin: 0; color: var(--texto-secundario); font-size: 12px;">EMPLEADOS TOTALES</h4>
-            <p id="metrica-empleados" style="font-size: 28px; font-weight: bold; color: white; margin: 5px 0;">0</p>
-        </div>
-        <div class="contenedor-tarjeta" style="flex: 1; text-align: center; border-bottom: 4px solid #2196f3; padding: 15px;">
-            <h4 style="margin: 0; color: var(--texto-secundario); font-size: 12px;">REGISTROS DE ASISTENCIA</h4>
-            <p id="metrica-registros" style="font-size: 28px; font-weight: bold; color: white; margin: 5px 0;">0</p>
+    <!-- 🔒 PANTALLA 1: ACCESO DE SEGURIDAD (Se ve primero) -->
+    <div id="pantalla-acceso" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 70vh;">
+        <div class="contenedor-tarjeta" style="width: 100%; max-width: 400px; text-align: center; border: 2px solid #9c27b0; padding: 40px 20px;">
+            <h2 style="margin-top: 0; color: white;">🛡️ Portal SuperAdmin</h2>
+            <p style="color: var(--texto-secundario); font-size: 14px; margin-bottom: 25px;">Ingresa tu llave maestra para acceder</p>
+            
+            <input type="password" id="master-key" class="input-ajuste" placeholder="Tu MASTER_KEY secreta..." required style="width: 85%; text-align: center; font-size: 16px; margin-bottom: 20px;">
+            <button onclick="verificarAcceso()" class="btn-primario" style="width: 90%; padding: 12px; font-size: 16px; background-color: #9c27b0;">Desbloquear Sistema</button>
         </div>
     </div>
 
-    <div style="display: flex; gap: 20px; width: 100%; max-width: 900px; flex-wrap: wrap; align-items: flex-start;">
+    <!-- 📊 PANTALLA 2: DASHBOARD COMPLETO (Oculto por defecto) -->
+    <div id="pantalla-dashboard" style="display: none; flex-direction: column; align-items: center; width: 100%;">
         
-        <!-- PANEL IZQUIERDO: CREAR EMPRESA -->
-        <div class="contenedor-tarjeta" style="flex: 1; min-width: 300px; border-top: 5px solid #05cd99;">
-            <h2 style="color: var(--texto); margin-bottom: 5px;">✨ Nueva Empresa</h2>
-            <p style="color: var(--texto-secundario); font-size: 13px; margin-top: 0;">Dar de alta a un cliente</p>
-
-            <form id="form-superadmin" onsubmit="crearEmpresa(event)" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
-                <div>
-                    <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">NOMBRE COMERCIAL</label>
-                    <input type="text" id="nueva-empresa" class="input-ajuste" placeholder="Ej: Clínica San José" required style="width: 100%; margin-top: 5px;">
-                </div>
-                <div>
-                    <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">CORREO DEL ADMINISTRADOR</label>
-                    <input type="email" id="nuevo-email" class="input-ajuste" placeholder="admin@empresa.com" required style="width: 100%; margin-top: 5px;">
-                </div>
-                <div>
-                    <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">CONTRASEÑA TEMPORAL</label>
-                    <input type="text" id="nueva-pass" class="input-ajuste" placeholder="Ej: temporal123" required style="width: 100%; margin-top: 5px;">
-                </div>
-                <button type="submit" class="btn-primario" style="padding: 12px; font-size: 15px; background-color: #05cd99;">➕ Dar de Alta</button>
-            </form>
+        <!-- Botón para cerrar sesión maestra -->
+        <div style="width: 100%; max-width: 900px; display: flex; justify-content: flex-end; margin-bottom: 15px;">
+            <button onclick="cerrarSuperAdmin()" class="btn-peligro" style="padding: 8px 15px;">🔒 Salir del Panel</button>
         </div>
 
-        <!-- PANEL DERECHO: ADMINISTRAR EMPRESAS -->
-        <div class="contenedor-tarjeta" style="flex: 1; min-width: 300px; border-top: 5px solid #ee5d50;">
-            <h2 style="color: var(--texto); margin-bottom: 5px;">🗑️ Directorio de Clientes</h2>
-            <p style="color: var(--texto-secundario); font-size: 13px; margin-top: 0;">Gestiona o elimina accesos</p>
+        <!-- MÉTRICAS GLOBALES DEL SAAS -->
+        <div id="panel-metricas" style="display: flex; width: 100%; max-width: 900px; gap: 15px; margin-bottom: 20px; justify-content: space-between;">
+            <div class="contenedor-tarjeta" style="flex: 1; text-align: center; border-bottom: 4px solid #9c27b0; padding: 15px;">
+                <h4 style="margin: 0; color: var(--texto-secundario); font-size: 12px;">EMPRESAS ACTIVAS</h4>
+                <p id="metrica-empresas" style="font-size: 28px; font-weight: bold; color: white; margin: 5px 0;">0</p>
+            </div>
+            <div class="contenedor-tarjeta" style="flex: 1; text-align: center; border-bottom: 4px solid #05cd99; padding: 15px;">
+                <h4 style="margin: 0; color: var(--texto-secundario); font-size: 12px;">EMPLEADOS TOTALES</h4>
+                <p id="metrica-empleados" style="font-size: 28px; font-weight: bold; color: white; margin: 5px 0;">0</p>
+            </div>
+            <div class="contenedor-tarjeta" style="flex: 1; text-align: center; border-bottom: 4px solid #2196f3; padding: 15px;">
+                <h4 style="margin: 0; color: var(--texto-secundario); font-size: 12px;">REGISTROS DE ASISTENCIA</h4>
+                <p id="metrica-registros" style="font-size: 28px; font-weight: bold; color: white; margin: 5px 0;">0</p>
+            </div>
+        </div>
+
+        <!-- PANELES DE EMPRESAS -->
+        <div style="display: flex; gap: 20px; width: 100%; max-width: 900px; flex-wrap: wrap; align-items: flex-start;">
             
-            <button onclick="cargarEmpresas()" class="btn-primario" style="width: 100%; margin-top: 10px; background-color: #334155;">🔄 Cargar / Actualizar Lista</button>
-            
-            <div style="overflow-x: auto; margin-top: 20px;">
-                <table style="width: 100%; text-align: left;">
-                    <thead><tr><th>Empresa</th><th>ID Interno</th><th>Acción</th></tr></thead>
-                    <tbody id="lista-empresas">
-                        <tr><td colspan="3" style="text-align: center; color: var(--texto-secundario);">Haz clic en Cargar Lista...</td></tr>
-                    </tbody>
-                </table>
+            <!-- PANEL IZQUIERDO: CREAR EMPRESA -->
+            <div class="contenedor-tarjeta" style="flex: 1; min-width: 300px; border-top: 5px solid #05cd99;">
+                <h2 style="color: var(--texto); margin-bottom: 5px;">✨ Nueva Empresa</h2>
+                <p style="color: var(--texto-secundario); font-size: 13px; margin-top: 0;">Dar de alta a un cliente</p>
+
+                <form id="form-superadmin" onsubmit="crearEmpresa(event)" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                    <div>
+                        <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">NOMBRE COMERCIAL</label>
+                        <input type="text" id="nueva-empresa" class="input-ajuste" placeholder="Ej: Clínica San José" required style="width: 100%; margin-top: 5px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">CORREO DEL ADMINISTRADOR</label>
+                        <input type="email" id="nuevo-email" class="input-ajuste" placeholder="admin@empresa.com" required style="width: 100%; margin-top: 5px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; font-weight: bold; color: var(--texto-secundario);">CONTRASEÑA TEMPORAL</label>
+                        <input type="text" id="nueva-pass" class="input-ajuste" placeholder="Ej: temporal123" required style="width: 100%; margin-top: 5px;">
+                    </div>
+                    <button type="submit" class="btn-primario" style="padding: 12px; font-size: 15px; background-color: #05cd99;">➕ Dar de Alta</button>
+                </form>
+            </div>
+
+            <!-- PANEL DERECHO: ADMINISTRAR EMPRESAS -->
+            <div class="contenedor-tarjeta" style="flex: 1; min-width: 300px; border-top: 5px solid #ee5d50;">
+                <h2 style="color: var(--texto); margin-bottom: 5px;">🗑️ Directorio de Clientes</h2>
+                <p style="color: var(--texto-secundario); font-size: 13px; margin-top: 0;">Gestiona o elimina accesos</p>
+                
+                <button onclick="cargarEmpresas()" class="btn-primario" style="width: 100%; margin-top: 10px; background-color: #334155;">🔄 Refrescar Lista</button>
+                
+                <div style="overflow-x: auto; margin-top: 20px;">
+                    <table style="width: 100%; text-align: left;">
+                        <thead><tr><th>Empresa</th><th>ID Interno</th><th>Acción</th></tr></thead>
+                        <tbody id="lista-empresas">
+                            <!-- Los datos se inyectarán aquí -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -175,6 +190,37 @@
                     }
                 }
             });
+        }
+
+        // 1. FUNCIONES NUEVAS DE TRANSICIÓN DE PANTALLAS
+        async function verificarAcceso() {
+            const mKey = document.getElementById('master-key').value;
+            if(!mKey) return Swal.fire('Alto', 'Escribe tu Llave de Seguridad primero', 'warning');
+
+            try {
+                // Hacemos una petición rápida al servidor para ver si la llave es real
+                const res = await fetch('/api/master/metricas', { headers: { 'x-master-key': mKey } });
+                
+                if (res.ok) {
+                    // ¡Llave correcta! Ocultamos el login y mostramos el dashboard
+                    document.getElementById('pantalla-acceso').style.display = 'none';
+                    document.getElementById('pantalla-dashboard').style.display = 'flex';
+                    
+                    // Cargamos los datos para que todo esté listo
+                    cargarEmpresas();
+                } else {
+                    Swal.fire('Acceso Denegado', 'La Llave Maestra es incorrecta', 'error');
+                }
+            } catch (error) {
+                Swal.fire('Error', 'Problema de conexión con el servidor', 'error');
+            }
+        }
+
+        function cerrarSuperAdmin() {
+            // Borramos la clave por seguridad y volvemos a la pantalla de login
+            document.getElementById('master-key').value = '';
+            document.getElementById('pantalla-dashboard').style.display = 'none';
+            document.getElementById('pantalla-acceso').style.display = 'flex';
         }
     </script>
 </body>
