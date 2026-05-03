@@ -374,18 +374,18 @@
                 const fecha = new Date(reg.fechaHora).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' });
                 const btnEliminar = rolUsuario === 'admin' ? `<button onclick="eliminarRegistro('${reg._id}')" class="btn-peligro" style="padding: 2px 6px; font-size:11px;">X</button>` : '';
                 
-                // Paleta sobria para los badges del Historial
+                // Paleta de colores para los badges del Historial
                 let textoEstado = reg.estado || 'PUNTUAL';
-                let bgSober = '#466b52'; // Verde apagado
+                let bgSober = '#10B981'; // Verde
                 let colorTextoBadge = '#ffffff';
 
-                if (textoEstado === 'RETRASO') { bgSober = '#a38a41'; colorTextoBadge = '#000000'; } // Amarillo ocre
-                else if (textoEstado === 'FALTA' || textoEstado === 'FALTA INJUSTIFICADA') { bgSober = '#8c3a3a'; } // Rojo ladrillo
-                else if (textoEstado === 'PERMISO') { bgSober = '#455c80'; } // Azul acero
-                else if (textoEstado === 'DESCANSO') { bgSober = '#545454'; } // Gris asfalto
-                else if (textoEstado === 'COMISION') { bgSober = '#417d8a'; } // Celeste apagado
-                else if (textoEstado === 'VACACIONES') { bgSober = '#705187'; } // Morado ciruela
-                else if (textoEstado === 'SESANTIA') { bgSober = '#a1a5ab'; colorTextoBadge = '#000000'; } // Plomo claro
+                if (textoEstado === 'RETRASO') { bgSober = '#FBBF24'; colorTextoBadge = '#000000'; } // Amarillo
+                else if (textoEstado === 'FALTA' || textoEstado === 'FALTA INJUSTIFICADA') { bgSober = '#EF4444'; } // Rojo
+                else if (textoEstado === 'PERMISO') { bgSober = '#3B82F6'; } // Azul
+                else if (textoEstado === 'DESCANSO') { bgSober = '#6B7280'; } // Gris
+                else if (textoEstado === 'COMISION') { bgSober = '#06B6D4'; } // Celeste
+                else if (textoEstado === 'VACACIONES') { bgSober = '#8B5CF6'; } // Morado
+                else if (textoEstado === 'SESANTIA') { bgSober = '#cbd5e1'; colorTextoBadge = '#000000'; } // Plomo claro
 
                 const badgeEstado = `<span style="background: ${bgSober}; color: ${colorTextoBadge}; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; margin-left: 10px; border: none; letter-spacing: 0.5px;">${textoEstado}</span>`;
                 const mostrarBadge = (reg.tipo === 'INGRESO' || reg.tipo === 'MANUAL' || !reg.tipo);
@@ -506,12 +506,12 @@
         
         const rango = XLSX.utils.decode_range(hoja['!ref']);
         
-        // Colores ARGB Sobrios para Excel
+        // Colores ARGB para Excel
         const coloresExcel = {
-            'PUNTUAL': { bg: 'FF466B52', font: 'FFFFFFFF' }, 'ASISTENCIA': { bg: 'FF466B52', font: 'FFFFFFFF' },
-            'RETRASO': { bg: 'FFA38A41', font: 'FF000000' }, 'FALTA': { bg: 'FF8C3A3A', font: 'FFFFFFFF' }, 'FALTA INJUSTIFICADA': { bg: 'FF8C3A3A', font: 'FFFFFFFF' },
-            'PERMISO': { bg: 'FF455C80', font: 'FFFFFFFF' }, 'COMISION': { bg: 'FF417D8A', font: 'FFFFFFFF' }, 'VACACIONES': { bg: 'FF705187', font: 'FFFFFFFF' },
-            'SESANTIA': { bg: 'FFA1A5AB', font: 'FF000000' }, 'DESCANSO': { bg: 'FF545454', font: 'FFFFFFFF' }
+            'PUNTUAL': { bg: 'FF10B981', font: 'FFFFFFFF' }, 'ASISTENCIA': { bg: 'FF10B981', font: 'FFFFFFFF' },
+            'RETRASO': { bg: 'FFFBBF24', font: 'FF000000' }, 'FALTA': { bg: 'FFEF4444', font: 'FFFFFFFF' }, 'FALTA INJUSTIFICADA': { bg: 'FFEF4444', font: 'FFFFFFFF' },
+            'PERMISO': { bg: 'FF3B82F6', font: 'FFFFFFFF' }, 'COMISION': { bg: 'FF06B6D4', font: 'FFFFFFFF' }, 'VACACIONES': { bg: 'FF8B5CF6', font: 'FFFFFFFF' },
+            'SESANTIA': { bg: 'FFCBD5E1', font: 'FF000000' }, 'DESCANSO': { bg: 'FF6B7280', font: 'FFFFFFFF' }
         };
 
         for (let R = rango.s.r; R <= rango.e.r; ++R) {
@@ -538,8 +538,8 @@
             if (r.isConfirmed) {
                 const hoja = XLSX.utils.table_to_book(document.querySelector('.tabla-matriz'), { raw: true }).Sheets['Sheet1'];
                 
-                // Mismos colores sobrios para la matriz en Excel
-                const col = { 'A':{bg:'FF466B52',font:'FFFFFFFF'}, 'R':{bg:'FFA38A41',font:'FF000000'}, 'F':{bg:'FF8C3A3A',font:'FFFFFFFF'}, 'P':{bg:'FF455C80',font:'FFFFFFFF'}, 'D':{bg:'FF545454',font:'FFFFFFFF'}, 'C':{bg:'FF417D8A',font:'FFFFFFFF'}, 'V':{bg:'FF705187',font:'FFFFFFFF'}, 'S':{bg:'FFA1A5AB',font:'FF000000'} };
+                // Mismos colores para la matriz en Excel
+                const col = { 'A':{bg:'FF10B981',font:'FFFFFFFF'}, 'R':{bg:'FFFBBF24',font:'FF000000'}, 'F':{bg:'FFEF4444',font:'FFFFFFFF'}, 'P':{bg:'FF3B82F6',font:'FFFFFFFF'}, 'D':{bg:'FF6B7280',font:'FFFFFFFF'}, 'C':{bg:'FF06B6D4',font:'FFFFFFFF'}, 'V':{bg:'FF8B5CF6',font:'FFFFFFFF'}, 'S':{bg:'FFCBD5E1',font:'FF000000'} };
                 
                 const rg = XLSX.utils.decode_range(hoja['!ref']);
                 for (let R = rg.s.r; R <= rg.e.r; ++R) {
@@ -573,8 +573,8 @@
         if (miGraficoDona) miGraficoDona.destroy();
         const total = puntual + retraso + falta + permiso + descanso + comision + vacaciones + sesantia;
         
-        // Paleta de Tonos Sobrios/Ahumados
-        const dataColores = total === 0 ? ['#141414'] : ['#466b52', '#a38a41', '#8c3a3a', '#455c80', '#545454', '#417d8a', '#705187', '#a1a5ab'];
+        // Nueva Paleta de Colores Vivos y Diferenciados
+        const dataColores = total === 0 ? ['#141414'] : ['#10B981', '#FBBF24', '#EF4444', '#3B82F6', '#6B7280', '#06B6D4', '#8B5CF6', '#cbd5e1'];
         
         const temaActual = localStorage.getItem('tema') || 'dark';
         const colorTexto = temaActual === 'light' ? '#111111' : '#ffffff'; 
