@@ -225,8 +225,16 @@
         else sidebar.classList.toggle('colapsado');
     }
 
-    window.onload = () => {
+    window.onload = async () => {
         const socket = io();
+        
+        // 🔐 DECODIFICAR EL TOKEN PARA SABER A QUÉ SALA UNIRNOS
+        const token = sessionStorage.getItem('token');
+        if (token) {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            socket.emit('unirse_empresa', payload.empresa_id); // Nos metemos a nuestra sala privada
+        }
+
         socket.on('nueva_asistencia', () => { cargarDatos(); if (rolUsuario === 'admin') cargarDatosMatriz(); });
 
         socket.on('tarjeta_desconocida', (data) => {
@@ -270,7 +278,13 @@
         
         cargarDatos();
         cargarBrandingGlobal(); 
-        if (rolUsuario === 'admin') { cargarAjustes(); cargarReglasEmpresa(); cargarDatosMatriz(); }
+        if (rolUsuario === 'admin') { 
+            cargarAjustes(); 
+            // 2. Agregamos "await" aquí para forzar al sistema a esperar las reglas
+            await cargarReglasEmpresa(); 
+            cargarDatosMatriz(); 
+        }
+
     };
 
     function cambiarSeccion(seccion) {

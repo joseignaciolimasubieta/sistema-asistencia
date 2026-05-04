@@ -12,6 +12,13 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
+// 🚪 GESTOR DE SALAS PRIVADAS (WebSockets SaaS)
+io.on('connection', (socket) => {
+    socket.on('unirse_empresa', (empresa_id) => {
+        socket.join(empresa_id);
+        console.log(`🔌 Cliente web conectado a la sala: ${empresa_id}`);
+    });
+});
 // AHORA LAS LLAVES ESTÁN OCULTAS
 const PORT = process.env.PORT || 3000;
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -132,18 +139,24 @@ const verificarToken = (req, res, next) => {
 // ---------------------------------------------
 app.post('/api/asistencia', async (req, res) => {
     try {
-        const { uid } = req.body;
+        // 🛑 AHORA EL HARDWARE TAMBIÉN DEBE ENVIAR SU EMPRESA_ID
+        const { uid, empresa_id } = req.body;
         if (!uid) return res.status(400).json({ error: 'Falta el UID' });
 
         const empleado = await Empleado.findOne({ uid: uid });
+        
         if (!empleado) {
-            // 🔮 MAGIA: Si la tarjeta no existe, le avisamos al Dashboard en tiempo real
-            io.emit('tarjeta_desconocida', { uid: uid });
+            // Si la tarjeta no existe, avisamos a la sala de la empresa (si la envió)
+            if (empresa_id) {
+                io.to(empresa_id).emit('tarjeta_desconocida', { uid: uid });
+            } else {
+                io.emit('tarjeta_desconocida', { uid: uid }); // Fallback por si aún usas el hardware antiguo
+            }
             console.log(`⚠️ Tarjeta no registrada detectada: ${uid}`);
             return res.status(404).json({ error: 'Empleado no encontrado' });
         }
 
-        // 🛑 NUEVO: CARGAR AJUSTES DE LA EMPRESA DEL EMPLEADO
+        // 🛑 CARGAR AJUSTES DE LA EMPRESA DEL EMPLEADO
         let config = await Ajustes.findOne({ empresa_id: empleado.empresa_id });
         if (!config) config = new Ajustes({ empresa_id: empleado.empresa_id }); // Carga defaults
         
@@ -201,7 +214,10 @@ app.post('/api/asistencia', async (req, res) => {
         });
         
         await nuevoRegistro.save();
-        io.emit('nueva_asistencia', { nombre: nuevoRegistro.nombre, estado: nuevoRegistro.estado });
+        
+        // 📣 AVISAMOS SOLO A LA SALA DE ESTA EMPRESA
+        io.to(empleado.empresa_id).emit('nueva_asistencia', { nombre: nuevoRegistro.nombre, estado: nuevoRegistro.estado });
+        
         res.status(200).json({ mensaje: 'Asistencia registrada', tipo: tipoMarcado });
 
     } catch (error) { res.status(500).json({ error: 'Error del servidor' }); }
