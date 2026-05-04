@@ -303,9 +303,25 @@
     function cambiarTema(iniciar = false) {
         let temaActual = localStorage.getItem('tema') || 'dark';
         if (!iniciar) temaActual = temaActual === 'dark' ? 'light' : 'dark';
-        if (temaActual === 'light') document.body.setAttribute('data-theme', 'light');
-        else document.body.removeAttribute('data-theme');
+        
+        if (temaActual === 'light') {
+            document.body.setAttribute('data-theme', 'light');
+        } else {
+            document.body.removeAttribute('data-theme');
+        }
         localStorage.setItem('tema', temaActual);
+
+        // 🔄 ACTUALIZACIÓN DINÁMICA DE LA GRÁFICA (SIN RECARGAR)
+        if (typeof miGraficoDona !== 'undefined' && miGraficoDona !== null) {
+            // Evaluamos el color correcto para el nuevo tema
+            const colorTexto = temaActual === 'light' ? '#111111' : '#ffffff';
+            
+            // Le inyectamos el nuevo color a los nombres de la leyenda
+            miGraficoDona.options.plugins.legend.labels.color = colorTexto;
+            
+            // Obligamos al lienzo a repintarse al instante
+            miGraficoDona.update(); 
+        }
     }
 
     function cerrarSesion() { sessionStorage.clear(); localStorage.clear(); window.location.replace('/login.html'); }
