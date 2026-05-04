@@ -589,7 +589,7 @@
         if(datosExportar.length === 0) return Swal.fire('Vacío', 'No hay datos.', 'info');
 
         const hoja = XLSX.utils.json_to_sheet(datosExportar.map(r => ({
-            "Colaborador": r.nombre || 'Desconocido', "ID": r.uid || 'N/A', "Evento": r.tipo || 'INGRESO', "Estado": r.estado || 'PUNTUAL',
+            "Colaborador": r.nombre || 'Desconocido', "ID": r.uid || 'N/A', "Acción": r.tipo || 'INGRESO', "Estado": r.estado || 'PUNTUAL',
             "Fecha": new Date(r.fechaHora).toLocaleDateString('es-ES'), "Hora": new Date(r.fechaHora).toLocaleTimeString('es-ES')
         })));
         
