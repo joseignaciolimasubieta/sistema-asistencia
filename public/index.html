@@ -35,7 +35,7 @@
                     <i>📈</i> <span>Métricas</span>
                 </button>
                 <button id="tab-matriz" class="tab-btn" onclick="cambiarSeccion('matriz')" style="display:none;">
-                    <i>📅</i> <span>Matriz Mensual</span>
+                    <i>📅</i> <span>Registro Mensual</span>
                 </button>
                 <button id="tab-emp" class="tab-btn" onclick="cambiarSeccion('empleados')" style="display:none;">
                     <i>👥</i> <span>Personal</span>
@@ -87,12 +87,12 @@
             </div>
 
             <div id="seccion-matriz" style="display:none;">
-                <h2 style="font-weight: 400; margin-bottom: 20px;">Matriz de Control</h2>
+                <h2 style="font-weight: 400; margin-bottom: 20px;">Registros Mensuales</h2>
                 <div class="contenedor-tarjeta" style="overflow-x: auto;">
                    <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: center; flex-wrap: wrap;">
                         <input type="month" id="matriz-mes-anio" class="input-ajuste" style="cursor: pointer;">
                         <button class="btn-primario" onclick="cargarDatosMatriz()">Generar Reporte</button>
-                        <button class="btn-peligro" onclick="cerrarMes()" style="margin-left: auto; border-color: #555;">Cerrar Mes y Descargar</button>
+                        <button class="btn-peligro" onclick="cerrarMes()" style="margin-left: auto; border-color: #555;">Cerrar Mes y Descargar CSV</button>
                     </div>
                     <div id="pantalla-matriz"></div>
                 </div>
@@ -138,8 +138,8 @@
                 <h2 style="font-weight: 400; margin-bottom: 20px;">Configuración del Entorno</h2>
                 <div style="display: flex; flex-direction: column; gap: 20px;">
                     <div class="contenedor-tarjeta">
-                        <h3 style="margin: 0; font-weight: 400;">Identidad Corporativa</h3>
-                        <p style="font-size: 12px; color: var(--texto-secundario); margin: 5px 0 20px 0;">Personaliza el branding del tenant.</p>
+                        <h3 style="margin: 0; font-weight: 400;">Identidad de la Empresa</h3>
+                        <p style="font-size: 12px; color: var(--texto-secundario); margin: 5px 0 20px 0;">Personaliza el nombre, logo y apariencia global de la empresa.</p>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
                             <div><label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Nombre Comercial</label><input type="text" id="nombre-empresa" class="input-ajuste" placeholder="Ej: Mi Empresa S.A." style="width: 100%; margin-top: 5px;"></div>
                             <div style="min-width: 0;"> <label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Isotipo / Logo</label>
@@ -154,12 +154,13 @@
                     </div>
                     <div class="contenedor-tarjeta">
                         <h3 style="margin: 0; font-weight: 400;">Parámetros de Tiempo</h3>
-                        <p style="font-size: 12px; color: var(--texto-secundario); margin: 5px 0 20px 0;">Límites de jornada y holgura.</p>
+                        <p style="font-size: 12px; color: var(--texto-secundario); margin: 5px 0 20px 0;">Define la hora limite de entrada para cada jornada.</p>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 25px;">
-                            <div><label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Jornada 1</label><input type="time" id="limite-manana" class="input-ajuste" style="width: 100%; margin-top: 5px;"></div>
-                            <div><label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Jornada 2</label><input type="time" id="limite-tarde" class="input-ajuste" style="width: 100%; margin-top: 5px;"></div>
-                            <div><label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Jornada 3</label><input type="time" id="limite-noche" class="input-ajuste" style="width: 100%; margin-top: 5px;"></div>
+                            <div><label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Jornada de Mañana</label><input type="time" id="limite-manana" class="input-ajuste" style="width: 100%; margin-top: 5px;"></div>
+                            <div><label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Jornada de Tarde</label><input type="time" id="limite-tarde" class="input-ajuste" style="width: 100%; margin-top: 5px;"></div>
+                            <div><label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Jornada de Noche</label><input type="time" id="limite-noche" class="input-ajuste" style="width: 100%; margin-top: 5px;"></div>
                         </div>
+                        <p style="font-size: 12px; color: var(--texto-secundario); margin: 5px 0 20px 0;">Define la tolerancia de entrada.</p>
                         <div style="display: flex; align-items: center; gap: 15px;">
                             <label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Tolerancia (Min):</label>
                             <input type="number" id="ajuste-tolerancia" min="0" max="60" class="input-ajuste" style="width: 80px; text-align: center;">
