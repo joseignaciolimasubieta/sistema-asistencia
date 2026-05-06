@@ -623,7 +623,7 @@
 
     function cerrarMes() {
         const mes = document.getElementById('matriz-mes-anio').value; if (!mes) return Swal.fire('Falta mes', '', 'warning');
-        Swal.fire({ title: 'Exportar Matriz', icon: 'warning', showCancelButton: true, confirmButtonText: 'Exportar' }).then((r) => {
+        Swal.fire({ title: 'Exportar Registro', icon: 'warning', showCancelButton: true, confirmButtonText: 'Exportar' }).then((r) => {
             if (r.isConfirmed) {
                 const hoja = XLSX.utils.table_to_book(document.querySelector('.tabla-matriz'), { raw: true }).Sheets['Sheet1'];
                 
