@@ -17,6 +17,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <script>
+        // 🚀 EJECUCIÓN INMEDIATA: Aplica el tema antes de pintar cualquier botón o input
+        if (localStorage.getItem('tema') === 'light') {
+            document.body.setAttribute('data-theme', 'light');
+        } else {
+            document.body.removeAttribute('data-theme');
+        }
+    </script>
     <div class="top-bar">
         <button id="btn-hamburguesa" onclick="toggleSidebar()">☰</button>
         <div id="contenedor-logo-top" style="display: flex; align-items: center; gap: 10px;">
@@ -214,10 +222,6 @@
 </div>
 
 <script>
-    // 🚀 NUEVO: Pre-carga instantánea del tema para evitar el parpadeo negro
-    if (localStorage.getItem('tema') === 'light') {
-        document.body.setAttribute('data-theme', 'light');
-    }
     const headersSeguros = { 'Authorization': sessionStorage.getItem('token'), 'Content-Type': 'application/json' };
     const rolUsuario = sessionStorage.getItem('rol');
     let miGraficoDona = null;
