@@ -650,7 +650,7 @@
     async function cargarDatosMatriz() {
         try {
             const mesFormateado = document.getElementById('matriz-mes-anio').value;
-            // 🧠 Guardar el mes del reporte en memoria
+            // 🧠 Guardar el mes del reporte en memoria 
             sessionStorage.setItem('filtro-matriz', mesFormateado);
             const res = await fetch(`/api/registros?mes=${mesFormateado}`, { headers: headersSeguros });
             const datos = await res.json();
@@ -664,7 +664,7 @@
         if (miGraficoDona) miGraficoDona.destroy();
         const total = puntual + retraso + falta + permiso + descanso + comision + vacaciones + sesantia;
         
-        // Nueva Paleta de Colores Vivos y Diferenciados
+        // Paleta de Colores Vivos y Diferenciados
         const dataColores = total === 0 ? ['#141414'] : ['#10B981', '#FBBF24', '#EF4444', '#3B82F6', '#6B7280', '#06B6D4', '#8B5CF6', '#cbd5e1'];
         
         const temaActual = localStorage.getItem('tema') || 'dark';
