@@ -121,7 +121,15 @@ th { color: var(--texto-secundario); font-weight: 400; text-transform: uppercase
 .sidebar.colapsado { width: 70px; }
 .sidebar.colapsado .tab-btn span, .sidebar.colapsado .btn-peligro span { display: none; }
 .sidebar .btn-peligro { white-space: nowrap; }
-.main-content { flex: 1; padding: 30px; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--fondo); transition: all 0.3s ease; box-sizing: border-box; }
+.main-content { 
+    flex: 1; 
+    padding: 30px; 
+    overflow-y: auto; 
+    -webkit-overflow-scrolling: touch; 
+    background: transparent; /* <--- SOLUCIONADO */
+    transition: all 0.3s ease; 
+    box-sizing: border-box; 
+}
 
 @media (max-width: 768px) {
     .sidebar { position: fixed; left: -100%; top: 60px; bottom: 0; height: auto; width: 280px; box-shadow: 5px 0 15px rgba(0,0,0,0.5); border-right: none; z-index: 98; }
