@@ -157,7 +157,20 @@
                                 </div>
                                 <input type="hidden" id="logo-empresa">
                             </div>
-                            <div><label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Tema (Estilo)</label><select id="tema-defecto" class="input-ajuste" style="width: 100%; margin-top: 5px; height: 44px;"><option value="dark">Modo Oscuro</option><option value="light">Modo Claro</option></select></div>
+                            <div>
+                                <label style="font-size: 11px; text-transform: uppercase; color: var(--texto-secundario);">Tema (Estilo)</label>
+                                <select id="tema-defecto" class="input-ajuste" style="width: 100%; margin-top: 5px; height: 44px;">
+                                    <option value="dark">Modo Oscuro</option>
+                                    <option value="light">Modo Claro</option>
+                                </select>
+    
+                                <!-- 🚀 EJECUCIÓN INMEDIATA: Fuerza el texto correcto al instante -->
+                                <script>
+                                     if (localStorage.getItem('tema') === 'light') {
+                                        document.getElementById('tema-defecto').value = 'light';
+                                    }   
+                                </script>
+                            </div>  
                         </div>
                     </div>
                     <div class="contenedor-tarjeta">
