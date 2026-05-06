@@ -54,7 +54,7 @@
 
         <div class="main-content" id="main-content">
             
-            <div id="seccion-asistencias">
+            <div id="seccion-asistencias" style="display: none;">
                 <h2 style="font-weight: 400; margin-bottom: 20px;">Historial de Accesos</h2>
                 <div style="margin-bottom: 25px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; background: var(--tarjeta); padding: 15px 20px; border-radius: 6px; border: 1px solid var(--borde);">
                     <select id="tipo-filtro" onchange="cambiarTipoFiltro()" class="input-ajuste" style="cursor: pointer;">
@@ -276,10 +276,6 @@
             document.getElementById('matriz-mes-anio').value = sessionStorage.getItem('filtro-matriz') || mesHoy;
         }
 
-        // 🧠 MEMORIA: Recuperar la pestaña exacta donde estabas
-        const seccionGuardada = sessionStorage.getItem('seccionActiva') || 'asistencias';
-        cambiarSeccion(seccionGuardada);
-        
         cargarDatos();
         cargarBrandingGlobal(); 
         if (rolUsuario === 'admin') { 
@@ -318,6 +314,9 @@
         
         if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('active');
     }
+    // 🚀 NUEVO: Lo ponemos AFUERA para que se ejecute a la velocidad de la luz
+    const seccionGuardada = sessionStorage.getItem('seccionActiva') || 'asistencias';
+    cambiarSeccion(seccionGuardada);
 
     function cambiarTema(iniciar = false) {
         let temaActual = localStorage.getItem('tema') || 'dark';
