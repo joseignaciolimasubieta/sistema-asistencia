@@ -8,6 +8,15 @@ const { Server } = require('socket.io');
 const path = require('path');
 const bcrypt = require('bcryptjs'); // <--- ENCRIPTADOR DE CONTRASEÑAS
 
+// ⏱️ GESTOR DE ZONAS HORARIAS (NUEVO)
+const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+dayjs.extend(utc);
+dayjs.extend(timezone);
+// Establecemos Bolivia como la zona horaria por defecto para estos cálculos
+dayjs.tz.setDefault("America/La_Paz");
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
@@ -176,11 +185,9 @@ app.post('/api/asistencia', async (req, res) => {
             }
         }
 
-        // ⏱️ RELOJ SINCRONIZADO A BOLIVIA (UTC-4)
-        const inicioDia = new Date();
-        inicioDia.setUTCHours(inicioDia.getUTCHours() - 4); // 1. Retrocedemos a la hora de Bolivia
-        inicioDia.setUTCHours(0, 0, 0, 0);                  // 2. Buscamos la medianoche exacta
-        inicioDia.setUTCHours(inicioDia.getUTCHours() + 4); // 3. Devolvemos a UTC para que Mongo lo entienda
+        // ⏱️ RELOJ SINCRONIZADO A BOLIVIA (Usando Day.js)
+        // Busca automáticamente la medianoche exacta en Bolivia y la pasa a UTC para Mongo
+        const inicioDia = dayjs().tz("America/La_Paz").startOf('day').toDate();
 
         const ultimoRegistro = await Registro.findOne({
             uid: empleado.uid, fechaHora: { $gte: inicioDia }
@@ -192,9 +199,9 @@ app.post('/api/asistencia', async (req, res) => {
         let horaLimiteBase = 0;
 
         if (tipoMarcado === 'INGRESO') {
-            const horaActual = new Date();
-            horaActual.setUTCHours(horaActual.getUTCHours() - 4); 
-            const horaDecimal = horaActual.getUTCHours() + (horaActual.getUTCMinutes() / 60);
+            // Calculamos la hora decimal exacta en Bolivia para comparar con los límites
+            const ahoraBolivia = dayjs().tz("America/La_Paz");
+            const horaDecimal = ahoraBolivia.hour() + (ahoraBolivia.minute() / 60);
             
             if (horaDecimal >= 4 && horaDecimal < 12) horaLimiteBase = lim.manana;
             else if (horaDecimal >= 12 && horaDecimal < 18) horaLimiteBase = lim.tarde;
@@ -204,7 +211,7 @@ app.post('/api/asistencia', async (req, res) => {
             if (horaDecimal > limiteFinalConTolerancia) estadoAsistencia = 'RETRASO';
         }
 
-        const nuevoRegistro = new Registro({ 
+        const nuevoRegistro = new Registro({
             empresa_id: empleado.empresa_id,
             uid: empleado.uid, 
             nombre: empleado.nombre, 
@@ -243,25 +250,20 @@ app.get('/api/registros', verificarToken, async (req, res) => {
         filtro.nombre = { $regex: busqueda, $options: 'i' };
     }
 
-    // Filtros de Fechas (Ajustado para UTC-4, Bolivia)
+    // Filtros de Fechas (Ajustado con Day.js para Bolivia)
     if (dia) {
-        // Busca un día exacto
-        const fechaInicio = new Date(`${dia}T04:00:00.000Z`);
-        const fechaFin = new Date(fechaInicio);
-        fechaFin.setDate(fechaFin.getDate() + 1);
+        const fechaInicio = dayjs.tz(dia, "America/La_Paz").startOf('day').toDate();
+        const fechaFin = dayjs(fechaInicio).add(1, 'day').toDate();
         filtro.fechaHora = { $gte: fechaInicio, $lt: fechaFin };
         
     } else if (mes) {
-        // Busca un mes exacto (formato YYYY-MM)
-        const fechaInicio = new Date(`${mes}-01T04:00:00.000Z`);
-        const fechaFin = new Date(fechaInicio);
-        fechaFin.setMonth(fechaFin.getMonth() + 1);
+        const fechaInicio = dayjs.tz(`${mes}-01`, "America/La_Paz").startOf('month').toDate();
+        const fechaFin = dayjs(fechaInicio).add(1, 'month').toDate();
         filtro.fechaHora = { $gte: fechaInicio, $lt: fechaFin };
         
     } else if (anio) {
-        // 🛑 NUEVO: Busca un AÑO completo (Desde el 1 de enero hasta el 1 de enero del próximo año)
-        const fechaInicio = new Date(`${anio}-01-01T04:00:00.000Z`);
-        const fechaFin = new Date(`${parseInt(anio) + 1}-01-01T04:00:00.000Z`);
+        const fechaInicio = dayjs.tz(`${anio}-01-01`, "America/La_Paz").startOf('year').toDate();
+        const fechaFin = dayjs(fechaInicio).add(1, 'year').toDate();
         filtro.fechaHora = { $gte: fechaInicio, $lt: fechaFin };
     }
 
@@ -380,10 +382,9 @@ app.post('/api/registros/manual', verificarToken, async (req, res) => {
     const { uid, nombre, fecha, estado } = req.body;
 
     try {
-        // Definimos el rango del día (UTC-4 Bolivia)
-        const fechaInicio = new Date(`${fecha}T04:00:00.000Z`);
-        const fechaFin = new Date(fechaInicio);
-        fechaFin.setDate(fechaFin.getDate() + 1);
+        // Definimos el rango del día usando Day.js
+        const fechaInicio = dayjs.tz(fecha, "America/La_Paz").startOf('day').toDate();
+        const fechaFin = dayjs(fechaInicio).add(1, 'day').toDate();
 
         // Buscamos si ya existe un registro ese día para ese usuario
         // Si existe lo actualizamos, si no, creamos uno nuevo.
