@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
-const bcrypt = require('bcryptjs'); // <--- ENCRIPTADOR DE CONTRASEÑAS
+const bcrypt = require('bcryptjs'); // <---- ENCRIPTADOR DE CONTRASEÑAS
 
 const app = express();
 const server = http.createServer(app);
