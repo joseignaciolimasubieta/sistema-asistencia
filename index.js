@@ -23,7 +23,6 @@ io.on('connection', (socket) => {
 const PORT = process.env.PORT || 3000;
 const SECRET_KEY = process.env.SECRET_KEY;
 const MASTER_KEY = process.env.MASTER_KEY;
-const HARDWARE_SECRET = process.env.HARDWARE_SECRET_KEY;
 
 app.use(cors());
 app.use(express.json());
@@ -140,14 +139,6 @@ const verificarToken = (req, res, next) => {
 // ---------------------------------------------
 app.post('/api/asistencia', async (req, res) => {
     try {
-        // 🛡️ 1. NUEVO ESCUDO ANTI-HACKERS: Verificar la cabecera secreta
-        const clientSecret = req.headers['x-hardware-secret'];
-        
-        if (clientSecret !== HARDWARE_SECRET) {
-            console.log('⚠️ ALERTA: Intento de acceso no autorizado al endpoint de hardware.');
-            return res.status(403).json({ error: 'Acceso denegado. Hardware no reconocido.' });
-        }
-
         // 🛑 AHORA EL HARDWARE TAMBIÉN DEBE ENVIAR SU EMPRESA_ID
         const { uid, empresa_id } = req.body;
         if (!uid) return res.status(400).json({ error: 'Falta el UID' });
