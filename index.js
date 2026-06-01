@@ -7,6 +7,16 @@ const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
 const bcrypt = require('bcryptjs'); // <--- ENCRIPTADOR DE CONTRASEÑAS
+const { body, validationResult } = require('express-validator'); // <--- NUEVO GUARDIA DE SEGURIDAD
+
+// 🛡️ MIDDLEWARE: Revisa si el guardia encontró errores antes de continuar
+const validarCampos = (req, res, next) => {
+    const errores = validationResult(req);
+    if (!errores.isEmpty()) {
+        return res.status(400).json({ error: errores.array()[0].msg });
+    }
+    next();
+};
 
 // ⏱️ GESTOR DE ZONAS HORARIAS (NUEVO)
 const dayjs = require('dayjs');
@@ -296,9 +306,17 @@ app.get('/api/empleados', verificarToken, async (req, res) => {
     }
 });
 
-app.post('/api/empleados', verificarToken, async (req, res) => {
+app.post('/api/empleados', verificarToken, [
+    // 🚦 REGLAS DE VALIDACIÓN
+    body('nombre').notEmpty().withMessage('El nombre es obligatorio').trim().escape(),
+    body('uid').notEmpty().withMessage('El UID de la tarjeta es obligatorio').trim().toUpperCase(),
+    body('email').isEmail().withMessage('Debe ser un correo electrónico válido').normalizeEmail(),
+    body('password').isLength({ min: 4 }).withMessage('La contraseña debe tener mínimo 4 caracteres'),
+    validarCampos
+], async (req, res) => {
     if (req.usuario.rol !== 'admin') return res.status(403).json({ error: 'No autorizado' });
     try {
+        // ... (el resto del código de encriptación y guardado se queda exactamente igual) ...
         // 🛡️ ENCRIPTAR LA CONTRASEÑA ANTES DE GUARDARLA
         const salt = await bcrypt.genSalt(10);
         const passwordEncriptada = await bcrypt.hash(req.body.password, salt);
@@ -376,8 +394,16 @@ app.post('/api/ajustes/empresa', verificarToken, async (req, res) => {
 });
 
 // NUEVA RUTA: Asignar estado manual (Admin)
-app.post('/api/registros/manual', verificarToken, async (req, res) => {
+app.post('/api/registros/manual', verificarToken, [
+    body('uid').notEmpty().withMessage('El UID no puede estar vacío').trim().toUpperCase(),
+    body('nombre').notEmpty().withMessage('El nombre es obligatorio').trim().escape(),
+    body('fecha').isISO8601().withMessage('La fecha no tiene un formato válido'),
+    body('estado').isIn(['PUNTUAL', 'RETRASO', 'FALTA', 'PERMISO', 'DESCANSO', 'COMISION', 'VACACIONES', 'SESANTIA'])
+                  .withMessage('Estado de asistencia no válido'),
+    validarCampos
+], async (req, res) => {
     if (req.usuario.rol !== 'admin') return res.status(403).json({ error: 'No autorizado' });
+    // ... (el resto del código de la fecha con Day.js se queda igual) ...
 
     const { uid, nombre, fecha, estado } = req.body;
 
