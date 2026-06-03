@@ -22,15 +22,21 @@ window.onload = async () => {
     socket.on('nueva_asistencia', () => { cargarDatos(); if (rolUsuario === 'admin') cargarDatosMatriz(); });
 
     socket.on('tarjeta_desconocida', (data) => {
-        // 1. Forzamos a que se abra la ventana de registro automáticamente
-        abrirModal();
+        // 🛑 CONDICIÓN: Leer en qué sección estamos actualmente
+        const seccionActual = sessionStorage.getItem('seccionActiva');
         
-        // 2. Llenamos el input con el UID que leyó el ESP32
-        document.getElementById('emp-uid').value = data.uid;
-        
-        // 3. Mostramos la alerta de éxito
-        const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
-        Toast.fire({ icon: 'success', title: '¡Nueva tarjeta detectada!' });
+        // Solo reaccionar si el usuario está en la pestaña de "Personal"
+        if (seccionActual === 'empleados') {
+            // 1. Forzamos a que se abra la ventana de registro automáticamente
+            abrirModal();
+            
+            // 2. Llenamos el input con el UID que leyó el ESP32
+            document.getElementById('emp-uid').value = data.uid;
+            
+            // 3. Mostramos la alerta de éxito
+            const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
+            Toast.fire({ icon: 'success', title: '¡Nueva tarjeta detectada!' });
+        }
     });
     
     cambiarTema(true);
